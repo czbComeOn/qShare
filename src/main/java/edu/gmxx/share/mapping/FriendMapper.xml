@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.gmxx.share.dao.FriendMapper" >
+  <resultMap id="BaseResultMap" type="edu.gmxx.share.domain.Friend" >
+    <id column="friend_id" property="friendId" jdbcType="VARCHAR" />
+    <result column="a_user_id" property="aUserId" jdbcType="VARCHAR" />
+    <result column="b_user_id" property="bUserId" jdbcType="VARCHAR" />
+    <result column="group_id" property="groupId" jdbcType="VARCHAR" />
+    <result column="is_friend" property="isFriend" jdbcType="TINYINT" />
+    <result column="is_attention" property="isAttention" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    friend_id, a_user_id, b_user_id, group_id, is_friend, is_attention
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from s_friend
+    where friend_id = #{friendId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from s_friend
+    where friend_id = #{friendId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="edu.gmxx.share.domain.Friend" >
+    insert into s_friend (friend_id, a_user_id, b_user_id, 
+      group_id, is_friend, is_attention
+      )
+    values (#{friendId,jdbcType=VARCHAR}, #{aUserId,jdbcType=VARCHAR}, #{bUserId,jdbcType=VARCHAR}, 
+      #{groupId,jdbcType=VARCHAR}, #{isFriend,jdbcType=TINYINT}, #{isAttention,jdbcType=TINYINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="edu.gmxx.share.domain.Friend" >
+    insert into s_friend
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="friendId != null" >
+        friend_id,
+      </if>
+      <if test="aUserId != null" >
+        a_user_id,
+      </if>
+      <if test="bUserId != null" >
+        b_user_id,
+      </if>
+      <if test="groupId != null" >
+        group_id,
+      </if>
+      <if test="isFriend != null" >
+        is_friend,
+      </if>
+      <if test="isAttention != null" >
+        is_attention,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="friendId != null" >
+        #{friendId,jdbcType=VARCHAR},
+      </if>
+      <if test="aUserId != null" >
+        #{aUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="bUserId != null" >
+        #{bUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="groupId != null" >
+        #{groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="isFriend != null" >
+        #{isFriend,jdbcType=TINYINT},
+      </if>
+      <if test="isAttention != null" >
+        #{isAttention,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="edu.gmxx.share.domain.Friend" >
+    update s_friend
+    <set >
+      <if test="aUserId != null" >
+        a_user_id = #{aUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="bUserId != null" >
+        b_user_id = #{bUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="groupId != null" >
+        group_id = #{groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="isFriend != null" >
+        is_friend = #{isFriend,jdbcType=TINYINT},
+      </if>
+      <if test="isAttention != null" >
+        is_attention = #{isAttention,jdbcType=TINYINT},
+      </if>
+    </set>
+    where friend_id = #{friendId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="edu.gmxx.share.domain.Friend" >
+    update s_friend
+    set a_user_id = #{aUserId,jdbcType=VARCHAR},
+      b_user_id = #{bUserId,jdbcType=VARCHAR},
+      group_id = #{groupId,jdbcType=VARCHAR},
+      is_friend = #{isFriend,jdbcType=TINYINT},
+      is_attention = #{isAttention,jdbcType=TINYINT}
+    where friend_id = #{friendId,jdbcType=VARCHAR}
+  </update>
+</mapper>

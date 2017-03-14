@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.gmxx.share.dao.CollectMapper" >
+  <resultMap id="BaseResultMap" type="edu.gmxx.share.domain.Collect" >
+    <id column="collect_id" property="collectId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="share_id" property="shareId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    collect_id, user_id, share_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from s_collect
+    where collect_id = #{collectId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from s_collect
+    where collect_id = #{collectId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="edu.gmxx.share.domain.Collect" >
+    insert into s_collect (collect_id, user_id, share_id
+      )
+    values (#{collectId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{shareId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="edu.gmxx.share.domain.Collect" >
+    insert into s_collect
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="collectId != null" >
+        collect_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="shareId != null" >
+        share_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="collectId != null" >
+        #{collectId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="shareId != null" >
+        #{shareId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="edu.gmxx.share.domain.Collect" >
+    update s_collect
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="shareId != null" >
+        share_id = #{shareId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where collect_id = #{collectId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="edu.gmxx.share.domain.Collect" >
+    update s_collect
+    set user_id = #{userId,jdbcType=VARCHAR},
+      share_id = #{shareId,jdbcType=VARCHAR}
+    where collect_id = #{collectId,jdbcType=VARCHAR}
+  </update>
+</mapper>

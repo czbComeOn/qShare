@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.gmxx.share.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="edu.gmxx.share.domain.User" >
+    <id column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="account" property="account" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="birthday" property="birthday" jdbcType="TIMESTAMP" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="region" property="region" jdbcType="VARCHAR" />
+    <result column="constellation" property="constellation" jdbcType="VARCHAR" />
+    <result column="hobby" property="hobby" jdbcType="VARCHAR" />
+    <result column="portrait_path" property="portraitPath" jdbcType="VARCHAR" />
+    <result column="edu_info" property="eduInfo" jdbcType="VARCHAR" />
+    <result column="graduateInstitutions" property="graduateinstitutions" jdbcType="VARCHAR" />
+    <result column="occupation" property="occupation" jdbcType="VARCHAR" />
+    <result column="blood_type" property="bloodType" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="signature" property="signature" jdbcType="VARCHAR" />
+    <result column="notes" property="notes" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="user_type" property="userType" jdbcType="VARCHAR" />
+    <result column="report_num" property="reportNum" jdbcType="INTEGER" />
+    <result column="pwd_error_count" property="pwdErrorCount" jdbcType="INTEGER" />
+    <result column="last_time" property="lastTime" jdbcType="TIMESTAMP" />
+    <result column="unlock_time" property="unlockTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    user_id, account, password, nickname, name, birthday, phone, email, region, constellation, 
+    hobby, portrait_path, edu_info, graduateInstitutions, occupation, blood_type, create_time, 
+    signature, notes, status, user_type, report_num, pwd_error_count, last_time, unlock_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from s_user
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from s_user
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="edu.gmxx.share.domain.User" >
+    insert into s_user (user_id, account, password, 
+      nickname, name, birthday, 
+      phone, email, region, 
+      constellation, hobby, portrait_path, 
+      edu_info, graduateInstitutions, occupation, 
+      blood_type, create_time, signature, 
+      notes, status, user_type, 
+      report_num, pwd_error_count, last_time, 
+      unlock_time)
+    values (#{userId,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{nickname,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{birthday,jdbcType=TIMESTAMP}, 
+      #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, 
+      #{constellation,jdbcType=VARCHAR}, #{hobby,jdbcType=VARCHAR}, #{portraitPath,jdbcType=VARCHAR}, 
+      #{eduInfo,jdbcType=VARCHAR}, #{graduateinstitutions,jdbcType=VARCHAR}, #{occupation,jdbcType=VARCHAR}, 
+      #{bloodType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{signature,jdbcType=VARCHAR}, 
+      #{notes,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{userType,jdbcType=VARCHAR}, 
+      #{reportNum,jdbcType=INTEGER}, #{pwdErrorCount,jdbcType=INTEGER}, #{lastTime,jdbcType=TIMESTAMP}, 
+      #{unlockTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="edu.gmxx.share.domain.User" >
+    insert into s_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="account != null" >
+        account,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="nickname != null" >
+        nickname,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="birthday != null" >
+        birthday,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="region != null" >
+        region,
+      </if>
+      <if test="constellation != null" >
+        constellation,
+      </if>
+      <if test="hobby != null" >
+        hobby,
+      </if>
+      <if test="portraitPath != null" >
+        portrait_path,
+      </if>
+      <if test="eduInfo != null" >
+        edu_info,
+      </if>
+      <if test="graduateinstitutions != null" >
+        graduateInstitutions,
+      </if>
+      <if test="occupation != null" >
+        occupation,
+      </if>
+      <if test="bloodType != null" >
+        blood_type,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="signature != null" >
+        signature,
+      </if>
+      <if test="notes != null" >
+        notes,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="userType != null" >
+        user_type,
+      </if>
+      <if test="reportNum != null" >
+        report_num,
+      </if>
+      <if test="pwdErrorCount != null" >
+        pwd_error_count,
+      </if>
+      <if test="lastTime != null" >
+        last_time,
+      </if>
+      <if test="unlockTime != null" >
+        unlock_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null" >
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null" >
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="constellation != null" >
+        #{constellation,jdbcType=VARCHAR},
+      </if>
+      <if test="hobby != null" >
+        #{hobby,jdbcType=VARCHAR},
+      </if>
+      <if test="portraitPath != null" >
+        #{portraitPath,jdbcType=VARCHAR},
+      </if>
+      <if test="eduInfo != null" >
+        #{eduInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="graduateinstitutions != null" >
+        #{graduateinstitutions,jdbcType=VARCHAR},
+      </if>
+      <if test="occupation != null" >
+        #{occupation,jdbcType=VARCHAR},
+      </if>
+      <if test="bloodType != null" >
+        #{bloodType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="signature != null" >
+        #{signature,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null" >
+        #{userType,jdbcType=VARCHAR},
+      </if>
+      <if test="reportNum != null" >
+        #{reportNum,jdbcType=INTEGER},
+      </if>
+      <if test="pwdErrorCount != null" >
+        #{pwdErrorCount,jdbcType=INTEGER},
+      </if>
+      <if test="lastTime != null" >
+        #{lastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="unlockTime != null" >
+        #{unlockTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="edu.gmxx.share.domain.User" >
+    update s_user
+    <set >
+      <if test="account != null" >
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null" >
+        nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        birthday = #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        region = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="constellation != null" >
+        constellation = #{constellation,jdbcType=VARCHAR},
+      </if>
+      <if test="hobby != null" >
+        hobby = #{hobby,jdbcType=VARCHAR},
+      </if>
+      <if test="portraitPath != null" >
+        portrait_path = #{portraitPath,jdbcType=VARCHAR},
+      </if>
+      <if test="eduInfo != null" >
+        edu_info = #{eduInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="graduateinstitutions != null" >
+        graduateInstitutions = #{graduateinstitutions,jdbcType=VARCHAR},
+      </if>
+      <if test="occupation != null" >
+        occupation = #{occupation,jdbcType=VARCHAR},
+      </if>
+      <if test="bloodType != null" >
+        blood_type = #{bloodType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="signature != null" >
+        signature = #{signature,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null" >
+        user_type = #{userType,jdbcType=VARCHAR},
+      </if>
+      <if test="reportNum != null" >
+        report_num = #{reportNum,jdbcType=INTEGER},
+      </if>
+      <if test="pwdErrorCount != null" >
+        pwd_error_count = #{pwdErrorCount,jdbcType=INTEGER},
+      </if>
+      <if test="lastTime != null" >
+        last_time = #{lastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="unlockTime != null" >
+        unlock_time = #{unlockTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="edu.gmxx.share.domain.User" >
+    update s_user
+    set account = #{account,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=TIMESTAMP},
+      phone = #{phone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      region = #{region,jdbcType=VARCHAR},
+      constellation = #{constellation,jdbcType=VARCHAR},
+      hobby = #{hobby,jdbcType=VARCHAR},
+      portrait_path = #{portraitPath,jdbcType=VARCHAR},
+      edu_info = #{eduInfo,jdbcType=VARCHAR},
+      graduateInstitutions = #{graduateinstitutions,jdbcType=VARCHAR},
+      occupation = #{occupation,jdbcType=VARCHAR},
+      blood_type = #{bloodType,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      signature = #{signature,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      user_type = #{userType,jdbcType=VARCHAR},
+      report_num = #{reportNum,jdbcType=INTEGER},
+      pwd_error_count = #{pwdErrorCount,jdbcType=INTEGER},
+      last_time = #{lastTime,jdbcType=TIMESTAMP},
+      unlock_time = #{unlockTime,jdbcType=TIMESTAMP}
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+</mapper>

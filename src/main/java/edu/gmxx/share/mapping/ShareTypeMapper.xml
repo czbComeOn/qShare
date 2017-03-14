@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.gmxx.share.dao.ShareTypeMapper" >
+  <resultMap id="BaseResultMap" type="edu.gmxx.share.domain.ShareType" >
+    <id column="share_type_id" property="shareTypeId" jdbcType="VARCHAR" />
+    <result column="share_type_name" property="shareTypeName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    share_type_id, share_type_name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from s_share_type
+    where share_type_id = #{shareTypeId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from s_share_type
+    where share_type_id = #{shareTypeId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="edu.gmxx.share.domain.ShareType" >
+    insert into s_share_type (share_type_id, share_type_name)
+    values (#{shareTypeId,jdbcType=VARCHAR}, #{shareTypeName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="edu.gmxx.share.domain.ShareType" >
+    insert into s_share_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="shareTypeId != null" >
+        share_type_id,
+      </if>
+      <if test="shareTypeName != null" >
+        share_type_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="shareTypeId != null" >
+        #{shareTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="shareTypeName != null" >
+        #{shareTypeName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="edu.gmxx.share.domain.ShareType" >
+    update s_share_type
+    <set >
+      <if test="shareTypeName != null" >
+        share_type_name = #{shareTypeName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where share_type_id = #{shareTypeId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="edu.gmxx.share.domain.ShareType" >
+    update s_share_type
+    set share_type_name = #{shareTypeName,jdbcType=VARCHAR}
+    where share_type_id = #{shareTypeId,jdbcType=VARCHAR}
+  </update>
+</mapper>

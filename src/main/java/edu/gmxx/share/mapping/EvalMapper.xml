@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.gmxx.share.dao.EvalMapper" >
+  <resultMap id="BaseResultMap" type="edu.gmxx.share.domain.Eval" >
+    <id column="eval_id" property="evalId" jdbcType="VARCHAR" />
+    <result column="share_id" property="shareId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="edu.gmxx.share.domain.Eval" extends="BaseResultMap" >
+    <result column="eval_content" property="evalContent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    eval_id, share_id, user_id
+  </sql>
+  <sql id="Blob_Column_List" >
+    eval_content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from s_eval
+    where eval_id = #{evalId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from s_eval
+    where eval_id = #{evalId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="edu.gmxx.share.domain.Eval" >
+    insert into s_eval (eval_id, share_id, user_id, 
+      eval_content)
+    values (#{evalId,jdbcType=VARCHAR}, #{shareId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{evalContent,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="edu.gmxx.share.domain.Eval" >
+    insert into s_eval
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="evalId != null" >
+        eval_id,
+      </if>
+      <if test="shareId != null" >
+        share_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="evalContent != null" >
+        eval_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="evalId != null" >
+        #{evalId,jdbcType=VARCHAR},
+      </if>
+      <if test="shareId != null" >
+        #{shareId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="evalContent != null" >
+        #{evalContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="edu.gmxx.share.domain.Eval" >
+    update s_eval
+    <set >
+      <if test="shareId != null" >
+        share_id = #{shareId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="evalContent != null" >
+        eval_content = #{evalContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where eval_id = #{evalId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="edu.gmxx.share.domain.Eval" >
+    update s_eval
+    set share_id = #{shareId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      eval_content = #{evalContent,jdbcType=LONGVARCHAR}
+    where eval_id = #{evalId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="edu.gmxx.share.domain.Eval" >
+    update s_eval
+    set share_id = #{shareId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR}
+    where eval_id = #{evalId,jdbcType=VARCHAR}
+  </update>
+</mapper>
