@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author 3138907243 陈志斌
  */
 @Controller
-public class LoginController {
+public class IndexController {
 	@Autowired
 	private ILoginService loginService;
 
@@ -22,11 +22,15 @@ public class LoginController {
 		return "index";
 	}
 
-	@RequestMapping("login.do")
-	public ModelAndView login(String userId){
-		ModelAndView view = new ModelAndView("main/login");
-		User user = (User) loginService.login(userId).get("user");
-		view.addObject(user);
+	public ModelAndView login(User user){
+		ModelAndView view = new ModelAndView("login");
+
+		return view;
+	}
+
+	public ModelAndView register(User user){
+		ModelAndView view = new ModelAndView("register");
+
 		return view;
 	}
 }
