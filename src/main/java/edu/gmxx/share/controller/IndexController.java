@@ -17,21 +17,14 @@ public class LoginController {
 	@Autowired
 	private ILoginService loginService;
 
-	@RequestMapping("main.do")
-	public ModelAndView main(String userId){
-		ModelAndView view = new ModelAndView("login");
-//		Map<String, Object> result = loginService.login("1");
-
-		User user = new User();
-		user.setUserId(userId);
-		user.setName("张三");
-		view.addObject(user);
-		return view;
+	@RequestMapping("index.do")
+	public String index(){
+		return "index";
 	}
 
 	@RequestMapping("login.do")
 	public ModelAndView login(String userId){
-		ModelAndView view = new ModelAndView("login");
+		ModelAndView view = new ModelAndView("main/login");
 		User user = (User) loginService.login(userId).get("user");
 		view.addObject(user);
 		return view;
