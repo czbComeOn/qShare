@@ -326,4 +326,44 @@
       unlock_time = #{unlockTime,jdbcType=TIMESTAMP}
     where user_id = #{userId,jdbcType=VARCHAR}
   </update>
+
+  <select id="selectUserByAccount" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_user
+    WHERE account = #{account,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectUserByPhone" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_user
+    WHERE phone = #{phone,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getUserByAccountOrEmail" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_user
+    WHERE
+    account = #{account,jdbcType=VARCHAR} OR email = #{account,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getUserIdByType" parameterType="edu.gmxx.share.dto.ShareDTO" resultMap="BaseResultMap">
+    SELECT * FROM s_user WHERE user_id IN (
+      SELECT t.user_id FROM(
+        SELECT DISTINCT v.user_id FROM (
+          SELECT s.user_id
+          FROM s_share s
+          <if test="share.shareTypeId != 'all'">
+            <where>
+              s.share_type_id = #{share.shareTypeId}
+            </where>
+          </if>
+          ORDER BY s.create_time DESC
+          LIMIT #{page.currentCount},#{page.pageSize}
+        ) v
+      ) AS t
+    )
+  </select>
 </mapper>

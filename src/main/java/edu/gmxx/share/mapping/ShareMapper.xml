@@ -9,7 +9,7 @@
     <result column="music_path" property="musicPath" jdbcType="VARCHAR" />
     <result column="video_path" property="videoPath" jdbcType="VARCHAR" />
     <result column="user_id" property="userId" jdbcType="VARCHAR" />
-    <result column="visible" property="visible" jdbcType="INTEGER" />
+    <result column="visible" property="visible" jdbcType="VARCHAR" />
     <result column="share_type_id" property="shareTypeId" jdbcType="VARCHAR" />
     <result column="del_status" property="delStatus" jdbcType="INTEGER" />
   </resultMap>
@@ -45,7 +45,7 @@
       thumb_up_id)
     values (#{shareId,jdbcType=VARCHAR}, #{shareTitle,jdbcType=VARCHAR}, #{shareContent,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{musicPath,jdbcType=VARCHAR}, #{videoPath,jdbcType=VARCHAR}, 
-      #{userId,jdbcType=VARCHAR}, #{visible,jdbcType=INTEGER}, #{shareTypeId,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=VARCHAR}, #{visible,jdbcType=VARCHAR}, #{shareTypeId,jdbcType=VARCHAR}, 
       #{delStatus,jdbcType=INTEGER}, #{imgInfo,jdbcType=LONGVARCHAR}, #{transpondUserId,jdbcType=LONGVARCHAR}, 
       #{thumbUpId,jdbcType=LONGVARCHAR})
   </insert>
@@ -115,7 +115,7 @@
         #{userId,jdbcType=VARCHAR},
       </if>
       <if test="visible != null" >
-        #{visible,jdbcType=INTEGER},
+        #{visible,jdbcType=VARCHAR},
       </if>
       <if test="shareTypeId != null" >
         #{shareTypeId,jdbcType=VARCHAR},
@@ -156,7 +156,7 @@
         user_id = #{userId,jdbcType=VARCHAR},
       </if>
       <if test="visible != null" >
-        visible = #{visible,jdbcType=INTEGER},
+        visible = #{visible,jdbcType=VARCHAR},
       </if>
       <if test="shareTypeId != null" >
         share_type_id = #{shareTypeId,jdbcType=VARCHAR},
@@ -184,7 +184,7 @@
       music_path = #{musicPath,jdbcType=VARCHAR},
       video_path = #{videoPath,jdbcType=VARCHAR},
       user_id = #{userId,jdbcType=VARCHAR},
-      visible = #{visible,jdbcType=INTEGER},
+      visible = #{visible,jdbcType=VARCHAR},
       share_type_id = #{shareTypeId,jdbcType=VARCHAR},
       del_status = #{delStatus,jdbcType=INTEGER},
       img_info = #{imgInfo,jdbcType=LONGVARCHAR},
@@ -200,9 +200,33 @@
       music_path = #{musicPath,jdbcType=VARCHAR},
       video_path = #{videoPath,jdbcType=VARCHAR},
       user_id = #{userId,jdbcType=VARCHAR},
-      visible = #{visible,jdbcType=INTEGER},
+      visible = #{visible,jdbcType=VARCHAR},
       share_type_id = #{shareTypeId,jdbcType=VARCHAR},
       del_status = #{delStatus,jdbcType=INTEGER}
     where share_id = #{shareId,jdbcType=VARCHAR}
   </update>
+
+  <select id="getShareByType" parameterType="edu.gmxx.share.dto.ShareDTO" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from s_share
+    <if test="share.shareTypeId != 'all'">
+      <where>
+        share_type_id = #{share.shareTypeId}
+      </where>
+    </if>
+    ORDER BY CREATE_TIME DESC
+    LIMIT #{page.currentCount},#{page.pageSize}
+  </select>
+
+  <select id="getShareCount" parameterType="edu.gmxx.share.domain.Share" resultType="int">
+    SELECT COUNT(share_id) FROM s_share
+    <if test="shareTypeId != 'all'">
+      <where>
+        share_type_id = #{shareTypeId}
+      </where>
+    </if>
+  </select>
 </mapper>
