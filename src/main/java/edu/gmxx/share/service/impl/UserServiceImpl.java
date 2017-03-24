@@ -131,4 +131,9 @@ public class UserServiceImpl implements IUserService {
 
         userMapper.updateByPrimaryKeySelective(account);
     }
+
+    @Override
+    public int updateUserById(User user) {
+        return userMapper.updateByPrimaryKeySelective(user);
+    }
 }

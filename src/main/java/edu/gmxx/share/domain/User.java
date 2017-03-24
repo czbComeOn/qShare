@@ -311,7 +311,7 @@ public class User {
      * @return portrait_path 
      */
     public String getPortraitPath() {
-        return portraitPath;
+        return StringUtils.isEmpty(portraitPath) ? "resources/img/header/hzw.jpg" : portraitPath;
     }
 
     /**

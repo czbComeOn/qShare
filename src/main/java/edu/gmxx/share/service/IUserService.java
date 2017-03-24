@@ -31,4 +31,10 @@ public interface IUserService {
      * @param user
      */
     void logout(User user);
+
+    /**
+     * 修改用户信息
+     * @param user
+     */
+    int updateUserById(User user);
 }

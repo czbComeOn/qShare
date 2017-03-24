@@ -13,11 +13,15 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/toastr.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/jquery.sinaEmotion.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/font-awesome.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/cropper.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/sitelogo.css">
+
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/my.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/my-dialog.css">
     <script data-main="${pageContext.request.contextPath}/resources/js/main" src="${pageContext.request.contextPath}/resources/js/require.min.js"></script>
     <script>
-        require(['jquery', 'qshare/index'], function($, share){
+        require(['jquery', 'qshare/index', 'utils/cropper.min', 'utils/sitelogo'], function($, share){
             share.init();
             $('#logout').on('click', share.logout);
         });
@@ -32,7 +36,7 @@
                 <div class="login-box panel fl" style="width: 300px;">
                     <div class="panel-heading">
                         <div class="fl" style="font-family: monospace; font-weight: bold; color: rgba(67,124,173,.63);">轻.分享 - 登录</div>
-                        <a class="fr close-login" id="closeLogin" href="javascript:void(0);" style="color: rgba(67,124,173,.63);" title="关闭"><span class="glyphicon glyphicon-remove"></span></a>
+                        <a class="fr close-login" id="closeLogin" href="javascript:void(0);" style="color: rgba(67,124,173,.63);" title="关闭"><i class="fa fa-remove"></i></a>
                     </div>
                     <div class="panel-body">
                         <form id="loginForm">
@@ -56,7 +60,7 @@
                 <div class="register-box panel fl" style="width: 300px;">
                     <div class="panel-heading">
                         <div class="fl" style="font-family: monospace; font-weight: bold; color: rgba(67,124,173,.63);">轻.分享 - 注册</div>
-                        <a class="fr close-login" href="javascript:void(0);" style="color: rgba(67,124,173,.63);" title="关闭"><span class="glyphicon glyphicon-remove"></span></a>
+                        <a class="fr close-login" href="javascript:void(0);" style="color: rgba(67,124,173,.63);" title="关闭"><i class="fa fa-remove"></i></a>
                     </div>
                     <div class="panel-body">
                         <form id="registerForm">
@@ -79,7 +83,7 @@
                 <div class="reset-box panel fl" style="width: 300px;">
                     <div class="panel-heading">
                         <div class="fl" style="font-family: monospace; font-weight: bold; color: rgba(67,124,173,.63);">轻.分享 - 找回密码</div>
-                        <a class="fr close-login" href="javascript:void(0);" style="color: rgba(67,124,173,.63);" title="关闭"><span class="glyphicon glyphicon-remove"></span></a>
+                        <a class="fr close-login" href="javascript:void(0);" style="color: rgba(67,124,173,.63);" title="关闭"><i class="fa fa-remove"></i></a>
                     </div>
                     <div class="panel-body">
                         <form id="resetPwdForm">
@@ -113,11 +117,11 @@
         <div class="collapse navbar-collapse navbar-responsive-collapse">
             <ul class="nav navbar-nav show-share-type">
                 <li class="active"><a href="#" name="all" data-toggle="tab">全部</a></li>
-                <li><a href="#" name="zx" data-toggle="tab">最新</a></li>
                 <li><a href="#" name="zr" data-toggle="tab"><span class="glyphicon glyphicon-fire" style="color:red;"></span> 最热</a></li>
                 <li><a href="#" name="sh" data-toggle="tab">生活</a></li>
                 <li><a href="#" name="yl" data-toggle="tab">娱乐</a></li>
                 <li><a href="#" name="yd" data-toggle="tab">运动</a></li>
+                <li><a href="#" name="ly" data-toggle="tab">旅游</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         更多...
@@ -125,7 +129,6 @@
                     </a>
                     <ul class="dropdown-menu more-type">
                         <li><a href="#" name="hw" data-toggle="tab">户外</a></li>
-                        <li><a href="#" name="ly" data-toggle="tab">旅游</a></li>
                         <li><a href="#" name="ms" data-toggle="tab">美食</a></li>
                         <li><a href="#" name="qg" data-toggle="tab">情感</a></li>
                         <li><a href="#" name="dy" data-toggle="tab">电影</a></li>
@@ -137,13 +140,13 @@
                 <c:if test="${user != null}">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="glyphicon glyphicon-user"></span>
+                            <i class="fa fa-user"></i>
                             用户
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="#" data-toggle="tab"><span class="glyphicon glyphicon-home">&nbsp;</span>个人主页</a></li>
-                            <li><a id="logout" href="#" data-toggle="tab"><span class="glyphicon glyphicon-log-out">&nbsp;</span>退出登录</a></li>
+                            <li><a href="#" data-toggle="tab"><i class="fa fa-home">&nbsp;</i>个人主页</a></li>
+                            <li><a id="logout" href="#" data-toggle="tab"><i class="fa fa-sign-out">&nbsp;</i>退出登录</a></li>
                         </ul>
                     </li>
                 </c:if>
@@ -161,7 +164,7 @@
                     <div class="myleft-n unlogin panel panel-info" style="margin-top: 10px;">
                         <div class="panel-body">
                             <a class="login-tab" href="javascript:void(0);" title="点击登录">
-                                <img class="fl imgr imgr20 tou" src="${pageContext.request.contextPath}/resources/img/header/hzw.jpg">
+                                <img class="fl imgr imgr20 portrait" src="${pageContext.request.contextPath}/resources/img/header/hzw.jpg">
                             </a>
                             <div class="user-info fl">
                                 <h4><a class="login-tab" href="javascript:void(0);" title="点击登录">未登录</a></h4>
@@ -173,14 +176,14 @@
                     </div>
                 </c:if>
                 <c:if test="${user != null}">
-                    <div class="myleft-n mrg20">
-                        <a href="javascript:void(0);" title="点击更换头像">
-                            <img class="fl imgr imgr20 tou" src="${pageContext.request.contextPath}/resources/img/lf.jpg">
-                        </a>
+                    <div class="myleft-n mrg20" id="crop-avatar">
+                        <div class="avatar-view" title="点击更换头像">
+                            <img class="fl imgr imgr20 portrait" src="${pageContext.request.contextPath}/${user.portraitPath}">
+                        </div>
                         <div class="user-info fl">
                             <h4><a href="javascript:void(0);" title="个人主页" class="nickname">${user.nickname}</a></h4>
                             <div class="addr" style="color:#b8ecfa">
-                                <span class="glyphicon glyphicon-map-marker"></span>
+                                <i class="fa fa-map-marker"></i>
                                 ${user.region}
                             </div>
                         </div>
@@ -189,21 +192,25 @@
                     <div class="cf"></div>
                     <div class="myleft-n">
                         <ul class="list-group">
+                            <li class="list-group-item list-group-item-info">
+                                <span class="badge" style="background: #0ca7da">10</span>
+                                <a href="#"><i class="fa fa-envelope"></i> 私信</a>
+                            </li>
                             <li class="list-group-item list-group-item-primary">
                                 <span class="badge" style="background:#ef5c5c;">9</span>
-                                <a href="#"><span class="glyphicon glyphicon-heart"></span> 好友</a>
+                                <a href="#"><i class="fa fa-heart"></i> 好友</a>
                             </li>
                             <li class="list-group-item list-group-item-info">
                                 <span class="badge" style="background:#ced834;">10</span>
-                                <a href="#"><span class="glyphicon glyphicon-link"></span> 关注</a>
+                                <a href="#"><i class="fa fa-link"></i> 关注</a>
                             </li>
                             <li class="list-group-item list-group-item-primary">
                                 <span class="badge" style="background:#3e97c1;">10</span>
-                                <a href="#"><span class="glyphicon glyphicon-star"></span> 我的收藏</a>
+                                <a href="#"><i class="fa fa-star"></i> 我的收藏</a>
                             </li>
                             <li class="list-group-item list-group-item-info">
                                 <span class="badge" style="background:#b994a5;">10</span>
-                                <a href="#"><span class="glyphicon glyphicon-share"></span> 我的分享</a>
+                                <a href="#"><i class="fa fa-share"></i> 我的分享</a>
                             </li>
                         </ul>
                     </div>
@@ -211,7 +218,7 @@
                     <div class="myleft-n">
                         <div class="panel panel-info">
                             <div class="panel-heading">
-                                <span class="glyphicon glyphicon-heart-empty"></span> 好友动态
+                                <i class="fa fa-heart-o"></i> 好友动态
                             </div>
                             <div class="panel-body">
                                 <div class="friend-dyn">
@@ -230,7 +237,7 @@
                     <div class="myleft-n">
                         <div class="panel panel-info">
                             <div class="panel-heading">
-                                <span class="glyphicon glyphicon-link"></span> 关注动态
+                                <i class="fa fa-link"></i> 关注动态
                             </div>
                             <div class="panel-body">
                                 <div class="friend-dyn">
@@ -272,12 +279,13 @@
                         <div class="panel-footer">
                             <!-- footer left -->
                             <div class="footer-left fl">
-                                <a class="emotion-img" id="face" href="javascript:void(0);">
-                                    <img src="${pageContext.request.contextPath}/resources/img/huanglianwx_thumb.gif" height="22" width="22">
+                                <a class="emotion-img" id="face" href="javascript:void(0);" style="font-size:16px;">
+                                    <%--<img src="${pageContext.request.contextPath}/resources/img/huanglianwx_thumb.gif" height="22" width="22">--%>
+                                    <i class="fa fa-smile-o"></i> 表情
                                 </a>
-                                <a class="insert-attachment" id="insertImg" href="javascript:void(0);" style="font-size:16px;">	<span class="glyphicon glyphicon-picture"></span>图片
+                                <a class="insert-attachment" id="insertImg" href="javascript:void(0);" style="font-size:16px;"><i class="fa fa-picture-o"></i> 图片
                                 </a>
-                                <a class="insert-attachment" id="insertVideo" href="javascript:void(0);" style="font-size:16px;">	<span class="glyphicon glyphicon-picture"></span>视频
+                                <a class="insert-attachment" id="insertVideo" href="javascript:void(0);" style="font-size:16px;"><i class="fa fa-video-camera"></i> 视频
                                 </a>
                             </div>
                             <!-- end footer left -->
@@ -308,9 +316,9 @@
                                             <span class="visibility-type-text">公开</span>&nbsp;<span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu visibility-type">
-                                            <li><a name="all" href="javascript:void(0);"><span class="glyphicon glyphicon-globe"></span> 公开</a></li>
-                                            <li><a name="friend" href="javascript:void(0);"><span class="glyphicon glyphicon-heart"></span> 好友可见</a></li>
-                                            <li><a name="self" href="javascript:void(0);"><span class="glyphicon glyphicon-lock"></span> 仅自己可见</a></li>
+                                            <li><a name="all" href="javascript:void(0);"><i class="fa fa-globe"></i> 公开</a></li>
+                                            <li><a name="friend" href="javascript:void(0);"><i class="fa fa-heart"></i> 好友可见</a></li>
+                                            <li><a name="self" href="javascript:void(0);"><i class="fa fa-lock"></i> 仅自己可见</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -323,34 +331,12 @@
                 </form>
                 </c:if>
                 <!-- end 分享 panel -->
-                <%--<div class="panel panel-default myright-n share-info">
-                    <div class="panel-heading">
-                        <a href="#" class="pull-left">
-                            <img src="${pageContext.request.contextPath}/resources/img/sl.jpg" alt="">
-                        </a>
-                        <div class="title-center">
-                            <a href="javascript:void(0);">索隆：</a>
-                            <a href="javascript:void(0);" title="点击查看详情">哈哈</a>
-                            <small>2017年3月10日</small>
-                        </div>
-                    </div>
-                    <div class="panel-body">
-                        哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈。。。
-                    </div>
-                    <div class="panel-footer">
-                        <div class="footer-tool fr">
-                            <a href="javascript:void(0);"><span class="glyphicon glyphicon-thumbs-up"></span>点赞</a>
-                            <a href="javascript:void(0);"><span class="glyphicon glyphicon-star-empty"></span>收藏</a>
-                            <a href="javascript:void(0);"><span class="glyphicon glyphicon-share"></span>转发</a>
-                            <a href="javascript:void(0);"><span class="glyphicon glyphicon-comment"></span>评论</a>
-                        </div>
-                    </div>
-                </div>--%>
 
-                <div class="panel panel-default load-more">
-                    <div class="panel-body" id="loadOver" style="display: none;text-align: center;">点击加载更多 <span class="glyphicon glyphicon-chevron-down"></span></div>
-                    <div class="panel-body" id="startLoad" style="text-align: center;">
-                        正在加载数据 <img style="width:20px; height:20px;" src="${pageContext.request.contextPath}/resources/img/loading.gif" alt="">
+                <div class="panel panel-default" id="loadMore">
+                    <div class="panel-body">
+                        <div class="load-more" style="display: none;text-align: center;">点击加载更多 <i class="fa fa-angle-double-down"></i></div>
+                        <div class="in-load" style="text-align: center;">正在加载数据 <img style="width:20px; height:20px;" src="${pageContext.request.contextPath}/resources/img/loading.gif" alt=""></div>
+                        <div class="load-finish" style="display: none;text-align: center;">没有更多了</div>
                     </div>
                 </div>
             </div>
@@ -363,6 +349,52 @@
         <footer>
             Copyright 2017 国脉信息学院 软件1302 陈志斌 版权所有
         </footer>
+    </div>
+</div>
+
+<div class="modal fade" id="avatar-modal" aria-hidden="true" aria-labelledby="avatar-modal-label" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form class="avatar-form" action="file/uploadPortrait.do" enctype="multipart/form-data" method="post">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal" type="button">&times;</button>
+                    <h4 class="modal-title" id="avatar-modal-label">更换头像</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="avatar-body">
+                        <div class="avatar-upload">
+                            <input class="avatar-src" name="avatar_src" type="hidden">
+                            <input class="avatar-data" name="avatarData" type="hidden">
+                            <label for="avatarInput">图片上传</label>
+                            <input class="avatar-input" accept="image/jpg,image/jpeg,image/png"
+                                   capture="camera" id="avatarInput" name="file" type="file"></div>
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="avatar-wrapper"></div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="avatar-preview preview-lg"></div>
+                                <div class="avatar-preview preview-md"></div>
+                                <div class="avatar-preview preview-sm"></div>
+                            </div>
+                        </div>
+                        <div class="row avatar-btns">
+                            <div class="col-md-9">
+                                <%--<div class="btn-group">
+                                    <button class="btn" data-method="rotate" data-option="-90" type="button" title="Rotate -90 degrees"><i class="fa fa-undo"></i> 向左旋转</button>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="btn" data-method="rotate" data-option="90" type="button" title="Rotate 90 degrees"><i class="fa fa-repeat"></i> 向右旋转</button>
+                                </div>--%>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-success btn-block avatar-save" type="submit"><i class="fa fa-save"></i> 保存修改</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 </body>
