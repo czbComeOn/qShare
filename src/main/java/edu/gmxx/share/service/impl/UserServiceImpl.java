@@ -24,7 +24,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public Map<String, Object> login(User user) {
-        Map<String, Object> result = new HashMap();
+        Map<String, Object> result = new HashMap<String, Object>();
 
         if(user == null || StringUtils.isEmpty(user.getAccount())){
             result.put("msg", "输入信息不能为空！");

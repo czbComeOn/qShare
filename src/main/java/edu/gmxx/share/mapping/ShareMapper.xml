@@ -12,24 +12,17 @@
     <result column="visible" property="visible" jdbcType="VARCHAR" />
     <result column="share_type_id" property="shareTypeId" jdbcType="VARCHAR" />
     <result column="del_status" property="delStatus" jdbcType="INTEGER" />
-  </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="edu.gmxx.share.domain.ShareWithBLOBs" extends="BaseResultMap" >
     <result column="img_info" property="imgInfo" jdbcType="LONGVARCHAR" />
     <result column="transpond_user_id" property="transpondUserId" jdbcType="LONGVARCHAR" />
     <result column="thumb_up_id" property="thumbUpId" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     share_id, share_title, share_content, create_time, music_path, video_path, user_id, 
-    visible, share_type_id, del_status
+    visible, share_type_id, del_status, img_info, transpond_user_id, thumb_up_id
   </sql>
-  <sql id="Blob_Column_List" >
-    img_info, transpond_user_id, thumb_up_id
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from s_share
     where share_id = #{shareId,jdbcType=VARCHAR}
   </select>
@@ -37,7 +30,7 @@
     delete from s_share
     where share_id = #{shareId,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="edu.gmxx.share.domain.ShareWithBLOBs" >
+  <insert id="insert" parameterType="edu.gmxx.share.domain.Share" >
     insert into s_share (share_id, share_title, share_content, 
       create_time, music_path, video_path, 
       user_id, visible, share_type_id, 
@@ -49,7 +42,7 @@
       #{delStatus,jdbcType=INTEGER}, #{imgInfo,jdbcType=LONGVARCHAR}, #{transpondUserId,jdbcType=LONGVARCHAR}, 
       #{thumbUpId,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="edu.gmxx.share.domain.ShareWithBLOBs" >
+  <insert id="insertSelective" parameterType="edu.gmxx.share.domain.Share" >
     insert into s_share
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="shareId != null" >
@@ -134,7 +127,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="edu.gmxx.share.domain.ShareWithBLOBs" >
+  <update id="updateByPrimaryKeySelective" parameterType="edu.gmxx.share.domain.Share" >
     update s_share
     <set >
       <if test="shareTitle != null" >
@@ -176,7 +169,7 @@
     </set>
     where share_id = #{shareId,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="edu.gmxx.share.domain.ShareWithBLOBs" >
+  <update id="updateByPrimaryKey" parameterType="edu.gmxx.share.domain.Share" >
     update s_share
     set share_title = #{shareTitle,jdbcType=VARCHAR},
       share_content = #{shareContent,jdbcType=VARCHAR},
@@ -190,43 +183,30 @@
       img_info = #{imgInfo,jdbcType=LONGVARCHAR},
       transpond_user_id = #{transpondUserId,jdbcType=LONGVARCHAR},
       thumb_up_id = #{thumbUpId,jdbcType=LONGVARCHAR}
-    where share_id = #{shareId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="edu.gmxx.share.domain.Share" >
-    update s_share
-    set share_title = #{shareTitle,jdbcType=VARCHAR},
-      share_content = #{shareContent,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      music_path = #{musicPath,jdbcType=VARCHAR},
-      video_path = #{videoPath,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=VARCHAR},
-      visible = #{visible,jdbcType=VARCHAR},
-      share_type_id = #{shareTypeId,jdbcType=VARCHAR},
-      del_status = #{delStatus,jdbcType=INTEGER}
-    where share_id = #{shareId,jdbcType=VARCHAR}
+    where share_id = #{shareId,jdbcType=VARCHAR},
   </update>
 
-  <select id="getShareByType" parameterType="edu.gmxx.share.dto.ShareDTO" resultMap="ResultMapWithBLOBs">
+  <select id="getShareByType" parameterType="edu.gmxx.share.dto.ShareDTO" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from s_share
-    <if test="share.shareTypeId != 'all'">
-      <where>
-        share_type_id = #{share.shareTypeId}
-      </where>
-    </if>
+    <where>
+      del_status = 0
+      <if test="share.shareTypeId != 'all'">
+        AND share_type_id = #{share.shareTypeId}
+      </if>
+    </where>
     ORDER BY CREATE_TIME DESC
     LIMIT #{page.currentCount},#{page.pageSize}
   </select>
 
   <select id="getShareCount" parameterType="edu.gmxx.share.domain.Share" resultType="int">
     SELECT COUNT(share_id) FROM s_share
-    <if test="shareTypeId != 'all'">
-      <where>
-        share_type_id = #{shareTypeId}
-      </where>
-    </if>
+    <where>
+      del_status = 0
+      <if test="shareTypeId != 'all'">
+        AND share_type_id = #{shareTypeId}
+      </if>
+    </where>
   </select>
 </mapper>

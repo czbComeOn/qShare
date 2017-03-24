@@ -1,8 +1,6 @@
 package edu.gmxx.share.dao;
 
 import edu.gmxx.share.domain.Share;
-import edu.gmxx.share.domain.ShareWithBLOBs;
-import edu.gmxx.share.domain.User;
 import edu.gmxx.share.dto.ShareDTO;
 
 import java.util.List;
@@ -10,15 +8,13 @@ import java.util.List;
 public interface ShareMapper {
     int deleteByPrimaryKey(String shareId);
 
-    int insert(ShareWithBLOBs record);
+    int insert(Share record);
 
-    int insertSelective(ShareWithBLOBs record);
+    int insertSelective(Share record);
 
-    ShareWithBLOBs selectByPrimaryKey(String shareId);
+    Share selectByPrimaryKey(String shareId);
 
-    int updateByPrimaryKeySelective(ShareWithBLOBs record);
-
-    int updateByPrimaryKeyWithBLOBs(ShareWithBLOBs record);
+    int updateByPrimaryKeySelective(Share record);
 
     int updateByPrimaryKey(Share record);
 
@@ -27,7 +23,7 @@ public interface ShareMapper {
      * @param type
      * @return
      */
-    List<ShareWithBLOBs> getShareByType(ShareDTO share);
+    List<Share> getShareByType(ShareDTO share);
 
     /**
      * 获取分享信息记录数

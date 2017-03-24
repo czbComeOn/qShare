@@ -53,8 +53,28 @@ public class Share {
      */
     private Integer delStatus;
 
+    /**
+     * 图片信息json数组[{imgName:图片名称,imgPath:图片路径}]
+     */
+    private String imgInfo;
+
+    /**
+     * 对该信息进行转发的用户
+     */
+    private String transpondUserId;
+
+    /**
+     * 点赞的用户
+     */
+    private String thumbUpId;
+
     public Share(){
 
+    }
+
+    public Share(String shareId, int delStatus){
+        this.shareId = shareId;
+        this.delStatus = delStatus;
     }
 
     public Share(String shareTypeId) {
@@ -219,5 +239,29 @@ public class Share {
      */
     public void setDelStatus(Integer delStatus) {
         this.delStatus = delStatus;
+    }
+
+    public String getImgInfo() {
+        return imgInfo;
+    }
+
+    public void setImgInfo(String imgInfo) {
+        this.imgInfo = imgInfo;
+    }
+
+    public String getTranspondUserId() {
+        return transpondUserId;
+    }
+
+    public void setTranspondUserId(String transpondUserId) {
+        this.transpondUserId = transpondUserId;
+    }
+
+    public String getThumbUpId() {
+        return thumbUpId;
+    }
+
+    public void setThumbUpId(String thumbUpId) {
+        this.thumbUpId = thumbUpId;
     }
 }

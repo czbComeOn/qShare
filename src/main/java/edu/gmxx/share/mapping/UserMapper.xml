@@ -355,11 +355,12 @@
         SELECT DISTINCT v.user_id FROM (
           SELECT s.user_id
           FROM s_share s
-          <if test="share.shareTypeId != 'all'">
-            <where>
-              s.share_type_id = #{share.shareTypeId}
-            </where>
-          </if>
+          <where>
+            s.del_status = 0
+            <if test="share.shareTypeId != 'all'">
+              AND s.share_type_id = #{share.shareTypeId}
+            </if>
+          </where>
           ORDER BY s.create_time DESC
           LIMIT #{page.currentCount},#{page.pageSize}
         ) v
