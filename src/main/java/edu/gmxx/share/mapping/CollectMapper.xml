@@ -68,4 +68,21 @@
       share_id = #{shareId,jdbcType=VARCHAR}
     where collect_id = #{collectId,jdbcType=VARCHAR}
   </update>
+
+  <select id="getCollectByUserAndShare" resultMap="BaseResultMap" parameterType="edu.gmxx.share.domain.Collect">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_collect
+    <where>
+      user_id = #{userId,jdbcType=VARCHAR}
+      AND share_id = #{shareId,jdbcType=VARCHAR}
+    </where>
+  </select>
+
+  <select id="getCollectByShareId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_collect
+    WHERE share_id = #{shareId,jdbcType=VARCHAR}
+  </select>
 </mapper>

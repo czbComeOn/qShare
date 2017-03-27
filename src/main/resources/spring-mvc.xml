@@ -1,11 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>  
-<beans xmlns="http://www.springframework.org/schema/beans"  
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"  
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-4.2.xsd    
 	http://www.springframework.org/schema/context    
-	http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+	http://www.springframework.org/schema/context/spring-context-4.2.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 	
 	<!-- 自动扫描该包，使SpringMVC认为包下用了@controller注解的类是控制器 -->  
 	<context:component-scan base-package="edu.gmxx.share" />  
@@ -45,6 +46,12 @@
 		<property name="maxUploadSize" value="10485760000" />    
 		<!-- 内存中的最大值 -->  
 		<property name="maxInMemorySize" value="40960" />    
-	</bean>   
-  
-</beans>  
+	</bean>
+
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/*"/>
+			<bean class="edu.gmxx.share.interceptor.LoginInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+</beans>

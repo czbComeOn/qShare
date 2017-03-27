@@ -16,6 +16,25 @@ public class Collect {
      */
     private String shareId;
 
+    public Collect(){
+
+    }
+
+    public Collect(String collectId){
+        this.collectId = collectId;
+    }
+
+    public Collect(String shareId, String userId){
+        this.shareId = shareId;
+        this.userId = userId;
+    }
+
+    public Collect(String collectId, String shareId, String userId){
+        this.collectId = collectId;
+        this.shareId = shareId;
+        this.userId = userId;
+    }
+
     /**
      * 收藏信息ID
      * @return collect_id 收藏信息ID

@@ -98,8 +98,8 @@ public class Share {
     }
 
     /**
-     * 分享主题（30个字以内）
-     * @return share_title 分享主题（30个字以内）
+     * 分享主题（20个字以内）
+     * @return share_title 分享主题（20个字以内）
      */
     public String getShareTitle() {
         return shareTitle;

@@ -3,6 +3,9 @@ package edu.gmxx.share.service.impl;
 import edu.gmxx.share.dao.UserMapper;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.service.IUserService;
+import edu.gmxx.share.utils.MyStringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -10,7 +13,6 @@ import org.springframework.util.StringUtils;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * 登录服务
@@ -19,6 +21,7 @@ import java.util.UUID;
  */
 @Service("userService")
 public class UserServiceImpl implements IUserService {
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     private UserMapper userMapper;
 
@@ -110,9 +113,11 @@ public class UserServiceImpl implements IUserService {
 //        user.setPassword(md.toMd5(user.getPassword()));
 
         // 4.添加用户
-        user.setUserId(UUID.randomUUID().toString().replace("-", ""));
+        user.setUserId(MyStringUtil.getUUID());
         userMapper.insert(user);
         result.put("msg", "success");
+
+        logger.info("----->新用户[" + user.getAccount() + "]注册成功");
         return result;
     }
 
@@ -127,7 +132,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void logout(User user) {
         User account = userMapper.selectByPrimaryKey(user.getUserId());
-        account.setStatus("UNLINE");
+        account.setStatus("OFFLINE");
 
         userMapper.updateByPrimaryKeySelective(account);
     }

@@ -116,25 +116,25 @@
         </div>
         <div class="collapse navbar-collapse navbar-responsive-collapse">
             <ul class="nav navbar-nav show-share-type">
-                <li class="active"><a href="#" name="all" data-toggle="tab">全部</a></li>
-                <li><a href="#" name="zr" data-toggle="tab"><span class="glyphicon glyphicon-fire" style="color:red;"></span> 最热</a></li>
-                <li><a href="#" name="sh" data-toggle="tab">生活</a></li>
-                <li><a href="#" name="yl" data-toggle="tab">娱乐</a></li>
-                <li><a href="#" name="yd" data-toggle="tab">运动</a></li>
-                <li><a href="#" name="ly" data-toggle="tab">旅游</a></li>
+                <li class="active share-nav"><a href="#" name="all" data-toggle="tab">全部</a></li>
+                <li class="share-nav"><a href="#" name="zr" data-toggle="tab"><span class="glyphicon glyphicon-fire" style="color:red;"></span> 最热</a></li>
+                <li class="share-nav"><a href="#" name="sh" data-toggle="tab">生活</a></li>
+                <li class="share-nav"><a href="#" name="yl" data-toggle="tab">娱乐</a></li>
+                <li class="share-nav"><a href="#" name="yd" data-toggle="tab">运动</a></li>
+                <li class="share-nav"><a href="#" name="ly" data-toggle="tab">旅游</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         更多...
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu more-type">
-                        <li><a href="#" name="hw" data-toggle="tab">户外</a></li>
-                        <li><a href="#" name="ms" data-toggle="tab">美食</a></li>
-                        <li><a href="#" name="qg" data-toggle="tab">情感</a></li>
-                        <li><a href="#" name="dy" data-toggle="tab">电影</a></li>
-                        <li><a href="#" name="zy" data-toggle="tab">综艺</a></li>
-                        <li><a href="#" name="dm" data-toggle="tab">动漫</a></li>
-                        <li><a href="#" name="qt" data-toggle="tab">其他</a></li>
+                        <li class="share-nav"><a href="#" name="hw" data-toggle="tab">户外</a></li>
+                        <li class="share-nav"><a href="#" name="ms" data-toggle="tab">美食</a></li>
+                        <li class="share-nav"><a href="#" name="qg" data-toggle="tab">情感</a></li>
+                        <li class="share-nav"><a href="#" name="dy" data-toggle="tab">电影</a></li>
+                        <li class="share-nav"><a href="#" name="zy" data-toggle="tab">综艺</a></li>
+                        <li class="share-nav"><a href="#" name="dm" data-toggle="tab">动漫</a></li>
+                        <li class="share-nav"><a href="#" name="qt" data-toggle="tab">其他</a></li>
                     </ul>
                 </li>
                 <c:if test="${user != null}">
@@ -164,7 +164,7 @@
                     <div class="myleft-n unlogin panel panel-info" style="margin-top: 10px;">
                         <div class="panel-body">
                             <a class="login-tab" href="javascript:void(0);" title="点击登录">
-                                <img class="fl imgr imgr20 portrait" src="${pageContext.request.contextPath}/resources/img/header/hzw.jpg">
+                                <img class="fl imgr imgr20 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
                             </a>
                             <div class="user-info fl">
                                 <h4><a class="login-tab" href="javascript:void(0);" title="点击登录">未登录</a></h4>
@@ -178,13 +178,23 @@
                 <c:if test="${user != null}">
                     <div class="myleft-n mrg20" id="crop-avatar">
                         <div class="avatar-view" title="点击更换头像">
-                            <img class="fl imgr imgr20 portrait" src="${pageContext.request.contextPath}/${user.portraitPath}">
+                            <c:choose>
+                                <c:when test="${user.portraitPath != null}">
+                                    <img class="fl imgr imgr20 portrait" src="${pageContext.request.contextPath}/${user.portraitPath}">
+                                </c:when>
+                                <c:otherwise>
+                                    <img class="fl imgr imgr20 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                         <div class="user-info fl">
                             <h4><a href="javascript:void(0);" title="个人主页" class="nickname">${user.nickname}</a></h4>
                             <div class="addr" style="color:#b8ecfa">
                                 <i class="fa fa-map-marker"></i>
-                                ${user.region}
+                                <c:choose>
+                                    <c:when test="${user.region == null}">未知</c:when>
+                                    <c:otherwise>${user.region}</c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                         <div class="cf"></div>
@@ -366,8 +376,9 @@
                             <input class="avatar-src" name="avatar_src" type="hidden">
                             <input class="avatar-data" name="avatarData" type="hidden">
                             <label for="avatarInput">图片上传</label>
-                            <input class="avatar-input" accept="image/jpg,image/jpeg,image/png"
-                                   capture="camera" id="avatarInput" name="file" type="file"></div>
+                            <input class="avatar-input" id="avatarInput" type="file" name="file"
+                                   capture="camera"/>
+                        </div>
                         <div class="row">
                             <div class="col-md-9">
                                 <div class="avatar-wrapper"></div>

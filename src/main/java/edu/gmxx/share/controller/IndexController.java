@@ -22,6 +22,10 @@ public class IndexController {
 	@Autowired
 	private IUserService userService;
 
+	/**
+	 * 系统主页
+	 * @return
+	 */
 	@RequestMapping("index.do")
 	public String index(){
 		return "index";
@@ -47,6 +51,11 @@ public class IndexController {
 		return result;
 	}
 
+	/**
+	 * 退出登录
+	 * @param session
+	 * @return
+	 */
 	@RequestMapping(value = "logout.do")
 	public String logout(HttpSession session){
         User user = (User) session.getAttribute("user");

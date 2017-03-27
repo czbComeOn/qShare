@@ -263,7 +263,7 @@ public class User {
      * @return region 所在地区
      */
     public String getRegion() {
-        return StringUtils.isEmpty(region) ? "未知" : region;
+        return region;
     }
 
     /**
@@ -311,7 +311,7 @@ public class User {
      * @return portrait_path 
      */
     public String getPortraitPath() {
-        return StringUtils.isEmpty(portraitPath) ? "resources/img/header/hzw.jpg" : portraitPath;
+        return portraitPath;
     }
 
     /**
