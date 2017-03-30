@@ -203,7 +203,7 @@
                     <div class="myleft-n">
                         <ul class="list-group">
                             <li class="list-group-item list-group-item-info">
-                                <span class="badge" style="background: #0ca7da">10</span>
+                                <span class="badge" style="background: #c4ce90">10</span>
                                 <a href="#"><i class="fa fa-envelope"></i> 私信</a>
                             </li>
                             <li class="list-group-item list-group-item-primary">
@@ -272,7 +272,7 @@
                 <form id="shareForm" action="#">
                     <div class="panel panel-info myright-n share-panel" id="sharePanel">
                         <div class="panel-heading">
-                            分享你的那些事
+                            一起分享你的那些事
                         </div>
                         <div class="panel-body">
                             <div class="wordCount" id="wordCount">
@@ -297,6 +297,7 @@
                                 </a>
                                 <a class="insert-attachment" id="insertVideo" href="javascript:void(0);" style="font-size:16px;"><i class="fa fa-video-camera"></i> 视频
                                 </a>
+                                <input id="insertVideoFile" type="file" capture="camcorder" accept="video/mpeg,video/mp4,video/3gpp,video/MPV,.mkv" title="请选择要分享的视频" style="display:none;"/>
                             </div>
                             <!-- end footer left -->
                             <!-- footer right -->
