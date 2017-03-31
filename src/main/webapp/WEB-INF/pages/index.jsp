@@ -46,7 +46,7 @@
                             <div class="form-group">
                                 <input class="form-control" id="password" name="password" type="password" data-bv-trigger="keyup" placeholder="密码" style="letter-spacing: 4px;" />
                             </div>
-                            <div class="checkbox">
+                            <div class="checkbox" style="display: none;">
                                 <label><input type="checkbox" style="height: auto;">记住密码</label>
                             </div>
                             <div class="btn-box">

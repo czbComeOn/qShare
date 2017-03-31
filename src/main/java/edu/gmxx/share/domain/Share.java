@@ -59,9 +59,9 @@ public class Share {
     private String imgInfo;
 
     /**
-     * 对该信息进行转发的用户
+     * 对该信息进行转发
      */
-    private String transpondUserId;
+    private String transpondId;
 
     /**
      * 点赞的用户
@@ -249,12 +249,10 @@ public class Share {
         this.imgInfo = imgInfo;
     }
 
-    public String getTranspondUserId() {
-        return transpondUserId;
-    }
+    public String getTranspondId(){return transpondId;}
 
-    public void setTranspondUserId(String transpondUserId) {
-        this.transpondUserId = transpondUserId;
+    public void setTranspondId(String transpondId) {
+        this.transpondId = transpondId;
     }
 
     public String getThumbUpId() {

@@ -59,8 +59,11 @@ public class IndexController {
 	@RequestMapping(value = "logout.do")
 	public String logout(HttpSession session){
         User user = (User) session.getAttribute("user");
-        userService.logout(user);
-        session.removeAttribute("user");
+
+		if(user != null){
+			userService.logout(user);
+			session.removeAttribute("user");
+		}
 
         return "redirect:index.do";
     }

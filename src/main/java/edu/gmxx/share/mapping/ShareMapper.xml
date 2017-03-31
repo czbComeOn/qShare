@@ -13,12 +13,12 @@
     <result column="share_type_id" property="shareTypeId" jdbcType="VARCHAR" />
     <result column="del_status" property="delStatus" jdbcType="INTEGER" />
     <result column="img_info" property="imgInfo" jdbcType="LONGVARCHAR" />
-    <result column="transpond_user_id" property="transpondUserId" jdbcType="LONGVARCHAR" />
+    <result column="transpond_id" property="transpondId" jdbcType="VARCHAR" />
     <result column="thumb_up_id" property="thumbUpId" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     share_id, share_title, share_content, create_time, music_path, video_path, user_id, 
-    visible, share_type_id, del_status, img_info, transpond_user_id, thumb_up_id
+    visible, share_type_id, del_status, img_info, transpond_id, thumb_up_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -34,12 +34,12 @@
     insert into s_share (share_id, share_title, share_content, 
       create_time, music_path, video_path, 
       user_id, visible, share_type_id, 
-      del_status, img_info, transpond_user_id, 
+      del_status, img_info, transpond_id, 
       thumb_up_id)
     values (#{shareId,jdbcType=VARCHAR}, #{shareTitle,jdbcType=VARCHAR}, #{shareContent,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{musicPath,jdbcType=VARCHAR}, #{videoPath,jdbcType=VARCHAR}, 
       #{userId,jdbcType=VARCHAR}, #{visible,jdbcType=VARCHAR}, #{shareTypeId,jdbcType=VARCHAR}, 
-      #{delStatus,jdbcType=INTEGER}, #{imgInfo,jdbcType=LONGVARCHAR}, #{transpondUserId,jdbcType=LONGVARCHAR}, 
+      #{delStatus,jdbcType=INTEGER}, #{imgInfo,jdbcType=LONGVARCHAR}, #{transpondId,jdbcType=VARCHAR},
       #{thumbUpId,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="edu.gmxx.share.domain.Share" >
@@ -78,8 +78,8 @@
       <if test="imgInfo != null" >
         img_info,
       </if>
-      <if test="transpondUserId != null" >
-        transpond_user_id,
+      <if test="transpondId != null" >
+        transpond_id,
       </if>
       <if test="thumbUpId != null" >
         thumb_up_id,
@@ -119,8 +119,8 @@
       <if test="imgInfo != null" >
         #{imgInfo,jdbcType=LONGVARCHAR},
       </if>
-      <if test="transpondUserId != null" >
-        #{transpondUserId,jdbcType=LONGVARCHAR},
+      <if test="transpondId != null" >
+        #{transpondId,jdbcType=VARCHAR},
       </if>
       <if test="thumbUpId != null" >
         #{thumbUpId,jdbcType=LONGVARCHAR},
@@ -160,8 +160,8 @@
       <if test="imgInfo != null" >
         img_info = #{imgInfo,jdbcType=LONGVARCHAR},
       </if>
-      <if test="transpondUserId != null" >
-        transpond_user_id = #{transpondUserId,jdbcType=LONGVARCHAR},
+      <if test="transpondId != null" >
+        transpond_id = #{transpondId,jdbcType=VARCHAR},
       </if>
       <if test="thumbUpId != null" >
         thumb_up_id = #{thumbUpId,jdbcType=LONGVARCHAR},
@@ -181,7 +181,7 @@
       share_type_id = #{shareTypeId,jdbcType=VARCHAR},
       del_status = #{delStatus,jdbcType=INTEGER},
       img_info = #{imgInfo,jdbcType=LONGVARCHAR},
-      transpond_user_id = #{transpondUserId,jdbcType=LONGVARCHAR},
+      transpond_id = #{transpondId,jdbcType=VARCHAR},
       thumb_up_id = #{thumbUpId,jdbcType=LONGVARCHAR}
     where share_id = #{shareId,jdbcType=VARCHAR},
   </update>
