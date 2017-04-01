@@ -90,4 +90,10 @@
       user_id = #{userId,jdbcType=VARCHAR}
     where transpond_id = #{transpondId,jdbcType=VARCHAR}
   </update>
+
+  <select id="getTranspondCount" parameterType="java.lang.String" resultType="int">
+    SELECT count(transpond_id)
+    FROM s_transpond
+    WHERE share_id = #{shareId,jdbcType=VARCHAR}
+  </select>
 </mapper>

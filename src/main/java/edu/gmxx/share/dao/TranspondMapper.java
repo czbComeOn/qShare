@@ -14,4 +14,11 @@ public interface TranspondMapper {
     int updateByPrimaryKeySelective(Transpond record);
 
     int updateByPrimaryKey(Transpond record);
+
+    /**
+     * 根据分享获取转发量
+     * @param shareId
+     * @return
+     */
+    int getTranspondCount(String shareId);
 }
