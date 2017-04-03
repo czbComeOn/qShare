@@ -5,21 +5,18 @@
     <id column="eval_id" property="evalId" jdbcType="VARCHAR" />
     <result column="share_id" property="shareId" jdbcType="VARCHAR" />
     <result column="user_id" property="userId" jdbcType="VARCHAR" />
-  </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="edu.gmxx.share.domain.Eval" extends="BaseResultMap" >
+    <result column="share_user_id" property="shareUserId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="reply_eval_id" property="replyEvalId" jdbcType="VARCHAR" />
+    <result column="reply_user_id" property="replyUserId" jdbcType="VARCHAR" />
     <result column="eval_content" property="evalContent" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    eval_id, share_id, user_id
+    eval_id, share_id, user_id, share_user_id, create_time, reply_eval_id, reply_user_id, eval_content
   </sql>
-  <sql id="Blob_Column_List" >
-    eval_content
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
-    select 
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from s_eval
     where eval_id = #{evalId,jdbcType=VARCHAR}
   </select>
@@ -28,10 +25,12 @@
     where eval_id = #{evalId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="edu.gmxx.share.domain.Eval" >
-    insert into s_eval (eval_id, share_id, user_id, 
-      eval_content)
-    values (#{evalId,jdbcType=VARCHAR}, #{shareId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
-      #{evalContent,jdbcType=LONGVARCHAR})
+    insert into s_eval (eval_id, share_id, user_id,
+      share_user_id, create_time, reply_eval_id,
+      reply_user_id, eval_content)
+    values (#{evalId,jdbcType=VARCHAR}, #{shareId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+      #{shareUserId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{replyEvalId,jdbcType=VARCHAR},
+      #{replyUserId,jdbcType=VARCHAR}, #{evalContent,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="edu.gmxx.share.domain.Eval" >
     insert into s_eval
@@ -44,6 +43,18 @@
       </if>
       <if test="userId != null" >
         user_id,
+      </if>
+      <if test="shareUserId != null" >
+        share_user_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="replyEvalId != null" >
+        reply_eval_id,
+      </if>
+      <if test="replyUserId != null" >
+        reply_user_id,
       </if>
       <if test="evalContent != null" >
         eval_content,
@@ -59,6 +70,18 @@
       <if test="userId != null" >
         #{userId,jdbcType=VARCHAR},
       </if>
+      <if test="shareUserId != null" >
+        #{shareUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="replyEvalId != null" >
+        #{replyEvalId,jdbcType=VARCHAR},
+      </if>
+      <if test="replyUserId != null" >
+        #{replyUserId,jdbcType=VARCHAR},
+      </if>
       <if test="evalContent != null" >
         #{evalContent,jdbcType=LONGVARCHAR},
       </if>
@@ -73,23 +96,56 @@
       <if test="userId != null" >
         user_id = #{userId,jdbcType=VARCHAR},
       </if>
+      <if test="shareUserId != null" >
+        share_user_id = #{shareUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="replyEvalId != null" >
+        reply_eval_id = #{replyEvalId,jdbcType=VARCHAR},
+      </if>
+      <if test="replyUserId != null" >
+        reply_user_id = #{replyUserId,jdbcType=VARCHAR},
+      </if>
       <if test="evalContent != null" >
         eval_content = #{evalContent,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where eval_id = #{evalId,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="edu.gmxx.share.domain.Eval" >
-    update s_eval
-    set share_id = #{shareId,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=VARCHAR},
-      eval_content = #{evalContent,jdbcType=LONGVARCHAR}
-    where eval_id = #{evalId,jdbcType=VARCHAR}
-  </update>
   <update id="updateByPrimaryKey" parameterType="edu.gmxx.share.domain.Eval" >
     update s_eval
     set share_id = #{shareId,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=VARCHAR}
+      user_id = #{userId,jdbcType=VARCHAR},
+      share_user_id = #{shareUserId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      reply_eval_id = #{replyEvalId,jdbcType=VARCHAR},
+      reply_user_id = #{replyUserId,jdbcType=VARCHAR}
     where eval_id = #{evalId,jdbcType=VARCHAR}
   </update>
+
+  <select id="getEvalByShareId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM s_eval
+    WHERE share_id = #{shareId,jdbcType=VARCHAR}
+    AND reply_eval_id IS NULL
+    ORDER BY create_time DESC
+  </select>
+
+  <select id="getEvalByReplyEval" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM s_eval
+    WHERE reply_eval_id = #{evalId,jdbcType=VARCHAR}
+    ORDER BY create_time ASC
+  </select>
+
+  <delete id="deleteByReplyEval" parameterType="java.lang.String">
+    DELETE FROM
+    s_eval
+    WHERE
+    reply_eval_id = #{replyEvalId,jdbcType=VARCHAR}
+  </delete>
 </mapper>

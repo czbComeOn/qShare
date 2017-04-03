@@ -1,5 +1,7 @@
 package edu.gmxx.share.domain;
 
+import java.util.Date;
+
 public class Eval {
     /**
      * 评论ID
@@ -17,7 +19,27 @@ public class Eval {
     private String userId;
 
     /**
-     * [{userId:'用户id',nickname:'昵称',time:评论时间,content:'内容'}]
+     * 分享者ID
+     */
+    private String shareUserId;
+
+    /**
+     * 最初评论时间
+     */
+    private Date createTime;
+
+    /**
+     * 回复评论Id
+     */
+    private String replyEvalId;
+
+    /**
+     * 回复用户ID
+     */
+    private String replyUserId;
+
+    /**
+     * 评论/回复内容
      */
     private String evalContent;
 
@@ -70,16 +92,80 @@ public class Eval {
     }
 
     /**
-     * [{userId:'用户id',nickname:'昵称',time:评论时间,content:'内容'}]
-     * @return eval_content [{userId:'用户id',nickname:'昵称',time:评论时间,content:'内容'}]
+     * 分享者ID
+     * @return share_user_id 分享者ID
+     */
+    public String getShareUserId() {
+        return shareUserId;
+    }
+
+    /**
+     * 分享者ID
+     * @param shareUserId 分享者ID
+     */
+    public void setShareUserId(String shareUserId) {
+        this.shareUserId = shareUserId == null ? null : shareUserId.trim();
+    }
+
+    /**
+     * 最初评论时间
+     * @return create_time 最初评论时间
+     */
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    /**
+     * 最初评论时间
+     * @param createTime 最初评论时间
+     */
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    /**
+     * 回复评论Id
+     * @return reply_eval_id 回复评论Id
+     */
+    public String getReplyEvalId() {
+        return replyEvalId;
+    }
+
+    /**
+     * 回复评论Id
+     * @param replyEvalId 回复评论Id
+     */
+    public void setReplyEvalId(String replyEvalId) {
+        this.replyEvalId = replyEvalId == null ? null : replyEvalId.trim();
+    }
+
+    /**
+     * 回复用户ID
+     * @return reply_user_id 回复用户ID
+     */
+    public String getReplyUserId() {
+        return replyUserId;
+    }
+
+    /**
+     * 回复用户ID
+     * @param replyUserId 回复用户ID
+     */
+    public void setReplyUserId(String replyUserId) {
+        this.replyUserId = replyUserId == null ? null : replyUserId.trim();
+    }
+
+    /**
+     * 评论/回复内容
+     * @return eval_content 评论/回复内容
      */
     public String getEvalContent() {
         return evalContent;
     }
 
     /**
-     * [{userId:'用户id',nickname:'昵称',time:评论时间,content:'内容'}]
-     * @param evalContent [{userId:'用户id',nickname:'昵称',time:评论时间,content:'内容'}]
+     * 评论/回复内容
+     * @param evalContent 评论/回复内容
      */
     public void setEvalContent(String evalContent) {
         this.evalContent = evalContent == null ? null : evalContent.trim();
