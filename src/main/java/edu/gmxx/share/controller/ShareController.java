@@ -72,6 +72,24 @@ public class ShareController {
     }
 
     /**
+     * 获取收藏的分享信息
+     * @param session
+     * @return
+     */
+    @RequestMapping("getCollectShare.do")
+    @ResponseBody
+    public Map<String, Object> getCollectShare(PageModel page, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return shareService.getCollectShare(user.getUserId(), page);
+    }
+
+    /**
      * 删除分享信息
      * @param shareId
      * @return

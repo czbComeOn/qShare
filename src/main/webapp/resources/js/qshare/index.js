@@ -599,9 +599,11 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
                                 // 如果已点赞则取消赞，否则进行点赞
                                 if($i.hasClass('fa-star')){
                                     $collect.empty();
+                                    $('#collectCount').text(parseInt($('#collectCount').text()) - 1);
                                     $collect.html('<i class="fa fa-star-o"></i>收藏');
                                 } else{
                                     $collect.empty();
+                                    $('#collectCount').text(parseInt($('#collectCount').text()) + 1)
                                     $collect.html('<i class="fa fa-star"></i>取消收藏');
                                 }
                             } else if(result.msg == 'OFFLINE'){
@@ -699,6 +701,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
                                     $panel.remove();
                                 });
                                 $messager.success('删除成功！');
+                                $('#shareCount').text(parseInt($('#shareCount').text()) - 1);
                             } else if(result.msg == 'OFFLINE'){
                                 that.showLogin();
                                 $messager.warning('用户未登录');
@@ -901,6 +904,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
                     $('.add-video').remove();
                     that.videoFile = null;
                     that.imgFiles = [];
+                    $('#shareCount').text(parseInt($('#shareCount').text()) + 1);
                     $messager.success('分享成功');
                 } else if(result.msg == 'OFFLINE'){
                     $messager.warning('用户未登录');
@@ -922,7 +926,16 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
         $.confirmDialog({
             title: '确定退出登录？',
             okCall: function(){
-                window.location.href = 'logout.do';
+                $.ajax({
+                    url: 'logout.do',
+                    dataType: 'json',
+                    success: function(){
+                        location.reload();
+                    },
+                    error: function(){
+                        location.reload();
+                    }
+                });
             }
         });
     }
@@ -1022,22 +1035,24 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
         $('.load-more').on('click', function(){
             that.loadShareInfo();
         });
-    };
+    }
 
     share.initNum = function(){
         CURRENT_PAGE_NUMBER = 1;
     }
 
     /**
-     * 加载分享信息
+     * @param shareType 分享类型
+     * @param account 当前账户
+     * @param loadType 加载类型 全部信息、收藏信息
      */
-    share.loadShareInfo = function(type, account){
+    share.loadShareInfo = function(shareType, account, loadType){
         var that = this;
 
-        if(!type){
+        if(!shareType){
             $('.show-share-type').find('li.active').each(function(){
                 if($(this).children('a') && $(this).children('a').attr('name')){
-                    type = $(this).children('a').attr('name');
+                    shareType = $(this).children('a').attr('name');
                     return false;
                 }
             });
@@ -1047,11 +1062,19 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
         $('#loadMore .in-load').show();
         $('#loadMore .load-more, #loadMore .load-finish').hide();
 
+        var url = 'share/loadShare.do';
+        var data = {'type':shareType, 'account':account, 'pageNumber': CURRENT_PAGE_NUMBER};
+
+        if(loadType == 'collect'){
+            url = 'share/getCollectShare.do';
+            data = {'pageNumber': CURRENT_PAGE_NUMBER};
+        }
+
         setTimeout(function(){
             $.ajax({
-                url: 'share/loadShare.do',
+                url: url,
                 type: 'get',
-                data: {'type':type, 'account':account, 'pageNumber': CURRENT_PAGE_NUMBER},
+                data: data,
                 dataType: 'json',
                 async: false,
                 success: function(result){
@@ -1059,14 +1082,12 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
                         // 当前选择的分享信息类型
                         $('.show-share-type').find('li').removeClass('active');
                         $('.show-share-type').children('li').each(function(){
-                            var type = $(this).children('a');
-                            if(type.attr('name') == result.shareTypeId){
+                            if($(this).children('a').attr('name') == result.shareTypeId){
                                 $(this).addClass('active');
                             }
                         });
                         $('.more-type').children('li').each(function(){
-                            var type = $(this).children('a');
-                            if(type.attr('name') == result.shareTypeId){
+                            if($(this).children('a').attr('name') == result.shareTypeId){
                                 $(this).addClass('active');
                                 $('.more-type').parent().addClass('active');
                             }

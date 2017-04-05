@@ -215,4 +215,25 @@
       </if>
     </where>
   </select>
+
+  <select id="getShareCountByUser" parameterType="java.lang.String" resultType="int">
+    SELECT count(share_id) FROM s_share WHERE del_status = 0 AND user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getCollectShare" parameterType="edu.gmxx.share.dto.ShareDTO" resultMap="BaseResultMap">
+    SELECT
+      <include refid="Base_Column_List"/>
+    FROM
+      s_share
+    WHERE share_id in(
+      SELECT
+        c.share_id
+      FROM
+        s_collect c
+      WHERE
+        c.user_id = #{share.userId,jdbcType=VARCHAR}
+    ) AND del_status = 0
+    ORDER BY create_time DESC
+    LIMIT #{page.currentCount},#{page.pageSize}
+  </select>
 </mapper>

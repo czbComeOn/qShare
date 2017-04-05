@@ -100,4 +100,26 @@ public interface IShareService {
      * @return
      */
     Map<String,Object> getReply(String evalId);
+
+    /**
+     * 获取用户分享信息数量
+     * @param user
+     * @return
+     */
+    int getShareCountByUser(User user);
+
+    /**
+     * 获取用户收藏分享数
+     * @param user
+     * @return
+     */
+    int getCollectCountByUser(User user);
+
+    /**
+     * 获取收藏分享信息
+     * @param userId
+     * @param page
+     * @return
+     */
+    Map<String,Object> getCollectShare(String userId, PageModel page);
 }

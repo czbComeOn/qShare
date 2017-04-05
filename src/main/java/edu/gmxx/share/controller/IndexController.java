@@ -1,6 +1,7 @@
 package edu.gmxx.share.controller;
 
 import edu.gmxx.share.domain.User;
+import edu.gmxx.share.service.IShareService;
 import edu.gmxx.share.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,14 +23,24 @@ import java.util.Map;
 public class IndexController {
 	@Autowired
 	private IUserService userService;
+	@Autowired
+	private IShareService shareService;
 
 	/**
 	 * 系统主页
 	 * @return
 	 */
 	@RequestMapping("index.do")
-	public String index(){
-		return "index";
+	public ModelAndView index(HttpSession session){
+		ModelAndView view = new ModelAndView("index");
+
+		User user = (User) session.getAttribute("user");
+		if(user != null){
+			view.addObject("shareCount", shareService.getShareCountByUser(user));
+			view.addObject("collectCount", shareService.getCollectCountByUser(user));
+		}
+
+		return view;
 	}
 
 	/**
@@ -58,15 +69,18 @@ public class IndexController {
 	 * @return
 	 */
 	@RequestMapping(value = "logout.do")
-	public String logout(HttpSession session){
+	@ResponseBody
+	public Map<String, Object> logout(HttpSession session){
+		Map<String, Object> result = new HashMap<String, Object>();
         User user = (User) session.getAttribute("user");
 
 		if(user != null){
 			userService.logout(user);
 			session.removeAttribute("user");
 		}
+		result.put("msg", "success");
 
-        return "redirect:index.do";
+        return result;
     }
 
 	/**

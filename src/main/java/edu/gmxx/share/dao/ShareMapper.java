@@ -31,4 +31,18 @@ public interface ShareMapper {
      * @return
      */
     int getShareCount(Share share);
+
+    /**
+     * 获取用户分享信息数量
+     * @param userId
+     * @return
+     */
+    int getShareCountByUser(String userId);
+
+    /**
+     * 获取收藏的分享信息
+     * @param shareDTO
+     * @return
+     */
+    List<Share> getCollectShare(ShareDTO shareDTO);
 }

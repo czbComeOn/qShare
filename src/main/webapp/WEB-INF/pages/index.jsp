@@ -232,12 +232,22 @@
                                 <a href="#"><i class="fa fa-link"></i> 关注</a>
                             </li>
                             <li class="list-group-item list-group-item-primary">
-                                <span class="badge" style="background:#3e97c1;">10</span>
+                                <span class="badge" id="collectCount" style="background:#3e97c1;">
+                                    <c:if test="${collectCount != null}">
+                                        ${collectCount}
+                                    </c:if>
+                                    <c:if test="${collectCount == null}">0</c:if>
+                                </span>
                                 <a href="#"><i class="fa fa-star"></i> 我的收藏</a>
                             </li>
                             <li class="list-group-item list-group-item-info">
-                                <span class="badge" style="background:#b994a5;">10</span>
-                                <a href="#"><i class="fa fa-share"></i> 我的分享</a>
+                                <span class="badge" id="shareCount" style="background:#b994a5;">
+                                    <c:if test="${shareCount != null}">
+                                        ${shareCount}
+                                    </c:if>
+                                    <c:if test="${shareCount == null}">0</c:if>
+                                </span>
+                                <a href="myHome.do?account=${user.account}"><i class="fa fa-share"></i> 我的分享</a>
                             </li>
                         </ul>
                     </div>

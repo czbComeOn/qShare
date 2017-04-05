@@ -13,7 +13,16 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         $.confirmDialog({
             title: '确定退出登录？',
             okCall: function(){
-                window.location.href = 'logout.do';
+                $.ajax({
+                    url: 'logout.do',
+                    dataType: 'json',
+                    success: function(){
+                        location.reload();
+                    },
+                    error: function(){
+                        location.reload();
+                    }
+                });
             }
         });
     }
@@ -47,7 +56,16 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
      * 显示收藏信息
      */
     home.showCollect = function(){
+        $('.myright').find('.share-info').remove();
+        share.initNum();
+        share.loadShareInfo('all', home_acc, 'collect');
 
+        $('#loadMore').show();
+        $('.load-more').unbind('click');
+        // 点击加载更多分享
+        $('.load-more').on('click', function(){
+            share.loadShareInfo('all', home_acc, 'collect');
+        });
     }
 
     /**
@@ -94,6 +112,9 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         $('.show-home').find('.home-tab a').on('click', function(){
             $('.home-tab').removeClass('active');
             $(this).parent().addClass('active');
+            if(document.body.clientWidth < 768){
+                $('.navbar-toggle').trigger('click');
+            }
             switch ($(this).attr('name')){
                 case 'collect':
                     that.showCollect();

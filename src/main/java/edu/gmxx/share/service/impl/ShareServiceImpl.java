@@ -102,17 +102,7 @@ public class ShareServiceImpl implements IShareService {
         for(Share rShare : shareList){
             for(User acc : userList){
                 if(rShare.getUserId().equals(acc.getUserId())){
-                    // 获取收藏该信息的列表
-                    List<Collect> collects = collectMapper.getCollectByShareId(rShare.getShareId());
-                    // 获取转发信息
-                    TranspondVo transpondVo = null;
-                    if(!StringUtils.isEmpty(rShare.getTranspondId())){
-                        Transpond transpond = transpondMapper.selectByPrimaryKey(rShare.getTranspondId());
-                        transpondVo = new TranspondVo(transpond, userMapper.selectByPrimaryKey(transpond.getUserId()).getNickname());
-                    }
-                    int transpondCount = transpondMapper.getTranspondCount(rShare.getShareId());
-
-                    shares.add(new ShareVO(rShare, acc, collects, transpondVo, transpondCount));
+                    shares.add(packShareVo(rShare, acc));
                 }
             }
         }
@@ -408,5 +398,83 @@ public class ShareServiceImpl implements IShareService {
         result.put("msg", "success");
 
         return result;
+    }
+
+    @Override
+    public int getShareCountByUser(User user) {
+        return user == null || StringUtils.isEmpty(user.getUserId()) ?
+                0 : shareMapper.getShareCountByUser(user.getUserId());
+    }
+
+    @Override
+    public int getCollectCountByUser(User user) {
+        return user == null || StringUtils.isEmpty(user.getUserId()) ?
+                0 : collectMapper.getCollectCountByUser(user.getUserId());
+    }
+
+    @Override
+    public Map<String, Object> getCollectShare(String userId, PageModel page) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        User user = userMapper.selectByPrimaryKey(userId);
+
+        // 用户id
+        Share share = new Share();
+        share.setUserId(userId);
+
+        // 分页信息
+        page.setTotalRecord(collectMapper.getCollectCountByUser(userId));
+        page.setPageSize(10);
+
+        if(page.getPageNumber() > page.getTotalPages()){
+            page.setPageNumber(page.getTotalPages());
+        }
+
+        ShareDTO shareDTO = new ShareDTO();
+        shareDTO.setShare(share);
+        shareDTO.setPage(page);
+
+        List<Share> shareList = shareMapper.getCollectShare(shareDTO);
+        List<ShareVO> shares = new ArrayList<ShareVO>();
+
+        List<User> userList = userMapper.getUserIdByCollectShare(shareDTO);
+        // 3.返回分享信息结果
+        for(Share rShare : shareList){
+            for(User acc : userList){
+                if(rShare.getUserId().equals(acc.getUserId())){
+                    shares.add(packShareVo(rShare, acc));
+                }
+            }
+        }
+
+        result.put("userInfo", user);
+        result.put("page", page);
+        result.put("shareTypeId", "all");
+        result.put("shares", shares);
+        result.put("msg", "success");
+
+        return result;
+    }
+
+    /**
+     * 包装分享信息
+     * @param share
+     * @param user
+     * @return
+     */
+    private ShareVO packShareVo(Share share, User user){
+        if(share.getUserId().equals(user.getUserId())){
+            // 获取收藏该信息的列表
+            List<Collect> collects = collectMapper.getCollectByShareId(share.getShareId());
+            // 获取转发信息
+            TranspondVo transpondVo = null;
+            if(!StringUtils.isEmpty(share.getTranspondId())){
+                Transpond transpond = transpondMapper.selectByPrimaryKey(share.getTranspondId());
+                transpondVo = new TranspondVo(transpond, userMapper.selectByPrimaryKey(transpond.getUserId()).getNickname());
+            }
+            int transpondCount = transpondMapper.getTranspondCount(share.getShareId());
+
+            return new ShareVO(share, user, collects, transpondVo, transpondCount);
+        }
+        return null;
     }
 }

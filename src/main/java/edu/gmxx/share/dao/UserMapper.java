@@ -83,4 +83,11 @@ public interface UserMapper {
      * @return
      */
     User getUserByAccount(String account);
+
+    /**
+     * 根据收藏信息获取用户信息
+     * @param shareDto
+     * @return
+     */
+    List<User> getUserIdByCollectShare(ShareDTO shareDto);
 }

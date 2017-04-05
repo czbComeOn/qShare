@@ -85,4 +85,19 @@
     FROM s_collect
     WHERE share_id = #{shareId,jdbcType=VARCHAR}
   </select>
+
+  <select id="getCollectCountByUser" parameterType="java.lang.String" resultType="int">
+    SELECT
+      count(s.share_id)
+    FROM
+      s_share s
+    WHERE s.share_id IN(
+      SELECT
+        c.share_id
+      FROM
+        s_collect c
+      WHERE c.user_id = #{userId,jdbcType=VARCHAR}
+    )
+    AND s.del_status = 0
+  </select>
 </mapper>

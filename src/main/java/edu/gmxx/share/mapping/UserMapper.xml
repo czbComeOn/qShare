@@ -359,20 +359,40 @@
 
   <select id="getUserIdByType" parameterType="edu.gmxx.share.dto.ShareDTO" resultMap="BaseResultMap">
     SELECT * FROM s_user WHERE user_id IN (
-      SELECT t.user_id FROM(
-        SELECT DISTINCT v.user_id FROM (
-          SELECT s.user_id
-          FROM s_share s
-          <where>
-            s.del_status = 0
-            <if test="share.shareTypeId != 'all'">
-              AND s.share_type_id = #{share.shareTypeId}
-            </if>
-          </where>
-          ORDER BY s.create_time DESC
-          LIMIT #{page.currentCount},#{page.pageSize}
-        ) v
-      ) AS t
+      SELECT DISTINCT v.user_id FROM (
+        SELECT s.user_id
+        FROM s_share s
+        <where>
+          s.del_status = 0
+          <if test="share.shareTypeId != 'all'">
+            AND s.share_type_id = #{share.shareTypeId}
+          </if>
+          <if test="share.userId != null">
+            AND user_id = #{share.userId,jdbcType=VARCHAR}
+          </if>
+        </where>
+        ORDER BY s.create_time DESC
+        LIMIT #{page.currentCount},#{page.pageSize}
+      ) v
+    )
+  </select>
+
+  <select id="getUserIdByCollectShare" parameterType="edu.gmxx.share.dto.ShareDTO" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_user WHERE user_id IN (
+      SELECT DISTINCT
+      v.user_id FROM (
+        SELECT sh.user_id FROM s_share sh
+        WHERE share_id IN (
+          SELECT s.share_id FROM s_share s
+          WHERE s.share_id IN (
+            SELECT c.share_id FROM s_collect c
+            WHERE c.user_id = #{share.userId,jdbcType=VARCHAR}
+          ) AND s.del_status = 0
+        ) ORDER BY sh.create_time DESC
+        LIMIT #{page.currentCount},#{page.pageSize}
+      ) v
     )
   </select>
 </mapper>

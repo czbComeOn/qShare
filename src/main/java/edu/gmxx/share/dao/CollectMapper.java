@@ -30,4 +30,11 @@ public interface CollectMapper {
      * @return
      */
     List<Collect> getCollectByShareId(String shareId);
+
+    /**
+     * 获取用户收藏分享数
+     * @param userId
+     * @return
+     */
+    int getCollectCountByUser(String userId);
 }
