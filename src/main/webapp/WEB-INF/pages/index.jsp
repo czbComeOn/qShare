@@ -31,10 +31,11 @@
 <div class="qshare-container snowbg">
     <!-- start login -->
     <div class="login-container">
+        <div style="background-color:#000;width:100%;height:100%;opacity:.6;"></div>
         <div class="login-box-show">
             <!-- 登录 -->
             <div class="login-box-all" style="width: 960px;">
-                <div class="login-box panel fl" style="width: 300px;">
+                <div class="login-box panel fl" style="width: 300px;background:#fff;">
                     <div class="panel-heading">
                         <div class="fl" style="font-family: monospace; font-weight: bold; color: rgba(67,124,173,.63);">轻.分享 - 登录</div>
                         <a class="fr close-login" id="closeLogin" href="javascript:void(0);" style="color: rgba(67,124,173,.63);" title="关闭"><i class="fa fa-remove"></i></a>
