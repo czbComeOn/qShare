@@ -9,7 +9,7 @@
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="reply_eval_id" property="replyEvalId" jdbcType="VARCHAR" />
     <result column="reply_user_id" property="replyUserId" jdbcType="VARCHAR" />
-    <result column="eval_content" property="evalContent" jdbcType="LONGVARCHAR" />
+    <result column="eval_content" property="evalContent" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     eval_id, share_id, user_id, share_user_id, create_time, reply_eval_id, reply_user_id, eval_content
@@ -30,7 +30,7 @@
       reply_user_id, eval_content)
     values (#{evalId,jdbcType=VARCHAR}, #{shareId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
       #{shareUserId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{replyEvalId,jdbcType=VARCHAR},
-      #{replyUserId,jdbcType=VARCHAR}, #{evalContent,jdbcType=LONGVARCHAR})
+      #{replyUserId,jdbcType=VARCHAR}, #{evalContent,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="edu.gmxx.share.domain.Eval" >
     insert into s_eval
@@ -83,7 +83,7 @@
         #{replyUserId,jdbcType=VARCHAR},
       </if>
       <if test="evalContent != null" >
-        #{evalContent,jdbcType=LONGVARCHAR},
+        #{evalContent,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -109,7 +109,7 @@
         reply_user_id = #{replyUserId,jdbcType=VARCHAR},
       </if>
       <if test="evalContent != null" >
-        eval_content = #{evalContent,jdbcType=LONGVARCHAR},
+        eval_content = #{evalContent,jdbcType=VARCHAR},
       </if>
     </set>
     where eval_id = #{evalId,jdbcType=VARCHAR}
@@ -131,7 +131,7 @@
     FROM s_eval
     WHERE share_id = #{shareId,jdbcType=VARCHAR}
     AND reply_eval_id IS NULL
-    ORDER BY create_time DESC
+    ORDER BY create_time ASC
   </select>
 
   <select id="getEvalByReplyEval" parameterType="java.lang.String" resultMap="BaseResultMap">

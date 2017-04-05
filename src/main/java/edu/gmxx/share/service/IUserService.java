@@ -34,7 +34,20 @@ public interface IUserService {
 
     /**
      * 修改用户信息
-     * @param user
+     * @param currUser
      */
+    Map<String, Object> updateUserData(User currUser, User userData);
+
     int updateUserById(User user);
+
+    /**
+     * 修改密码
+     * @param user
+     * @param account
+     * @param oldPassword
+     * @param newPassword
+     * @param againPassword
+     * @return
+     */
+    Map<String,Object> updatePassword(User user, String account, String oldPassword, String newPassword, String againPassword);
 }

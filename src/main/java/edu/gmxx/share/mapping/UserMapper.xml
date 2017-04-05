@@ -15,7 +15,7 @@
     <result column="hobby" property="hobby" jdbcType="VARCHAR" />
     <result column="portrait_path" property="portraitPath" jdbcType="VARCHAR" />
     <result column="edu_info" property="eduInfo" jdbcType="VARCHAR" />
-    <result column="graduateInstitutions" property="graduateinstitutions" jdbcType="VARCHAR" />
+    <result column="graduate_institutions" property="graduateInstitutions" jdbcType="VARCHAR" />
     <result column="occupation" property="occupation" jdbcType="VARCHAR" />
     <result column="blood_type" property="bloodType" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -30,7 +30,7 @@
   </resultMap>
   <sql id="Base_Column_List" >
     user_id, account, password, nickname, name, birthday, phone, email, region, constellation, 
-    hobby, portrait_path, edu_info, graduateInstitutions, occupation, blood_type, create_time, 
+    hobby, portrait_path, edu_info, graduate_institutions, occupation, blood_type, create_time,
     signature, notes, status, user_type, report_num, pwd_error_count, last_time, unlock_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -48,7 +48,7 @@
       nickname, name, birthday, 
       phone, email, region, 
       constellation, hobby, portrait_path, 
-      edu_info, graduateInstitutions, occupation, 
+      edu_info, graduate_institutions, occupation,
       blood_type, create_time, signature, 
       notes, status, user_type, 
       report_num, pwd_error_count, last_time, 
@@ -57,7 +57,7 @@
       #{nickname,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{birthday,jdbcType=TIMESTAMP}, 
       #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, 
       #{constellation,jdbcType=VARCHAR}, #{hobby,jdbcType=VARCHAR}, #{portraitPath,jdbcType=VARCHAR}, 
-      #{eduInfo,jdbcType=VARCHAR}, #{graduateinstitutions,jdbcType=VARCHAR}, #{occupation,jdbcType=VARCHAR}, 
+      #{eduInfo,jdbcType=VARCHAR}, #{graduateInstitutions,jdbcType=VARCHAR}, #{occupation,jdbcType=VARCHAR},
       #{bloodType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{signature,jdbcType=VARCHAR}, 
       #{notes,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{userType,jdbcType=VARCHAR}, 
       #{reportNum,jdbcType=INTEGER}, #{pwdErrorCount,jdbcType=INTEGER}, #{lastTime,jdbcType=TIMESTAMP}, 
@@ -105,8 +105,8 @@
       <if test="eduInfo != null" >
         edu_info,
       </if>
-      <if test="graduateinstitutions != null" >
-        graduateInstitutions,
+      <if test="graduateInstitutions != null" >
+        graduate_institutions,
       </if>
       <if test="occupation != null" >
         occupation,
@@ -182,8 +182,8 @@
       <if test="eduInfo != null" >
         #{eduInfo,jdbcType=VARCHAR},
       </if>
-      <if test="graduateinstitutions != null" >
-        #{graduateinstitutions,jdbcType=VARCHAR},
+      <if test="graduateInstitutions != null" >
+        #{graduateInstitutions,jdbcType=VARCHAR},
       </if>
       <if test="occupation != null" >
         #{occupation,jdbcType=VARCHAR},
@@ -259,8 +259,8 @@
       <if test="eduInfo != null" >
         edu_info = #{eduInfo,jdbcType=VARCHAR},
       </if>
-      <if test="graduateinstitutions != null" >
-        graduateInstitutions = #{graduateinstitutions,jdbcType=VARCHAR},
+      <if test="graduateInstitutions != null" >
+        graduate_institutions = #{graduateInstitutions,jdbcType=VARCHAR},
       </if>
       <if test="occupation != null" >
         occupation = #{occupation,jdbcType=VARCHAR},
@@ -312,7 +312,7 @@
       hobby = #{hobby,jdbcType=VARCHAR},
       portrait_path = #{portraitPath,jdbcType=VARCHAR},
       edu_info = #{eduInfo,jdbcType=VARCHAR},
-      graduateInstitutions = #{graduateinstitutions,jdbcType=VARCHAR},
+      graduate_institutions = #{graduateInstitutions,jdbcType=VARCHAR},
       occupation = #{occupation,jdbcType=VARCHAR},
       blood_type = #{bloodType,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -347,6 +347,14 @@
     FROM s_user
     WHERE
     account = #{account,jdbcType=VARCHAR} OR email = #{account,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getUserByAccount" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_user
+    WHERE
+    account = #{account,jdbcType=VARCHAR}
   </select>
 
   <select id="getUserIdByType" parameterType="edu.gmxx.share.dto.ShareDTO" resultMap="BaseResultMap">

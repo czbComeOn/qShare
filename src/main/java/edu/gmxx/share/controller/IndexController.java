@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -97,4 +98,19 @@ public class IndexController {
 
 		return result;
     }
+
+	/**
+	 * 个人主页
+	 * @param account
+	 * @return
+	 */
+	@RequestMapping(value="myHome.do")
+	public ModelAndView index(String account){
+		ModelAndView view = new ModelAndView("user/myHome");
+
+        User acc = userService.getUserByAccount(account);
+        view.addObject("acc", acc);
+
+		return view;
+	}
 }

@@ -1,5 +1,6 @@
 package edu.gmxx.share.domain;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
@@ -33,6 +34,7 @@ public class User {
     /**
      * 出生日期
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthday;
 
     /**
@@ -73,7 +75,7 @@ public class User {
     /**
      * 毕业院校
      */
-    private String graduateinstitutions;
+    private String graduateInstitutions;
 
     /**
      * 职业信息
@@ -342,16 +344,16 @@ public class User {
      * 毕业院校
      * @return graduateInstitutions 毕业院校
      */
-    public String getGraduateinstitutions() {
-        return graduateinstitutions;
+    public String getGraduateInstitutions() {
+        return graduateInstitutions;
     }
 
     /**
      * 毕业院校
-     * @param graduateinstitutions 毕业院校
+     * @param graduateInstitutions 毕业院校
      */
-    public void setGraduateinstitutions(String graduateinstitutions) {
-        this.graduateinstitutions = graduateinstitutions == null ? null : graduateinstitutions.trim();
+    public void setGraduateInstitutions(String graduateInstitutions) {
+        this.graduateInstitutions = graduateInstitutions == null ? null : graduateInstitutions.trim();
     }
 
     /**

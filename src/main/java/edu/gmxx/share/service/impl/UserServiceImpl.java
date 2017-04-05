@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 登录服务
+ * 用户信息操作服务
  *
  * @author 3138907243 陈志斌
  */
@@ -138,7 +138,82 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public Map<String, Object> updateUserData(User currUser, User userData) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        if(StringUtils.isEmpty(userData.getAccount())){
+            result.put("msg", "账户不存在，请刷新后重试！");
+            return result;
+        }
+
+        if(!currUser.getAccount().equals(userData.getAccount())){
+            result.put("msg", "用户信息操作异常，请刷新后重试！");
+            return result;
+        }
+
+        userData.setUserId(currUser.getUserId());
+        int count = userMapper.updateByPrimaryKeySelective(userData);
+        if(count == 1){
+            result.put("msg", "success");
+            result.put("newData", userMapper.getUserByAccount(userData.getAccount()));
+        } else{
+            result.put("msg", "用户信息修改失败！");
+        }
+        return result;
+    }
+
+    @Override
     public int updateUserById(User user) {
         return userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Override
+    public Map<String, Object> updatePassword(User user, String account, String oldPassword
+            , String newPassword, String againPassword) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        if(StringUtils.isEmpty(account)){
+            result.put("msg", "账户不存在，请刷新后重试！");
+            return result;
+        }
+
+        if(!user.getAccount().equals(account)){
+            result.put("msg", "用户信息操作异常，请刷新后重试！");
+            return result;
+        }
+
+        if(StringUtils.isEmpty(oldPassword) || StringUtils.isEmpty(newPassword)
+                || StringUtils.isEmpty(againPassword)){
+            result.put("msg", "密码不能为空！");
+            return result;
+        }
+
+        User acc = userMapper.getUserByAccount(account);
+
+        // 1.验证密码
+        if(!acc.getPassword().equals(oldPassword)){
+            result.put("msg", "原密码输入有误！");
+            return result;
+        }
+        if(acc.getPassword().equals(newPassword)){
+            result.put("msg", "新密码不能与原密码相同！");
+            return result;
+        }
+        if(!newPassword.equals(againPassword)){
+            result.put("msg", "两次输入的密码不相同！");
+            return result;
+        }
+
+        // 2.更新密码
+        acc.setUserId(user.getUserId());
+        acc.setPassword(newPassword);
+        int count = userMapper.updateByPrimaryKeySelective(acc);
+        if(count == 1){
+            result.put("msg", "success");
+            result.put("newData", acc);
+        } else{
+            result.put("msg", "密码修改失败！");
+        }
+        return result;
     }
 }
