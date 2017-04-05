@@ -1,0 +1,31 @@
+.my-dialog .modal-header > .dlg-btn{
+    float: right;
+    margin-left: 10px;
+    font-size: 20px;
+
+    -webkit-transition: all .3s ease-out;
+    -moz-transition: all .3s ease-out;
+    -ms-transition: all .3s ease-out;
+    -o-transition: all .3s ease-out;
+    transition: all .3s ease-out;
+}
+.my-dialog .modal-header{color: #0ca7da;}
+.my-dialog .modal-header:hover{cursor: move;}
+.my-dialog .modal-header > .dlg-btn:hover{
+    font-size: 24px;
+    cursor: pointer;
+    color: #c1a3a3;
+}
+.modal-dialog-back{
+    position: fixed;
+    top: 0;
+    z-index: 99;
+
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: .6;
+}
+@media screen and (max-width: 767px){
+    .my-dialog{margin-top:50px;}
+}
