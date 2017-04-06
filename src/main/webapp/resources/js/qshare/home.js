@@ -139,6 +139,8 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         setTimeout(function(){
             that.showShare();
         }, 1000);
+
+        share.toTop();
     }
 
     var ChangeDataPanel = function(userData, target){

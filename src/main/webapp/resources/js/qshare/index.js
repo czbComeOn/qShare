@@ -1131,6 +1131,25 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
     }
 
     /**
+     * 置顶事件
+     */
+    share.toTop = function(){
+        // 窗体滚动事件
+        $(window).scroll(function(){
+            if($(window).scrollTop() > 300){
+                $('#toTop').show();
+            }
+        });
+
+        // 置顶
+        $('#toTop').on('click', function(){
+            $('html,body').animate({scrollTop: 0}, 'normal', 'swing', function(){
+                $('#toTop').hide();
+            });
+        });
+    }
+
+    /**
      * 初始化
      * @return {[type]} [description]
      */
@@ -1138,6 +1157,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
         var that = this;
         this.validator();
         this.initEvent();
+        this.toTop();
 
         login.init();
 

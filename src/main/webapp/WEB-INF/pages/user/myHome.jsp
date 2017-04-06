@@ -32,6 +32,9 @@
 </head>
 <body>
 <div class="qshare-container snowbg">
+    <div id="toTop" class="to-top">
+        <img src="${pageContext.request.contextPath}/resources/img/top.png" alt="">
+    </div>
     <!-- start login -->
     <div class="login-container">
         <div style="background-color:#000;width:100%;height:100%;opacity:.6;"></div>
