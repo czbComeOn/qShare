@@ -32,7 +32,7 @@
 </head>
 <body>
 <div class="qshare-container snowbg">
-    <div id="toTop" class="to-top">
+    <div id="toTop" class="to-top" title="返回顶部">
         <img src="${pageContext.request.contextPath}/resources/img/top.png" alt="">
     </div>
     <!-- start login -->
@@ -133,18 +133,21 @@
         </div>
         <div class="collapse navbar-collapse navbar-responsive-collapse">
             <ul class="nav navbar-nav show-home">
-                <li><a href="index.do" name="index">主页</a></li>
+                <li><a href="index.do" name="index"><i class="fa fa-home"></i> 主页</a></li>
                 <c:if test="${user != null && acc.userId == user.userId}">
-                    <li class="active home-tab"><a href="javascript:void(0);" name="all">我的分享</a></li>
-                    <li class="home-tab"><a href="javascript:void(0);" name="collect">我的收藏</a></li>
-                    <li class="home-tab"><a href="javascript:void(0);" name="friend">好友列表</a></li>
-                    <li class="home-tab"><a href="javascript:void(0);" name="attention">关注好友</a></li>
+                    <li class="active home-tab"><a href="javascript:void(0);" name="all"><i class="fa fa-share-alt"></i> 我的分享</a></li>
+                    <li class="home-tab"><a href="javascript:void(0);" name="collect"><i class="fa fa-star"></i> 我的收藏</a></li>
+                    <li class="home-tab"><a href="javascript:void(0);" name="friend"><i class="fa fa-heart"></i> 好友列表</a></li>
+                    <li class="home-tab"><a href="javascript:void(0);" name="attention"><i class="fa fa-link"></i> 关注好友</a></li>
                 </c:if>
                 <c:if test="${user == null || acc.userId != user.userId}">
-                    <li class="active"><a href="javascript:void(0);" name="all">TA的分享</a></li>
+                    <li class="active"><a href="javascript:void(0);" name="all"><i class="fa fa-share-alt"></i> TA的分享</a></li>
                 </c:if>
                 <c:if test="${user == null}">
                     <li><a id="login" href="javascript:void(0);" name="login">立即登录</a></li>
+                </c:if>
+                <c:if test="${user != null && acc.userId != user.userId}">
+                    <li><a href="myHome.do?account=${user.account}"><i class="fa fa-home">&nbsp;</i>我的主页</a></li>
                 </c:if>
                 <c:if test="${user != null}">
                     <li class="dropdown">
@@ -159,7 +162,7 @@
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="myHome.do?account=${user.account}"><i class="fa fa-home">&nbsp;</i>个人主页</a></li>
+                            <li><a href="myHome.do?account=${user.account}"><i class="fa fa-home">&nbsp;</i>我的主页</a></li>
                             <li><a id="changePwd" href="javascript:void(0);"><i class="fa fa-edit">&nbsp;</i>修改密码</a></li>
                             <li><a id="logout" href="javascript:void(0);"><i class="fa fa-sign-out">&nbsp;</i>退出登录</a></li>
                         </ul>
@@ -268,12 +271,21 @@
                                     <li class="list-group-item list-group-item-info">
                                         <div>星座：</div>
                                         <div>
-                                            <c:if test="${acc.constellation == null || acc.constellation == ''}">
-                                                未知
-                                            </c:if>
-                                            <c:if test="${acc.constellation != null && acc.constellation != ''}">
-                                                ${acc.constellation}
-                                            </c:if>
+                                            <c:choose>
+                                                <c:when test="${acc.constellation == 1}">水瓶座</c:when>
+                                                <c:when test="${acc.constellation == 2}">双鱼座</c:when>
+                                                <c:when test="${acc.constellation == 3}">白羊座</c:when>
+                                                <c:when test="${acc.constellation == 4}">金牛座</c:when>
+                                                <c:when test="${acc.constellation == 5}">双子座</c:when>
+                                                <c:when test="${acc.constellation == 6}">巨蟹座</c:when>
+                                                <c:when test="${acc.constellation == 7}">狮子座</c:when>
+                                                <c:when test="${acc.constellation == 8}">处女座</c:when>
+                                                <c:when test="${acc.constellation == 9}">天秤座</c:when>
+                                                <c:when test="${acc.constellation == 10}">天蝎座</c:when>
+                                                <c:when test="${acc.constellation == 11}">射手座</c:when>
+                                                <c:when test="${acc.constellation == 12}">摩羯座</c:when>
+                                                <c:otherwise>未知</c:otherwise>
+                                            </c:choose>
                                         </div>
                                     </li>
                                     <li class="list-group-item list-group-item-warning">
@@ -329,8 +341,13 @@
                             <c:if test="${user != null}">
                                 <div class="panel-footer">
                                     <c:if test="${acc.userId != user.userId}">
-                                        <button class="btn btn-info" style="width:49%;">关注TA</button>
-                                        <button class="btn btn-info" style="width:49%;">加为好友</button>
+                                        <c:if test="${isAttention == true}">
+                                            <button class="btn btn-info" id="addAttention" style="width:49%;">取消关注</button>
+                                        </c:if>
+                                        <c:if test="${isAttention == false}">
+                                            <button class="btn btn-info" id="addAttention" style="width:49%;">关注TA</button>
+                                        </c:if>
+                                        <button class="btn btn-info" id="addFriend" style="width:49%;">加为好友</button>
                                     </c:if>
                                     <c:if test="${acc.userId == user.userId}">
                                         <button class="btn btn-info" id="changeData" style="width:100%;">

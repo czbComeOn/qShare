@@ -2,6 +2,7 @@ package edu.gmxx.share.dao;
 
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.dto.ShareDTO;
+import edu.gmxx.share.dto.UserDTO;
 
 import java.util.List;
 
@@ -90,4 +91,32 @@ public interface UserMapper {
      * @return
      */
     List<User> getUserIdByCollectShare(ShareDTO shareDto);
+
+    /**
+     * 根据账号模糊查找用户
+     * @param userDto
+     * @return
+     */
+    List<User> searchAccount(UserDTO userDto);
+
+    /**
+     * 根据昵称模糊查找用户
+     * @param userDto
+     * @return
+     */
+    List<User> searchNickname(UserDTO userDto);
+
+    /**
+     * 获取账号查询结果记录数
+     * @param user
+     * @return
+     */
+    int searchAccountCount(User user);
+
+    /**
+     * 获取昵称查询结果记录数
+     * @param user
+     * @return
+     */
+    int searchNicknameCount(User user);
 }

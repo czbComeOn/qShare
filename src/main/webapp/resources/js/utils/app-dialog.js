@@ -222,7 +222,7 @@ define(['jquery', 'bootstrap', 'jquery/jquery-ui'], function($){
         $('<div class="modal-dialog-back"></div>').appendTo($('body'));
 
         $confirmDialog.find('.modal-dialog').css({'width': option.width, 'margin': '100px auto'});
-        $confirmDialog.find('.modal-title').text(option.title);
+        $confirmDialog.find('.modal-title').html(option.title);
         $confirmDialog.find('#okBtn').text(option.okBtnText).on('click', function(){
             option.okCall();
             confirmOkCall();

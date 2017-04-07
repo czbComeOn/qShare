@@ -103,17 +103,17 @@ public interface IShareService {
 
     /**
      * 获取用户分享信息数量
-     * @param user
+     * @param userId
      * @return
      */
-    int getShareCountByUser(User user);
+    int getShareCountByUser(String userId);
 
     /**
      * 获取用户收藏分享数
-     * @param user
+     * @param userId
      * @return
      */
-    int getCollectCountByUser(User user);
+    int getCollectCountByUser(String userId);
 
     /**
      * 获取收藏分享信息

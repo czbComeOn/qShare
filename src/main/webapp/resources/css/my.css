@@ -1,11 +1,11 @@
 *{margin:0;	padding:0;}
 body{
 	width: 100%;
-	background: -ms-linear-gradient(top, #11c1d8,  #dfeff5);   /* IE 10 */
-	background:-webkit-linear-gradient(#11c1d8, #dfeff5); /* google */
-	background:-moz-linear-gradient(top,#11c1d8,#dfeff5); /*火狐*/
-	background: -webkit-linear-gradient(top, #11c1d8, #dfeff5);   /*Safari5.1 Chrome 10+*/
-	background: -o-linear-gradient(top, #11c1d8, #dfeff5);  /*Opera 11.10+*/
+	background: -ms-linear-gradient(top, #11c1d8,  #a0e3ec);   /* IE 10 */
+	background:-webkit-linear-gradient(#11c1d8, #a0e3ec); /* google */
+	background:-moz-linear-gradient(top,#11c1d8,#a0e3ec); /*火狐*/
+	background: -webkit-linear-gradient(top, #11c1d8, #a0e3ec);   /*Safari5.1 Chrome 10+*/
+	background: -o-linear-gradient(top, #11c1d8, #a0e3ec);  /*Opera 11.10+*/
 }
 /*------公共样式--------*/
 .list-group-item > a{text-decoration: none;}
@@ -179,6 +179,13 @@ em{font-style: normal;}
 .show-eval-box > li, .reply-box li{margin-top: 5px;}
 .show-eval-box > li > div, .reply-box > ul > li > div{display: inline-block;}
 .show-eval-box .eval-portrait, .reply-box .eval-sub-portrait{position: absolute;}
+.show-eval-box .eval-portrait > img, .reply-box .eval-sub-portrait > img{
+    width:40px;
+    height:40px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+}
 .show-eval-box .eval-content, .reply-box .eval-sub-content{margin-left: 45px; width: calc(100% - 45px);}
 .show-eval-box .eval-tool > a, .reply-box .reply-tool > a{
     margin-left: 10px;
@@ -322,7 +329,13 @@ em{font-style: normal;}
     border: 1px solid #c3b3b3;
     border-radius: 3px;
 }
-.pull-left > img{width: 40px;height: 40px;}
+.pull-left > img{
+    width: 40px;
+    height: 40px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+}
 /*-------加载数据---------*/
 .load-more{cursor: pointer;}
 
@@ -390,10 +403,9 @@ em{font-style: normal;}
 /*--------版权声明--------*/
 .qshare-footer{
 	width: 100%;
-	height: 50px;
-	line-height: 50px;
 	background: #fff;
 	text-align: center;
+    padding: 15px;
 }
 
 /*---------上传进度---------*/

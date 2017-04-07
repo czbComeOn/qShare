@@ -1,7 +1,9 @@
 package edu.gmxx.share.controller;
 
+import edu.gmxx.share.domain.FriendGroup;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.service.IUserService;
+import edu.gmxx.share.utils.PageModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -99,5 +101,226 @@ public class UserController {
             session.setAttribute("user", newData);
         }
         return result;
+    }
+
+    /**
+     * 获取分组信息
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="getGroup.do",method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> getGroup(HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return userService.getGroup(user);
+    }
+
+    /**
+     * 获取分组下的好友信息
+     * @param group
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="getFriend.do",method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> getFriend(FriendGroup group, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return userService.getFriend(user, group);
+    }
+
+    /**
+     * 添加好友
+     * @param account
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="addFriend.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> addFriend(String account, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return userService.addFriend(user, account);
+    }
+
+    /**
+     * 添加关注
+     * @param account
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="addAttention.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> addAttention(String account, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return userService.addAttention(user, account);
+    }
+
+    /**
+     * 取消关注
+     * @param account
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="deleteAttention.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> deleteAttention(String account, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return userService.deleteAttention(user, account);
+    }
+
+    /**
+     * 删除好友
+     * @param friendId
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="deleteFriend.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> deleteFriend(String friendId, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return userService.deleteFriendById(friendId);
+    }
+
+    /**
+     * 创建新分组
+     * @param group
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="createGroup.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> createGroup(FriendGroup group, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+        group.setUserId(user.getUserId());
+
+        return userService.createGroup(group);
+    }
+
+    /**
+     * 删除分组，分组内的好友将移至默认分组内
+     * @param groupId
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="deleteGroup.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> deleteGroup(FriendGroup group, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+        group.setUserId(user.getUserId());
+
+        return userService.deleteFriendGroup(group);
+    }
+
+    /**
+     * 修改分组信息
+     * @param group
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "updateGroup.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> updateGroup(FriendGroup group, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return userService.updateGroup(group);
+    }
+
+    /**
+     * 根据账号模糊查找用户
+     * @param account
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="searchAccount.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> searchAccount(String account, PageModel page, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return userService.searchAccount(user, account, page);
+    }
+
+    /**
+     * 根据昵称模糊查找用户
+     * @param nickname
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="searchNickname.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> searchNickname(String nickname, PageModel page, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return userService.searchNickname(user, nickname, page);
     }
 }

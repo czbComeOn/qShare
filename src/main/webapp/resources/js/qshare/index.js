@@ -212,7 +212,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
         var $evalSubContent = $evalSubItem.find('.eval-sub-content');
         var portraitPath = replyInfo.evalUser.portraitPath ? replyInfo.evalUser.portraitPath
                 : 'resources/img/header/portrait.jpg';
-        $('<img style="width:40px;height:40px;"/>').attr('src',portraitPath).appendTo($evalSubPortrait);
+        $('<img/>').attr('src',portraitPath).appendTo($evalSubPortrait);
         $('<a href="myHome.do?account=' + replyInfo.evalUser.account + '" style="text-decoration: none;"></a>')
             .text(replyInfo.evalUser.nickname).appendTo($evalSubContent);
         $evalSubContent.append('&nbsp;回复&nbsp;');
@@ -275,7 +275,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
 
         var portraitPath = evalInfo.evalUser.portraitPath ? evalInfo.evalUser.portraitPath
             : 'resources/img/header/portrait.jpg';
-        $('<img style="width:40px;height:40px;"/>').attr({'src': portraitPath})
+        $('<img/>').attr({'src': portraitPath})
             .appendTo($evalItem.find('.eval-portrait'));
         var $evalContent = $evalItem.find('.eval-content');
         // 评论者昵称
@@ -1136,9 +1136,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
     share.toTop = function(){
         // 窗体滚动事件
         $(window).scroll(function(){
-            if($(window).scrollTop() > 300){
-                $('#toTop').show();
-            }
+            if($(window).scrollTop() > 300){$('#toTop').show();} else{$('#toTop').hide();}
         });
 
         // 置顶

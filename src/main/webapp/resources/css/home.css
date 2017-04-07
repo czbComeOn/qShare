@@ -1,3 +1,58 @@
 /*个人资料*/
 .user-info li > div{display:inline-block;}
 .user-info li > div:first-child{width: 70px;}
+
+/*好友分组信息*/
+.friend-group-item{
+    padding: 5px;
+}
+.add-friend{cursor: pointer;}
+.group-name{
+    display: block;
+    cursor: pointer;
+}
+.group-tag{
+    margin-right: 10px;
+    height: 20px;
+    line-height: 20px;
+}
+/*好友信息*/
+.friend-item{padding: 5px 10px;}
+.friend-item-portrait > img, .search-user-portrait{
+    width: 40px;
+    height:40px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+}
+@media screen and (max-width: 767px) {
+    .friend-item-portrait > img{width: 30px;height:30px;}
+}
+.friend-item .friend-info{
+    font-weight: bold;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #0ca7da;
+}
+.friend-item .friend-info:hover{color: #eb7350;}
+/*搜索用户*/
+.search-result-box{
+    margin-top:20px;
+    border-top:1px solid #ccc;
+    max-height:200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.search-user-result{
+    margin-top: 5px;
+}
+.add-user{
+    text-align: center;
+    cursor:pointer;
+    color:#c5b886;
+    height:40px;
+    width:40px;
+    line-height:40px;
+}

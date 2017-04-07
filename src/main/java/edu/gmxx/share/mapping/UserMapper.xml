@@ -395,4 +395,44 @@
       ) v
     )
   </select>
+
+  <select id="searchAccount" parameterType="edu.gmxx.share.dto.UserDTO" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_user
+    WHERE user_id NOT IN(
+      SELECT DISTINCT(buser_id) user_id FROM s_friend
+      WHERE is_friend = 1 AND auser_id = #{user.userId,jdbcType=VARCHAR}
+    ) AND account LIKE '%${user.account}%'
+    ORDER BY create_time
+    LIMIT #{page.currentCount},#{page.pageSize}
+  </select>
+
+  <select id="searchNickname" parameterType="edu.gmxx.share.dto.UserDTO" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_user
+    WHERE user_id NOT IN(
+      SELECT DISTINCT(buser_id) user_id FROM s_friend
+      WHERE is_friend = 1 AND auser_id = #{user.userId,jdbcType=VARCHAR}
+    ) AND nickname LIKE '%${user.nickname}%'
+    ORDER BY create_time
+    LIMIT #{page.currentCount},#{page.pageSize}
+  </select>
+
+  <select id="searchAccountCount" parameterType="edu.gmxx.share.domain.User" resultType="int">
+    SELECT COUNT(user_id) FROM s_user
+    WHERE user_id NOT IN(
+    SELECT DISTINCT(buser_id) user_id FROM s_friend
+    WHERE is_friend = 1 AND auser_id = #{userId,jdbcType=VARCHAR}
+    ) AND account LIKE '%${account}%'
+  </select>
+
+  <select id="searchNicknameCount" parameterType="edu.gmxx.share.domain.User" resultType="int">
+    SELECT COUNT(user_id) FROM s_user
+    WHERE user_id NOT IN(
+    SELECT DISTINCT(buser_id) user_id FROM s_friend
+    WHERE is_friend = 1 AND auser_id = #{userId,jdbcType=VARCHAR}
+    ) AND nickname LIKE '%${nickname}%'
+  </select>
 </mapper>

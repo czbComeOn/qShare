@@ -9,12 +9,12 @@ public class Friend {
     /**
      * 拥有该好友列表
      */
-    private String aUserId;
+    private String auserId;
 
     /**
      * 被加为好友的用户
      */
-    private String bUserId;
+    private String buserId;
 
     /**
      * 所属分组ID
@@ -49,34 +49,34 @@ public class Friend {
 
     /**
      * 拥有该好友列表
-     * @return a_user_id 拥有该好友列表
+     * @return auser_id 拥有该好友列表
      */
-    public String getaUserId() {
-        return aUserId;
+    public String getAuserId() {
+        return auserId;
     }
 
     /**
      * 拥有该好友列表
-     * @param aUserId 拥有该好友列表
+     * @param auserId 拥有该好友列表
      */
-    public void setaUserId(String aUserId) {
-        this.aUserId = aUserId == null ? null : aUserId.trim();
+    public void setAuserId(String auserId) {
+        this.auserId = auserId == null ? null : auserId.trim();
     }
 
     /**
      * 被加为好友的用户
-     * @return b_user_id 被加为好友的用户
+     * @return buser_id 被加为好友的用户
      */
-    public String getbUserId() {
-        return bUserId;
+    public String getBuserId() {
+        return buserId;
     }
 
     /**
      * 被加为好友的用户
-     * @param bUserId 被加为好友的用户
+     * @param buserId 被加为好友的用户
      */
-    public void setbUserId(String bUserId) {
-        this.bUserId = bUserId == null ? null : bUserId.trim();
+    public void setBuserId(String buserId) {
+        this.buserId = buserId == null ? null : buserId.trim();
     }
 
     /**

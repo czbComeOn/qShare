@@ -36,8 +36,10 @@ public class IndexController {
 
 		User user = (User) session.getAttribute("user");
 		if(user != null){
-			view.addObject("shareCount", shareService.getShareCountByUser(user));
-			view.addObject("collectCount", shareService.getCollectCountByUser(user));
+			view.addObject("friendCount", userService.getFriendCountByUser(user.getUserId()));
+			view.addObject("attentionCount", userService.getAttentionCountByUser(user.getUserId()));
+			view.addObject("shareCount", shareService.getShareCountByUser(user.getUserId()));
+			view.addObject("collectCount", shareService.getCollectCountByUser(user.getUserId()));
 		}
 
 		return view;
@@ -76,8 +78,8 @@ public class IndexController {
 
 		if(user != null){
 			userService.logout(user);
-			session.removeAttribute("user");
 		}
+		session.removeAttribute("user");
 		result.put("msg", "success");
 
         return result;
@@ -119,11 +121,18 @@ public class IndexController {
 	 * @return
 	 */
 	@RequestMapping(value="myHome.do")
-	public ModelAndView index(String account){
+	public ModelAndView myHome(String account, HttpSession session){
 		ModelAndView view = new ModelAndView("user/myHome");
+
+		User user = (User) session.getAttribute("user");
 
         User acc = userService.getUserByAccount(account);
         view.addObject("acc", acc);
+
+        if(user != null){
+            view.addObject("isAttention", userService.isAttention(user.getUserId(), acc.getUserId()));
+            view.addObject("isFriend", userService.isFriend(user.getUserId(), acc.getUserId()));
+        }
 
 		return view;
 	}

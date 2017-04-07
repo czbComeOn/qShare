@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by BIN on 2017/3/22.
  */
-public class ShareVO {
+public class ShareVo {
     private Share share;
 
     /**
@@ -29,29 +29,29 @@ public class ShareVO {
      */
     private TranspondVo transpondVo;
 
-    public ShareVO(){
+    public ShareVo(){
 
     }
 
-    public ShareVO(Share share, User user){
+    public ShareVo(Share share, User user){
         this.share = share;
         this.user = user;
     }
 
-    public ShareVO(Share share, User user, List<Collect> collects) {
+    public ShareVo(Share share, User user, List<Collect> collects) {
         this.share = share;
         this.user = user;
         this.collects = collects;
     }
 
-    public ShareVO(Share share, User user, List<Collect> collects, TranspondVo transpondVo) {
+    public ShareVo(Share share, User user, List<Collect> collects, TranspondVo transpondVo) {
         this.share = share;
         this.user = user;
         this.collects = collects;
         this.transpondVo = transpondVo;
     }
 
-    public ShareVO(Share share, User user, List<Collect> collects, TranspondVo transpondVo, int transpondCount) {
+    public ShareVo(Share share, User user, List<Collect> collects, TranspondVo transpondVo, int transpondCount) {
         this.share = share;
         this.user = user;
         this.collects = collects;

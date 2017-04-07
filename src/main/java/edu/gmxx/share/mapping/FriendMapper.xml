@@ -3,14 +3,14 @@
 <mapper namespace="edu.gmxx.share.dao.FriendMapper" >
   <resultMap id="BaseResultMap" type="edu.gmxx.share.domain.Friend" >
     <id column="friend_id" property="friendId" jdbcType="VARCHAR" />
-    <result column="a_user_id" property="aUserId" jdbcType="VARCHAR" />
-    <result column="b_user_id" property="bUserId" jdbcType="VARCHAR" />
+    <result column="auser_id" property="auserId" jdbcType="VARCHAR" />
+    <result column="buser_id" property="buserId" jdbcType="VARCHAR" />
     <result column="group_id" property="groupId" jdbcType="VARCHAR" />
     <result column="is_friend" property="isFriend" jdbcType="TINYINT" />
     <result column="is_attention" property="isAttention" jdbcType="TINYINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    friend_id, a_user_id, b_user_id, group_id, is_friend, is_attention
+    friend_id, auser_id, buser_id, group_id, is_friend, is_attention
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -23,10 +23,10 @@
     where friend_id = #{friendId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="edu.gmxx.share.domain.Friend" >
-    insert into s_friend (friend_id, a_user_id, b_user_id, 
+    insert into s_friend (friend_id, auser_id, buser_id, 
       group_id, is_friend, is_attention
       )
-    values (#{friendId,jdbcType=VARCHAR}, #{aUserId,jdbcType=VARCHAR}, #{bUserId,jdbcType=VARCHAR}, 
+    values (#{friendId,jdbcType=VARCHAR}, #{auserId,jdbcType=VARCHAR}, #{buserId,jdbcType=VARCHAR}, 
       #{groupId,jdbcType=VARCHAR}, #{isFriend,jdbcType=TINYINT}, #{isAttention,jdbcType=TINYINT}
       )
   </insert>
@@ -36,11 +36,11 @@
       <if test="friendId != null" >
         friend_id,
       </if>
-      <if test="aUserId != null" >
-        a_user_id,
+      <if test="auserId != null" >
+        auser_id,
       </if>
-      <if test="bUserId != null" >
-        b_user_id,
+      <if test="buserId != null" >
+        buser_id,
       </if>
       <if test="groupId != null" >
         group_id,
@@ -56,11 +56,11 @@
       <if test="friendId != null" >
         #{friendId,jdbcType=VARCHAR},
       </if>
-      <if test="aUserId != null" >
-        #{aUserId,jdbcType=VARCHAR},
+      <if test="auserId != null" >
+        #{auserId,jdbcType=VARCHAR},
       </if>
-      <if test="bUserId != null" >
-        #{bUserId,jdbcType=VARCHAR},
+      <if test="buserId != null" >
+        #{buserId,jdbcType=VARCHAR},
       </if>
       <if test="groupId != null" >
         #{groupId,jdbcType=VARCHAR},
@@ -76,11 +76,11 @@
   <update id="updateByPrimaryKeySelective" parameterType="edu.gmxx.share.domain.Friend" >
     update s_friend
     <set >
-      <if test="aUserId != null" >
-        a_user_id = #{aUserId,jdbcType=VARCHAR},
+      <if test="auserId != null" >
+        auser_id = #{auserId,jdbcType=VARCHAR},
       </if>
-      <if test="bUserId != null" >
-        b_user_id = #{bUserId,jdbcType=VARCHAR},
+      <if test="buserId != null" >
+        buser_id = #{buserId,jdbcType=VARCHAR},
       </if>
       <if test="groupId != null" >
         group_id = #{groupId,jdbcType=VARCHAR},
@@ -96,11 +96,69 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="edu.gmxx.share.domain.Friend" >
     update s_friend
-    set a_user_id = #{aUserId,jdbcType=VARCHAR},
-      b_user_id = #{bUserId,jdbcType=VARCHAR},
+    set auser_id = #{auserId,jdbcType=VARCHAR},
+      buser_id = #{buserId,jdbcType=VARCHAR},
       group_id = #{groupId,jdbcType=VARCHAR},
       is_friend = #{isFriend,jdbcType=TINYINT},
       is_attention = #{isAttention,jdbcType=TINYINT}
     where friend_id = #{friendId,jdbcType=VARCHAR}
   </update>
+
+  <select id="getFriendByGroupId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_friend
+    WHERE group_id = #{groupId,jdbcType=VARCHAR}
+    AND is_friend = 1
+  </select>
+
+  <select id="getFriendCountByGroup" parameterType="java.lang.String" resultType="int">
+    SELECT
+    COUNT(friend_id)
+    FROM s_friend
+    WHERE group_id = #{groupId,jdbcType=VARCHAR} AND is_friend = 1
+  </select>
+
+  <delete id="deleteFriend" parameterType="edu.gmxx.share.domain.Friend">
+    DELETE FROM s_friend
+    WHERE
+      (auser_id = #{auserId,jdbcType=VARCHAR} AND buser_id = #{buserId,jdbcType=VARCHAR})
+    OR
+      (buser_id = #{buserId,jdbcType=VARCHAR} AND auser_id = #{auserId,jdbcType=VARCHAR})
+  </delete>
+
+  <select id="getFriendByUser" parameterType="edu.gmxx.share.domain.Friend" resultType="int">
+    SELECT
+     count(friend_id)
+    FROM s_friend
+    WHERE auser_id = #{auserId,jdbcType=VARCHAR} AND buser_id = #{buserId,jdbcType=VARCHAR} AND is_friend = 1
+  </select>
+
+  <select id="getFriendCountByUser" parameterType="java.lang.String" resultType="int">
+    SELECT COUNT(friend_id) FROM s_friend
+    WHERE is_friend = 1 AND buser_id = #{userId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getAttentionCountByUser" parameterType="java.lang.String" resultType="int">
+    SELECT COUNT(friend_id) FROM s_friend
+    WHERE is_attention = 1 AND buser_id = #{userId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getAttentionByABUser" parameterType="edu.gmxx.share.domain.Friend" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_friend
+    WHERE is_attention = 1
+    AND auser_id = #{auserId,jdbcType=VARCHAR}
+    AND buser_id = #{buserId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getFriendByABUser" parameterType="edu.gmxx.share.domain.Friend" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_friend
+    WHERE is_friend = 1
+    AND auser_id = #{auserId,jdbcType=VARCHAR}
+    AND buser_id = #{buserId,jdbcType=VARCHAR}
+  </select>
 </mapper>

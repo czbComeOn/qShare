@@ -7,7 +7,7 @@ import edu.gmxx.share.service.IShareService;
 import edu.gmxx.share.utils.MyStringUtil;
 import edu.gmxx.share.utils.PageModel;
 import edu.gmxx.share.vo.EvalVo;
-import edu.gmxx.share.vo.ShareVO;
+import edu.gmxx.share.vo.ShareVo;
 import edu.gmxx.share.vo.TranspondVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +91,7 @@ public class ShareServiceImpl implements IShareService {
         shareDto.setShare(share);
         shareDto.setPage(page);
 
-        List<ShareVO> shares = new ArrayList<ShareVO>();
+        List<ShareVo> shares = new ArrayList<ShareVo>();
         // 1.获取分享信息列表
         List<Share> shareList = shareMapper.getShareByType(shareDto);
 
@@ -401,15 +401,13 @@ public class ShareServiceImpl implements IShareService {
     }
 
     @Override
-    public int getShareCountByUser(User user) {
-        return user == null || StringUtils.isEmpty(user.getUserId()) ?
-                0 : shareMapper.getShareCountByUser(user.getUserId());
+    public int getShareCountByUser(String userId) {
+        return StringUtils.isEmpty(userId) ? 0 : shareMapper.getShareCountByUser(userId);
     }
 
     @Override
-    public int getCollectCountByUser(User user) {
-        return user == null || StringUtils.isEmpty(user.getUserId()) ?
-                0 : collectMapper.getCollectCountByUser(user.getUserId());
+    public int getCollectCountByUser(String userId) {
+        return StringUtils.isEmpty(userId) ? 0 : collectMapper.getCollectCountByUser(userId);
     }
 
     @Override
@@ -434,7 +432,7 @@ public class ShareServiceImpl implements IShareService {
         shareDTO.setPage(page);
 
         List<Share> shareList = shareMapper.getCollectShare(shareDTO);
-        List<ShareVO> shares = new ArrayList<ShareVO>();
+        List<ShareVo> shares = new ArrayList<ShareVo>();
 
         List<User> userList = userMapper.getUserIdByCollectShare(shareDTO);
         // 3.返回分享信息结果
@@ -461,7 +459,7 @@ public class ShareServiceImpl implements IShareService {
      * @param user
      * @return
      */
-    private ShareVO packShareVo(Share share, User user){
+    private ShareVo packShareVo(Share share, User user){
         if(share.getUserId().equals(user.getUserId())){
             // 获取收藏该信息的列表
             List<Collect> collects = collectMapper.getCollectByShareId(share.getShareId());
@@ -473,7 +471,7 @@ public class ShareServiceImpl implements IShareService {
             }
             int transpondCount = transpondMapper.getTranspondCount(share.getShareId());
 
-            return new ShareVO(share, user, collects, transpondVo, transpondCount);
+            return new ShareVo(share, user, collects, transpondVo, transpondCount);
         }
         return null;
     }

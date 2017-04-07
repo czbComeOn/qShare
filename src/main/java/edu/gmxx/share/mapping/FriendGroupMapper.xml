@@ -79,4 +79,26 @@
       num = #{num,jdbcType=INTEGER}
     where group_id = #{groupId,jdbcType=VARCHAR}
   </update>
+
+  <select id="getGroupByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_friend_group
+    WHERE user_id = #{userId,jdbcType=VARCHAR}
+    ORDER BY num ASC
+  </select>
+
+  <select id="getDefaultGroup" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_friend_group
+    WHERE user_id = #{userId,jdbcType=VARCHAR}
+    AND num = 0
+  </select>
+
+  <select id="getGroupCountByUser" parameterType="java.lang.String" resultType="int">
+    SELECT COUNT(group_id)
+    FROM s_friend_group
+    WHERE user_id = #{userId,jdbcType=VARCHAR}
+  </select>
 </mapper>

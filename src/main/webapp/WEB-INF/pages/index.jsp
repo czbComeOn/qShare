@@ -29,7 +29,7 @@
 </head>
 <body>
 <div class="qshare-container snowbg">
-    <div id="toTop" class="to-top">
+    <div id="toTop" class="to-top" title="返回顶部">
         <img src="${pageContext.request.contextPath}/resources/img/top.png" alt="">
     </div>
     <!-- start login -->
@@ -164,7 +164,7 @@
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="myHome.do?account=${user.account}"><i class="fa fa-home">&nbsp;</i>个人主页</a></li>
+                            <li><a href="myHome.do?account=${user.account}"><i class="fa fa-home">&nbsp;</i>我的主页</a></li>
                             <li><a id="changePwd" href="javascript:void(0);"><i class="fa fa-edit">&nbsp;</i>修改密码</a></li>
                             <li><a id="logout" href="javascript:void(0);"><i class="fa fa-sign-out">&nbsp;</i>退出登录</a></li>
                         </ul>
@@ -222,17 +222,27 @@
                     <div class="cf"></div>
                     <div class="myleft-n">
                         <ul class="list-group">
-                            <li class="list-group-item list-group-item-info">
+                            <%--<li class="list-group-item list-group-item-info">
                                 <span class="badge" style="background: #c4ce90">10</span>
                                 <a href="#"><i class="fa fa-envelope"></i> 私信</a>
-                            </li>
+                            </li>--%>
                             <li class="list-group-item list-group-item-primary">
-                                <span class="badge" style="background:#ef5c5c;">9</span>
-                                <a href="#"><i class="fa fa-heart"></i> 好友</a>
+                                <span class="badge" style="background:#ef5c5c;">
+                                    <c:if test="${friendCount != null}">
+                                        ${friendCount}
+                                    </c:if>
+                                    <c:if test="${friendCount == null}">0</c:if>
+                                </span>
+                                <a href="myHome.do?account=${user.account}"><i class="fa fa-heart"></i> 好友</a>
                             </li>
                             <li class="list-group-item list-group-item-info">
-                                <span class="badge" style="background:#ced834;">10</span>
-                                <a href="#"><i class="fa fa-link"></i> 关注</a>
+                                <span class="badge" style="background:#ced834;">
+                                    <c:if test="${attentionCount != null}">
+                                        ${attentionCount}
+                                    </c:if>
+                                    <c:if test="${attentionCount == null}">0</c:if>
+                                </span>
+                                <a href="myHome.do?account=${user.account}"><i class="fa fa-link"></i> 关注</a>
                             </li>
                             <li class="list-group-item list-group-item-primary">
                                 <span class="badge" id="collectCount" style="background:#3e97c1;">
@@ -241,7 +251,7 @@
                                     </c:if>
                                     <c:if test="${collectCount == null}">0</c:if>
                                 </span>
-                                <a href="#"><i class="fa fa-star"></i> 我的收藏</a>
+                                <a href="myHome.do?account=${user.account}"><i class="fa fa-star"></i> 我的收藏</a>
                             </li>
                             <li class="list-group-item list-group-item-info">
                                 <span class="badge" id="shareCount" style="background:#b994a5;">
@@ -250,7 +260,7 @@
                                     </c:if>
                                     <c:if test="${shareCount == null}">0</c:if>
                                 </span>
-                                <a href="myHome.do?account=${user.account}"><i class="fa fa-share"></i> 我的分享</a>
+                                <a href="myHome.do?account=${user.account}"><i class="fa fa-share-alt"></i> 我的分享</a>
                             </li>
                         </ul>
                     </div>
