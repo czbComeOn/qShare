@@ -3,6 +3,8 @@
  */
 define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator'],
     function(login, share, $messager, comm){
+    var ME_ATTENTION_NUM = 1; // 我关注谁页码
+    var WHO_ATTENTION_NUM = 1; // 谁关注我页码
     var home_acc; // 当前页面的所属账户
     var home = {};
 
@@ -50,32 +52,6 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                 $messager.warning('服务器出错');
             }
         });
-    }
-
-    /**
-     * 显示收藏信息
-     */
-    home.showCollect = function(){
-        $('.myright').find('.friend-panel').remove();
-        $('.myright').find('.share-info').remove();
-        share.initNum();
-        share.loadShareInfo('all', home_acc, 'collect', 'home');
-
-        $('#loadMore').show();
-        $('.load-more').unbind('click');
-        // 点击加载更多分享
-        $('.load-more').on('click', function(){
-            share.loadShareInfo('all', home_acc, 'collect', 'home');
-        });
-    }
-
-    /**
-     * 显示关注信息
-     */
-    home.showAttention = function(){
-        $('.myright').find('.friend-panel').remove();
-        $('.myright').find('.share-info').remove();
-        $('#loadMore').hide();
     }
 
     /**
@@ -183,6 +159,7 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                 }) ;
         });
 
+        // 地区
         $('<span class="col-xs-12"><i class="fa fa-map-marker"></i> </span>')
             .append(friendVo.user.region ? friendVo.user.region : '未知').appendTo($friendBox);
 
@@ -386,11 +363,189 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
     }
 
     /**
+     * 获取关注项
+     * @param friendVo
+     * @param isAttention
+     * @returns {*|jQuery|HTMLElement}
+     */
+    home.getAttentionItem = function(friendVo, isAttention){
+        var that = this;
+        var $friendItem = $('<li class="list-group-item friend-item"></li>');
+        var $row = $('<div class="row"></div>').appendTo($friendItem);
+
+        var img = friendVo.user.portraitPath ? friendVo.user.portraitPath : 'resources/img/header/portrait.jpg';
+        $('<div class="col-xs-1 friend-item-portrait"></div>').append($('<img/>').attr('src', img))
+            .appendTo($row);
+
+        // 好友信息
+        var $friendBox = $('<div class="col-xs-10 friend-box"></div>').appendTo($row);
+        $('<div class="col-xs-12"></div>')
+            .append($('<a class="friend-info" href="myHome.do?account=' + friendVo.user.account + '" title="TA的主页"></a>').text(friendVo.user.nickname))
+            .appendTo($friendBox);
+
+        // TA的分享
+        $('<span class="col-xs-7">TA的分享 </span>')
+            .append($('<a href="myHome.do?account=' + friendVo.user.account + '" title="查看TA的分享" style="color:#eb7350; text-decoration: none;"></a>')
+                .text(friendVo.shareCount)).appendTo($friendBox);
+
+        // 关注
+        var $attenBox = $('<span class="col-xs-5"></span>').appendTo($friendBox);
+        if(isAttention){
+            // 取消关注
+            $('<a href="javascript:void(0);" title="点击取消关注" style="text-decoration: none;">取消关注 </a>')
+                .append($('<span class="attention-count" style="color:#eb7350;"></span>').text(friendVo.attentionCount)).appendTo($attenBox)
+                .on('click', function(){
+                    $.ajax({
+                        url: 'user/deleteAttention.do',
+                        type: 'post',
+                        data: {'account': friendVo.user.account},
+                        dataType: 'json',
+                        success: function(result){
+                            if(result.msg == 'success'){
+                                $friendItem.slideUp('normal', 'swing', function(){
+                                    $friendItem.remove();
+                                    $messager.success('已取消关注');
+                                });
+                            } else if(result.msg == 'OFFLINE'){
+                                $messager.warning('用户未登录');
+                                login.show();
+                            } else{
+                                $messager.error(result.msg);
+                            }
+                        },
+                        error: function(){
+                            $messager.warning('服务器出错');
+                        }
+                    });
+                });
+        } else{
+            // 添加关注
+            $('<a href="javascript:void(0);" title="点击关注TA" style="text-decoration: none;">关注TA </a>')
+                .append($('<span class="attention-count" style="color:#eb7350;"></span>').text(friendVo.attentionCount)).appendTo($attenBox)
+                .on('click', function(){
+                    $.ajax({
+                        url: 'user/addAttention.do',
+                        type: 'post',
+                        data: {'account': friendVo.user.account},
+                        dataType: 'json',
+                        success: function(result){
+                            if(result.msg == 'success'){
+                                $messager.success('关注成功');
+                                $attenBox.find('.attention-count').text(parseInt($attenBox.find('.attention-count').text()) + 1);
+                            } else if(result.msg == 'AlreadyAttention'){
+                                $messager.success('已关注该用户');
+                                $('#addAttention').text('取消关注');
+                            } else if(result.msg == 'OFFLINE'){
+                                $messager.warning('用户未登录');
+                                login.show();
+                            } else{
+                                $messager.error(result.msg);
+                            }
+                        },
+                        error: function(){
+                            $messager.warning('服务器出错');
+                        }
+                    }) ;
+                });
+        }
+
+        // 地区
+        $('<span class="col-xs-12"><i class="fa fa-map-marker"></i> </span>')
+            .append(friendVo.user.region ? friendVo.user.region : '未知').appendTo($friendBox);
+
+        return $friendItem;
+    }
+
+    /**
+     * 初始化谁关注我
+     * @param box
+     */
+    home.initWhoAttentionMe = function(box){
+        var that = this;
+        $.ajax({
+            url: 'user/getWhoAttentionMe.do',
+            data: {'pageNumber': WHO_ATTENTION_NUM},
+            type: 'post',
+            dataType: 'json',
+            success: function(result){
+                if(result.msg == 'success'){
+                    if(result.friends.length > 0){
+                        for(var i in result.friends){
+                            box.append(that.getAttentionItem(result.friends[i]));
+                        }
+                    } else{
+                        $('<li style="text-align: center;">暂未被关注</li>')
+                            .appendTo(box);
+                    }
+
+                    if(result.page.totalPages > WHO_ATTENTION_NUM++){
+                        $('<li class="list-group-item" style="text-align:center; cursor:pointer;">点击查看更多 ' +
+                            '<i class="fa fa-angle-double-down"></i></li>').on('click', function(){
+                            $(this).remove();
+                            that.initWhoAttentionMe(box);
+                        }).appendTo(box);
+                    }
+                } else if(result.msg == 'OFFLINE'){
+                    $messager.warning('用户未登录');
+                    login.show();
+                } else{
+                    $messager.error(result.msg);
+                }
+            },
+            error: function(){
+                $messager.warning('服务器出错');
+            }
+        });
+    }
+
+    /**
+     * 初始化我关注谁列表
+     * @param box
+     */
+    home.initMeAttentionWho = function(box){
+        var that = this;
+        $.ajax({
+            url: 'user/getMeAttentionWho.do',
+            type: 'post',
+            data: {'pageNumber': ME_ATTENTION_NUM},
+            dataType: 'json',
+            success: function(result){
+                if(result.msg == 'success'){
+                    if(result.friends.length > 0){
+                        for(var i in result.friends){
+                            box.append(that.getAttentionItem(result.friends[i], true));
+                        }
+                    } else{
+                        $('<li style="text-align: center;">暂无关注的好友</li>')
+                            .appendTo(box);
+                    }
+
+                    if(result.page.totalPages > ME_ATTENTION_NUM++){
+                        $('<li class="list-group-item" style="text-align:center; cursor:pointer;">点击查看更多 ' +
+                            '<i class="fa fa-angle-double-down"></i></li>').on('click', function(){
+                            $(this).remove();
+                            that.initMeAttentionWho(box);
+                        }).appendTo(box);
+                    }
+                } else if(result.msg == 'OFFLINE'){
+                    $messager.warning('用户未登录');
+                    login.show();
+                } else{
+                    $messager.error(result.msg);
+                }
+            },
+            error: function(){
+                $messager.warning('服务器出错');
+            }
+        });
+    }
+
+    /**
      * 显示好友列表
      */
     home.showFriend = function(){
         var that = this;
-        $('.myright').find('.share-info').remove();
+        $('.myright').find('.share-info, .attention-panel, .friend-panel').remove();
         $('#loadMore').hide();
 
         // 创建好友信息面板
@@ -398,6 +553,7 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         var $heading = $('<div class="panel-heading">' +
             '我的好友' +
             '<div class="fr">' +
+                '<i class="fa fa-refresh refresh-friend mrg-r-10" title="刷新"></i>' +
                 '<i class="fa fa-user-plus add-friend" title="添加好友"></i>' +
             '</div>' +
         '</div>').appendTo($friendPanel);
@@ -406,7 +562,11 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         var $firendGroup = $('<ul class="list-group"></ul>').appendTo($body);
         var $createGroup = $('<button class="btn btn-info" id="createGroup"><i class="fa fa-plus"></i> 创建分组</button>').appendTo($body);
 
-        // 添加好友
+        // 刷新
+        $heading.find('.refresh-friend').on('click', function(){
+            that.showFriend();
+        });
+        // --添加好友--
         $heading.find('.add-friend').on('click', function(){
             if($('.add-friend-panel').size() == 1){
                 $('.add-friend-panel').slideUp('normal', 'swing', function(){
@@ -416,7 +576,7 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                 // 创建添加面板
                 var $addFriendPanel = $('<div class="panel panel-info myright-n friend-panel add-friend-panel" style="display:none;"></div>');
                 $('<div class="panel-heading">添加好友</div>')
-                    .append($('<i class="fa fa-remove fr" style="cursor:pointer;"></i>').on('click', function(){
+                    .append($('<i class="fa fa-remove fr" style="cursor:pointer;" title="关闭"></i>').on('click', function(){
                         $addFriendPanel.slideUp('normal', 'swing', function(){
                             $addFriendPanel.remove();
                         });
@@ -510,11 +670,89 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
     }
 
     /**
+     * 显示关注信息
+     */
+    home.showAttention = function(){
+        ME_ATTENTION_NUM = 1;
+        WHO_ATTENTION_NUM = 1;
+        var that = this;
+        $('.myright').find('.friend-panel, .share-info, .attention-panel').remove();
+        $('#loadMore').hide();
+
+        // 创建好友信息面板
+        var $attentionPanel = $('<div class="panel panel-info myright-n attention-panel"></div>').appendTo($('.myright'));
+        var $heading = $('<div class="panel-heading">我的关注' +
+            '<div class="fr"><i class="fa fa-refresh refresh-friend mrg-r-10" title="刷新"></i></div>' +
+        '</div>').appendTo($attentionPanel);
+        var $body = $('<div class="panel-body">' +
+            '<ul class="nav nav-tabs">' +
+                '<li class="active"><a id="meAttention" href="#meAttentionWho" data-toggle="tab">我关注谁</a></li>' +
+                '<li><a id="whoAttention" href="#whoAttentionMe" data-toggle="tab">谁关注我</a></li>' +
+            '</ul>' +
+            '<div class="tab-content">' +
+                '<div class="tab-pane fade in active" id="meAttentionWho">' +
+                    '<ul class="list-group" style="margin:10px 0;list-style:none;"></ul>' +
+                '</div>' +
+                '<div class="tab-pane fade" id="whoAttentionMe">' +
+                    '<ul class="list-group" style="margin:10px 0;list-style:none;"></ul>' +
+                '</div>' +
+            '</div>' +
+        '</div>').appendTo($attentionPanel);
+
+        var $meAttentionWho = $body.find('#meAttentionWho ul');
+        var $whoAttentionMe = $body.find('#whoAttentionMe ul');
+
+        $.ajax({
+            url: 'user/getAttentionCount.do',
+            type: 'post',
+            dataType: 'json',
+            success: function(result){
+                if(result.msg == 'success'){
+                    $body.find('#meAttention').append($('<span style="color:#eb7350;"></span>').text(' (' + result.meAttentionWhoCount + ')'));
+                    $body.find('#whoAttention').append($('<span style="color:#eb7350;"></span>').text(' (' + result.whoAttentionMeCount + ')'));
+                } else if(result.msg == 'OFFLINE'){
+                    $messager.warning('用户未登录');
+                    login.show();
+                } else{
+                    $messager.error(result.msg);
+                }
+            },
+            error: function(){
+                $messager.warning('服务器出错');
+            }
+        });
+
+        // 初始化我关注谁
+        this.initMeAttentionWho($meAttentionWho);
+        this.initWhoAttentionMe($whoAttentionMe);
+
+        // 刷新
+        $heading.find('.refresh-friend').on('click', function(){
+            that.showAttention();
+        });
+    }
+
+    /**
+     * 显示收藏信息
+     */
+    home.showCollect = function(){
+        $('.myright').find('.friend-panel, .share-info').remove();
+        share.initNum();
+        share.loadShareInfo('all', home_acc, 'collect', 'home');
+
+        $('#loadMore').show();
+        $('.load-more').unbind('click');
+        // 点击加载更多分享
+        $('.load-more').on('click', function(){
+            share.loadShareInfo('all', home_acc, 'collect', 'home');
+        });
+    }
+
+    /**
      * 显示我的分享
      */
     home.showShare = function(){
-        $('.myright').find('.friend-panel').remove();
-        $('.myright').find('.share-info').remove();
+        $('.myright').find('.friend-panel, .attention-panel, .share-info').remove();
         share.initNum();
         share.loadShareInfo('all', home_acc, null, 'home');
 

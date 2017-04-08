@@ -316,10 +316,10 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
                 '   <form class="form-horizontal" id="phoneValidationForm">' +
                         '<div class="form-group">' +
                             '<label for="regPhone" class="col-xs-12 col-sm-3 control-label">手机：</label>' +
-                            '<div class="col-xs-6 col-sm-5">' +
+                            '<div class="col-xs-7 col-sm-5">' +
                                 '<input class="form-control" id="regPhone" name="regPhone" placeholder="手机号码">' +
                             '</div>' +
-                            '<div class="col-xs-6 col-sm-4">' +
+                            '<div class="col-xs-5 col-sm-4">' +
                                 '<button class="btn btn-primary" id="sendCode" disabled type="submit" title="点击向手机发送验证码">发送验证码</button>' +
                             '</div>' +
                         '</div>' +
@@ -389,7 +389,7 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
                 var t = 60;
                 // 倒计时重新发送
                 that.setInterval = setInterval(function () {
-                    that.$sendCode.text('(' + --t + ') 秒后可重发');
+                    that.$sendCode.text('(' + --t + ') 秒后重发');
                     if (t < 0) {
                         clearInterval(that.setInterval);
                         that.$regPhone.removeAttr('readonly');

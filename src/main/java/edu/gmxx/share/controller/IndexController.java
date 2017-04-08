@@ -37,7 +37,7 @@ public class IndexController {
 		User user = (User) session.getAttribute("user");
 		if(user != null){
 			view.addObject("friendCount", userService.getFriendCountByUser(user.getUserId()));
-			view.addObject("attentionCount", userService.getAttentionCountByUser(user.getUserId()));
+			view.addObject("attentionCount", userService.getMeAttentionWhoCount(user.getUserId()));
 			view.addObject("shareCount", shareService.getShareCountByUser(user.getUserId()));
 			view.addObject("collectCount", shareService.getCollectCountByUser(user.getUserId()));
 		}

@@ -132,6 +132,14 @@ public class User {
      */
     private Date unlockTime;
 
+    public User(){
+
+    }
+
+    public User(String userId) {
+        this.userId = userId;
+    }
+
     /**
      * 用户ID主键
      * @return user_id 用户ID主键

@@ -1,6 +1,7 @@
 package edu.gmxx.share.dao;
 
 import edu.gmxx.share.domain.Friend;
+import edu.gmxx.share.dto.UserDTO;
 
 import java.util.List;
 
@@ -52,13 +53,6 @@ public interface FriendMapper {
     int getFriendCountByUser(String userId);
 
     /**
-     * 获取关注个数
-     * @param userId
-     * @return
-     */
-    int getAttentionCountByUser(String userId);
-
-    /**
      * 根据a、b两用户判断是否已关注
      * @param friend
      * @return
@@ -71,4 +65,32 @@ public interface FriendMapper {
      * @return
      */
     Friend getFriendByABUser(Friend friend);
+
+    /**
+     * 获取被我关注的好友记录数
+     * @param userId
+     * @return
+     */
+    int getMeAttentionWhoCount(String userId);
+
+    /**
+     * 获取被我关注的好友信息
+     * @param userDTO
+     * @return
+     */
+    List<Friend> getMeAttentionWho(UserDTO userDTO);
+
+    /**
+     * 获取关注我的好友记录数
+     * @param userId
+     * @return
+     */
+    int getWhoAttentionMeCount(String userId);
+
+    /**
+     * 获取关注我的好友信息
+     * @param userDTO
+     * @return
+     */
+    List<Friend> getWhoAttentionMe(UserDTO userDTO);
 }

@@ -246,7 +246,7 @@ public class UserController {
 
     /**
      * 删除分组，分组内的好友将移至默认分组内
-     * @param groupId
+     * @param group
      * @param session
      * @return
      */
@@ -343,5 +343,68 @@ public class UserController {
         }
 
         return userService.changeGroup(user, friend);
+    }
+
+    /**
+     * 获取我关注和我被关注的用户个数
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="getAttentionCount.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> getAttentionCount(HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        result.put("meAttentionWhoCount", userService.getMeAttentionWhoCount(user.getUserId()));
+        result.put("whoAttentionMeCount", userService.getWhoAttentionMeCount(user.getUserId()));
+        result.put("msg", "success");
+
+        return result;
+    }
+
+    /**
+     * 获取被我关注的用户
+     * @param page
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="getMeAttentionWho.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> getMeAttentionWho(PageModel page, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return userService.getMeAttentionWho(user.getUserId(), page);
+    }
+
+    /**
+     * 获取关注的我用户
+     * @param page
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="getWhoAttentionMe.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> getWhoAttentionMe(PageModel page, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return userService.getWhoAttentionMe(user.getUserId(), page);
     }
 }

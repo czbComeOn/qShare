@@ -315,6 +315,11 @@ public class UserServiceImpl implements IUserService {
             return result;
         }
 
+        if(user.getAccount().equals(account)){
+            result.put("msg", "不能添加自己为好友！");
+            return result;
+        }
+
         User acc = userMapper.getUserByAccount(account);
 
         // 1.判断是否已添加该好友
@@ -344,7 +349,7 @@ public class UserServiceImpl implements IUserService {
         if(count == 1){
             result.put("friendVo", new FriendVo(friend, acc
                     , shareMapper.getShareCountByUser(acc.getUserId())
-                    , friendMapper.getAttentionCountByUser(acc.getUserId())));
+                    , friendMapper.getWhoAttentionMeCount(acc.getUserId())));
             result.put("msg", "success");
         } else{
             result.put("msg", "好友添加失败！");
@@ -474,7 +479,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public int getAttentionCountByUser(String userId) {
-        return StringUtils.isEmpty(userId) ? 0 : friendMapper.getAttentionCountByUser(userId);
+        return StringUtils.isEmpty(userId) ? 0 : friendMapper.getWhoAttentionMeCount(userId);
     }
 
     @Override
@@ -499,6 +504,11 @@ public class UserServiceImpl implements IUserService {
         if(StringUtils.isEmpty(account)){
             logger.debug("-----> 关注异常");
             result.put("msg", "关注失败，请刷新后重试");
+            return result;
+        }
+
+        if(user.getAccount().equals(account)){
+            result.put("msg", "不能关注自己！");
             return result;
         }
 
@@ -582,6 +592,7 @@ public class UserServiceImpl implements IUserService {
         ud.setPage(page);
         ud.setUser(acc);
 
+        result.put("page", page);
         result.put("users", userMapper.searchAccount(ud));
         result.put("msg", "success");
 
@@ -609,6 +620,7 @@ public class UserServiceImpl implements IUserService {
         ud.setPage(page);
         ud.setUser(acc);
 
+        result.put("page", page);
         result.put("users", userMapper.searchNickname(ud));
         result.put("msg", "success");
 
@@ -633,9 +645,89 @@ public class UserServiceImpl implements IUserService {
 
         friendMapper.updateByPrimaryKeySelective(friend);
         result.put("friendVo", new FriendVo(friendMapper.selectByPrimaryKey(friend.getFriendId()), user
-            , shareMapper.getShareCountByUser(user.getUserId()), friendMapper.getAttentionCountByUser(user.getUserId())));
+            , shareMapper.getShareCountByUser(user.getUserId()), friendMapper.getWhoAttentionMeCount(user.getUserId())));
         result.put("msg", "success");
 
         return result;
+    }
+
+    @Override
+    public Map<String, Object> getMeAttentionWho(String userId, PageModel page) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        if(StringUtils.isEmpty(userId)){
+            logger.debug("-----> 获取我关注的信息异常");
+            result.put("msg", "用户信息不存在，请刷新后重试！");
+            return result;
+        }
+
+        // 获取总记录数
+        page.setTotalRecord(friendMapper.getMeAttentionWhoCount(userId));
+        page.setPageSize(10);
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUser(new User(userId));
+        userDTO.setPage(page);
+
+        // 获取关注信息
+        List<Friend> friends = friendMapper.getMeAttentionWho(userDTO);
+        List<FriendVo> friendVos = new ArrayList<FriendVo>();
+
+        for(Friend friend : friends){
+            friendVos.add(new FriendVo(friend, userMapper.selectByPrimaryKey(friend.getBuserId()),
+                shareMapper.getShareCountByUser(friend.getBuserId()),
+                friendMapper.getWhoAttentionMeCount(friend.getBuserId())));
+        }
+
+        result.put("page", page);
+        result.put("friends", friendVos);
+        result.put("msg", "success");
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getWhoAttentionMe(String userId, PageModel page) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        if(StringUtils.isEmpty(userId)){
+            logger.debug("-----> 获取我关注的信息异常");
+            result.put("msg", "用户信息不存在，请刷新后重试！");
+            return result;
+        }
+
+        // 获取总记录数
+        page.setTotalRecord(friendMapper.getWhoAttentionMeCount(userId));
+        page.setPageSize(10);
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUser(new User(userId));
+        userDTO.setPage(page);
+
+        // 获取关注信息
+        List<Friend> friends = friendMapper.getWhoAttentionMe(userDTO);
+        List<FriendVo> friendVos = new ArrayList<FriendVo>();
+
+        for(Friend friend : friends){
+            friendVos.add(new FriendVo(friend, userMapper.selectByPrimaryKey(friend.getAuserId()),
+                shareMapper.getShareCountByUser(friend.getAuserId()),
+                friendMapper.getWhoAttentionMeCount(friend.getAuserId())));
+        }
+
+        result.put("page", page);
+        result.put("friends", friendVos);
+        result.put("msg", "success");
+
+        return result;
+    }
+
+    @Override
+    public int getMeAttentionWhoCount(String userId) {
+        return StringUtils.isEmpty(userId) ? 0 : friendMapper.getMeAttentionWhoCount(userId);
+    }
+
+    @Override
+    public int getWhoAttentionMeCount(String userId) {
+        return StringUtils.isEmpty(userId) ? 0 : friendMapper.getWhoAttentionMeCount(userId);
     }
 }

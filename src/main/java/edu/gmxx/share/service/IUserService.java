@@ -186,4 +186,34 @@ public interface IUserService {
      * @return
      */
     Map<String,Object> changeGroup(User user, Friend friend);
+
+    /**
+     * 获取被我关注的用户信息
+     * @param userId
+     * @param page
+     * @return
+     */
+    Map<String,Object> getMeAttentionWho(String userId, PageModel page);
+
+    /**
+     * 获取关注我的用户信息
+     * @param userId
+     * @param page
+     * @return
+     */
+    Map<String,Object> getWhoAttentionMe(String userId, PageModel page);
+
+    /**
+     * 获取我关注的用户个数
+     * @param userId
+     * @return
+     */
+    int getMeAttentionWhoCount(String userId);
+
+    /**
+     * 获取关注我的用户个数
+     * @param userId
+     * @return
+     */
+    int getWhoAttentionMeCount(String userId);
 }
