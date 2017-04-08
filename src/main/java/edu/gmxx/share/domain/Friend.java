@@ -1,5 +1,7 @@
 package edu.gmxx.share.domain;
 
+import java.util.Date;
+
 public class Friend {
     /**
      * 好友关系ID
@@ -30,6 +32,11 @@ public class Friend {
      * 是否为关注关系
      */
     private Byte isAttention;
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
 
     /**
      * 好友关系ID
@@ -125,5 +132,13 @@ public class Friend {
      */
     public void setIsAttention(Byte isAttention) {
         this.isAttention = isAttention;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

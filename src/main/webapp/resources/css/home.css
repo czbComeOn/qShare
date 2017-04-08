@@ -6,7 +6,7 @@
 .friend-group-item{
     padding: 5px;
 }
-.add-friend{cursor: pointer;}
+.friend-cog, .add-friend{cursor: pointer;}
 .group-name{
     display: block;
     cursor: pointer;
@@ -17,6 +17,11 @@
     line-height: 20px;
 }
 /*好友信息*/
+/*.friend-list{
+    max-height:300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}*/
 .friend-item{padding: 5px 10px;}
 .friend-item-portrait > img, .search-user-portrait{
     width: 40px;
@@ -26,6 +31,7 @@
     border-radius: 50%;
 }
 @media screen and (max-width: 767px) {
+    /*.friend-list{max-height:none; overflow: visible}*/
     .friend-item-portrait > img{width: 30px;height:30px;}
 }
 .friend-item .friend-info{

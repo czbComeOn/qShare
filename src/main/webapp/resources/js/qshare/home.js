@@ -59,13 +59,13 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         $('.myright').find('.friend-panel').remove();
         $('.myright').find('.share-info').remove();
         share.initNum();
-        share.loadShareInfo('all', home_acc, 'collect');
+        share.loadShareInfo('all', home_acc, 'collect', 'home');
 
         $('#loadMore').show();
         $('.load-more').unbind('click');
         // 点击加载更多分享
         $('.load-more').on('click', function(){
-            share.loadShareInfo('all', home_acc, 'collect');
+            share.loadShareInfo('all', home_acc, 'collect', 'home');
         });
     }
 
@@ -85,20 +85,56 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
      */
     home.listStyle = function (num) {
         num = parseInt(num);
-        switch (num%4){
+        switch (num%3){
             case 0: return 'list-group-item-info';
             case 1: return 'list-group-item-warning';
             case 2: return 'list-group-item-danger';
-            case 3: return 'list-group-item-text';
             default: return 'list-group-item-info';
         }
+    }
+
+    /**
+     * 删除好友
+     * @param item
+     * @param friendVo
+     */
+    home.deleteFriend = function(item, friendVo){
+        $.confirmDialog({
+            title: '确定删除好友 <b style="color:#8d8de6;">' + friendVo.user.nickname + '</b>',
+            okCall: function(){
+                $.ajax({
+                    url: 'user/deleteFriend.do',
+                    data: {'friendId': friendVo.friend.friendId},
+                    type: 'post',
+                    dataType: 'json',
+                    success: function(result){
+                        if(result.msg == 'success'){
+                            // 该分组好友数量减1
+                            var $badge = item.parents('.friend-group-item').children('.badge');
+                            $badge.text(parseInt($badge.text()) - 1);
+                            item.remove();
+                            $messager.success('删除成功');
+                        } else if(result.msg == 'OFFLINE'){
+                            $messager.warning('用户未登录');
+                            login.show();
+                        } else{
+                            $messager.error(result.msg);
+                        }
+                    },
+                    error: function(){
+                        $messager.warning('服务器出错');
+                    }
+                });
+            }
+        });
     }
 
     /**
      * 获取好友信息
      * @param friend
      */
-    home.getFirendItem = function(friendVo){
+    home.getFriendItem = function(friendVo){
+        var that = this;
         var $friendItem = $('<li class="list-group-item friend-item"></li>');
         var $row = $('<div class="row"></div>').appendTo($friendItem);
 
@@ -150,77 +186,23 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         $('<span class="col-xs-12"><i class="fa fa-map-marker"></i> </span>')
             .append(friendVo.user.region ? friendVo.user.region : '未知').appendTo($friendBox);
 
-        if(document.body.clientWidth < 768){
-            // 删除好友
-            $('<i class="delete-friend fr fa fa-trash" style="margin-right:10px;cursor:pointer;" title="删除好友"></i>')
+        $row.hover(function(){
+            var $opt = $('<div class="fr friend-opt" style="position:absolute;right:0;"></div>');
+            // 修改分组
+            $('<i class="fa fa-exchange change-group mrg-l-10" id="changeGroup" style="cursor:pointer;" title="修改分组"></i>')
                 .on('click', function(){
-                    $.confirmDialog({
-                        title: '确定删除好友 <b style="color:#8d8de6;">' + friendVo.user.nickname + '</b>',
-                        okCall: function(){
-                            $.ajax({
-                                url: 'user/deleteFriend.do',
-                                data: {'friendId': friendVo.friend.friendId},
-                                type: 'post',
-                                dataType: 'json',
-                                success: function(result){
-                                    if(result.msg == 'success'){
-                                        // 该分组好友数量减1
-                                        var $badge = $friendItem.parents('.friend-group-item').children('.badge');
-                                        $badge.text(parseInt($badge.text()) - 1);
-                                        $friendItem.remove();
-                                        $messager.success('删除成功');
-                                    } else if(result.msg == 'OFFLINE'){
-                                        $messager.warning('用户未登录');
-                                        login.show();
-                                    } else{
-                                        $messager.error(result.msg);
-                                    }
-                                },
-                                error: function(){
-                                    $messager.warning('服务器出错');
-                                }
-                            });
-                        }
-                    });
-                }).appendTo($row);
-        } else{
-            $row.hover(function(){
-                // 删除好友
-                $('<i class="delete-friend fr fa fa-trash" style="margin-right:10px;cursor:pointer;" title="删除好友"></i>')
-                    .on('click', function(){
-                        $.confirmDialog({
-                            title: '确定删除好友 <b style="color:#8d8de6;">' + friendVo.user.nickname + '</b>',
-                            okCall: function(){
-                                $.ajax({
-                                    url: 'user/deleteFriend.do',
-                                    data: {'friendId': friendVo.friend.friendId},
-                                    type: 'post',
-                                    dataType: 'json',
-                                    success: function(result){
-                                        if(result.msg == 'success'){
-                                            // 该分组好友数量减1
-                                            var $badge = $friendItem.parents('.friend-group-item').children('.badge');
-                                            $badge.text(parseInt($badge.text()) - 1);
-                                            $friendItem.remove();
-                                            $messager.success('删除成功');
-                                        } else if(result.msg == 'OFFLINE'){
-                                            $messager.warning('用户未登录');
-                                            login.show();
-                                        } else{
-                                            $messager.error(result.msg);
-                                        }
-                                    },
-                                    error: function(){
-                                        $messager.warning('服务器出错');
-                                    }
-                                });
-                            }
-                        });
-                    }).appendTo($row);
-            }, function(){
-                $row.find('.delete-friend').remove();
-            });
-        }
+                    new ChangeGroupDialog(that, $(this), $friendItem, friendVo);
+                }).appendTo($opt);
+            // 删除好友
+            $('<i class="fa fa-trash delete-friend mrg-l-10" style="cursor:pointer;" title="删除好友"></i>')
+                .on('click', function(){
+                    that.deleteFriend($friendItem, friendVo);
+                }).appendTo($opt);
+            $row.append($opt);
+        }, function(){
+            $row.find('.friend-opt').remove();
+            // $row.find('.delete-friend, .change-group').remove();
+        });
 
         return $friendItem;
     }
@@ -255,11 +237,18 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                                 url: 'user/deleteGroup.do',
                                 data: {'groupId': groupVo.group.groupId},
                                 type: 'post',
+                                async: false,
                                 dataType: 'json',
                                 success: function(result){
                                     if(result.msg == 'success'){
-                                        $groupItem.remove();
-                                        $messager.success('分组删除成功');
+                                        $groupItem.slideUp('normal', 'swing', function () {
+                                            $groupItem.remove();
+                                            var defaultGroup = $('.friend-group-item[group-num="0"]');
+                                            defaultGroup.children('.badge')
+                                                .text(parseInt(defaultGroup.children('.badge').text()) + $groupItem.find('li').size());
+                                            $groupItem.find('li').appendTo(defaultGroup.find('.friend-list'));
+                                            $messager.success('分组删除成功');
+                                        });
                                     } else if(result.msg == 'OFFLINE'){
                                         $messager.warning('用户未登录');
                                         login.show();
@@ -278,25 +267,30 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                 $group.find('i').remove();
             });
         }
-        var $firendList = $('<ul class="list-group firend-list" style="display:none; margin-bottom:0;"></ul>');
+        var $friendList = $('<ul class="list-group friend-list" style="display:none; margin-bottom:0;"></ul>');
+
+        $friendList.attr({'id':groupVo.group.groupId, 'isinit':0});
+        $groupItem.append($friendList);
 
         // 开启或关闭分组
         $group.on('click', function(){
-            $('.friend-panel').find('.firend-list[id!="' + groupVo.group.groupId + '"]').slideUp();
-            $('.group-tag').removeClass('fa-minus');
-            $('.group-tag').find('i').addClass('fa-plus');
-            if($group.next('.firend-list') && $group.next('.firend-list').size() == 1){
-                $group.next('.firend-list').slideToggle();
-                if($tag.hasClass('fa-plus')){
-                    $tag.removeClass('fa-plus');
-                    $tag.addClass('fa-minus');
-                } else{
-                    $tag.removeClass('fa-minus');
-                    $tag.addClass('fa-plus');
-                }
+            // 关闭
+            if($tag.hasClass('fa-minus')){
+                $tag.removeClass('fa-minus');
+                $tag.addClass('fa-plus');
+            } else{
+                $('.friend-panel').find('.friend-list[id!="' + groupVo.group.groupId + '"]').slideUp();
+                $('.group-tag').removeClass('fa-minus');
+                $('.group-tag').addClass('fa-plus');
+                // 打开
+                $tag.removeClass('fa-plus');
+                $tag.addClass('fa-minus');
+            }
+
+            if($friendList.attr('isinit') == 1){
+                $group.next('.friend-list').slideToggle();
             } else{
                 // 加载该分组下的好友
-                $firendList.attr('id', groupVo.group.groupId);
                 $.ajax({
                     url: 'user/getFriend.do',
                     type: 'post',
@@ -304,15 +298,11 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                     dataType: 'json',
                     success: function(result){
                         if(result.msg == 'success'){
+                            $friendList.attr('isinit', 1);
                             for(var i in result.friends){
-                                $firendList.append(that.getFirendItem(result.friends[i]));
+                                $friendList.append(that.getFriendItem(result.friends[i]));
                             }
-                            if(result.friends.length > 0){
-                                $groupItem.append($firendList);
-                                $firendList.slideDown();
-                                $tag.removeClass('fa-plus');
-                                $tag.addClass('fa-minus');
-                            }
+                            $friendList.slideDown();
                         } else if(result.msg == 'OFFLINE'){
                             $messager.warning('用户未登录');
                             login.show();
@@ -343,12 +333,12 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         $('<span style="margin-left:10px;"></span>').html(user.nickname + '(' + user.account + ')').appendTo($resultItem);
 
         $resultItem.hover(function(){
-            $('<i class="fa fa-plus fr add-user"></i>').on('click', function(){
+            $('<i class="fa fa-plus fr add-user" title="加为好友"></i>').on('click', function(){
                 // 添加好友
                 var friendVo = that.doAddFriend(user.account);
                 var $groupItem = $('.friend-group-item[group-num="0"]');
                 $groupItem.find('.badge').text(parseInt($groupItem.find('.badge').text()) + 1);
-                $groupItem.find('ul').append(that.getFirendItem(friendVo));
+                $groupItem.find('ul').append(that.getFriendItem(friendVo));
                 $resultItem.remove();
             }).appendTo($resultItem);
         }, function(){
@@ -358,6 +348,13 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         return $resultItem;
     }
 
+    /**
+     * 显示搜索结果
+     * @param box
+     * @param url
+     * @param data
+     * @param pageNumber
+     */
     home.showSearchResult = function(box, url, data, pageNumber){
         var that = this;
         data.pageNumber = pageNumber;
@@ -398,10 +395,10 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
 
         // 创建好友信息面板
         var $friendPanel = $('<div class="panel panel-info myright-n friend-panel"></div>').appendTo($('.myright'));
-        var $headeing = $('<div class="panel-heading">' +
+        var $heading = $('<div class="panel-heading">' +
             '我的好友' +
-            '<div class="fr add-friend" title="添加好友">' +
-                '<i class="fa fa-user-plus"></i>' +
+            '<div class="fr">' +
+                '<i class="fa fa-user-plus add-friend" title="添加好友"></i>' +
             '</div>' +
         '</div>').appendTo($friendPanel);
         var $body = $('<div class="panel-body"></div>').appendTo($friendPanel);
@@ -410,7 +407,7 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         var $createGroup = $('<button class="btn btn-info" id="createGroup"><i class="fa fa-plus"></i> 创建分组</button>').appendTo($body);
 
         // 添加好友
-        $headeing.find('.add-friend').on('click', function(){
+        $heading.find('.add-friend').on('click', function(){
             if($('.add-friend-panel').size() == 1){
                 $('.add-friend-panel').slideUp('normal', 'swing', function(){
                     $('.add-friend-panel').remove();
@@ -519,13 +516,13 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         $('.myright').find('.friend-panel').remove();
         $('.myright').find('.share-info').remove();
         share.initNum();
-        share.loadShareInfo('all', home_acc);
+        share.loadShareInfo('all', home_acc, null, 'home');
 
         $('#loadMore').show();
         $('.load-more').unbind('click');
         // 点击加载更多分享
         $('.load-more').on('click', function(){
-            share.loadShareInfo('all', home_acc);
+            share.loadShareInfo('all', home_acc, null, 'home');
         });
     }
 
@@ -949,7 +946,7 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         init: function(){
             var that = this;
             var option = {
-                title: '创建分组',
+                title: that.groupData? '修改分组名称' : '创建分组',
                 saveBtn: false,
                 closeBtn: false,
                 width: 300,
@@ -1045,6 +1042,131 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                     } else if(result.msg == 'OFFLINE'){
                         $messager.warning('用户未登录');
                         that.target.closeDialog();
+                        login.show();
+                    } else{
+                        $messager.error(result.msg);
+                    }
+                },
+                error: function(){
+                    $messager.warning('服务器出错');
+                }
+            });
+        }
+    }
+
+    var ChangeGroupDialog = function(instance, target, item, friendVo){
+        this.instance = instance;
+        this.target = target;
+        this.item = item;
+        this.friendVo = friendVo;
+        this.init();
+        this.initData();
+    }
+
+    ChangeGroupDialog.prototype = {
+        init: function(){
+            var that = this;
+            var option = {
+                title: '修改好友分组',
+                saveBtn: false,
+                closeBtn: false,
+                width: 300,
+                mode: that.paintComponent()
+            };
+            this.target.openModalDialog(option);
+            this.initData();
+        },
+        paintComponent: function(){
+            var that = this;
+            var $html = $(
+                '<div class="row">' +
+                    '<div class="col-xs-offset-1 col-xs-10">' +
+                        '<select class="form-control" id="groupId" placeholder="请选择分组"></select>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="row" style="margin-top:20px;">' +
+                    '<button class="col-xs-offset-2 col-xs-3 btn btn-primary" id="okBtn">确定</button>' +
+                    '<button class="col-xs-offset-2 col-xs-3 btn btn-primary" id="cancelBtn">取消</button>' +
+                '</div>');
+
+            this.$groupBox = $html.find('#groupId');
+            $html.find('#okBtn').on('click', function(){
+                that.save();
+                return false;
+            });
+
+            $html.find('#cancelBtn').on('click', function(){
+                that.target.closeDialog();
+                return false;
+            });
+
+            return $html;
+        },
+        save: function(){
+            var that = this;
+            $.ajax({
+                url: 'user/changeGroup.do',
+                data: {'friendId': that.friendVo.friend.friendId, 'groupId':that.$groupBox.val()},
+                type: 'post',
+                dataType: 'json',
+                success: function(result){
+                    if(result.msg == 'success'){
+                        // 与原来分组一样
+                        if(that.$groupBox.val() != that.friendVo.friend.groupId){
+                            $('.friend-list').each(function(){
+                                // 判断该分组是否已加载
+                                if($(this).attr('id') == that.$groupBox.val()){
+                                    var num = parseInt(that.item.parents('.friend-group-item').children('.badge').text());
+                                    that.item.parents('.friend-group-item').children('.badge').text(num - 1);
+                                    $(this).parent().children('.badge').text(parseInt($(this).parent().children('.badge').text()) + 1);
+                                    if($(this).attr('isinit') == 0){
+                                        that.item.slideUp('normal', 'swing', function(){
+                                            that.item.remove();
+                                        });
+                                    } else{
+                                        that.item.slideUp('normal', 'swing', function(){
+                                            that.item.remove();
+                                            $(this).append(that.item);
+                                        });
+                                    }
+                                    return false;
+                                }
+                            });
+                        }
+
+                        $messager.success('分组修改成功');
+                        that.target.closeDialog();
+                    } else if(result.msg == 'OFFLINE'){
+                        $messager.warning('用户未登录');
+                        login.show();
+                    } else{
+                        $messager.error(result.msg);
+                    }
+                },
+                error: function(){
+                    $messager.warning('服务器出错');
+                }
+            });
+        },
+        initData: function(){
+            var that = this;
+            $.ajax({
+                url: 'user/getGroup.do',
+                type: 'post',
+                dataType: 'json',
+                success: function(result){
+                    if(result.msg == 'success'){
+                        that.$groupBox.empty();
+                        for(var i in result.groups){
+                            var opt = $('<option></option>').val(result.groups[i].group.groupId)
+                                .text(result.groups[i].group.groupName);
+                            if(result.groups[i].group.groupId == that.friendVo.friend.groupId){
+                                opt.attr({'selected': 'selected'});
+                            }
+                            opt.appendTo(that.$groupBox);
+                        }
+                    } else if(result.msg == 'OFFLINE'){
+                        $messager.warning('用户未登录');
                         login.show();
                     } else{
                         $messager.error(result.msg);

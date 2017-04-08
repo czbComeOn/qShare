@@ -1,5 +1,6 @@
 package edu.gmxx.share.service;
 
+import edu.gmxx.share.domain.Friend;
 import edu.gmxx.share.domain.FriendGroup;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.utils.PageModel;
@@ -176,4 +177,13 @@ public interface IUserService {
      * @return
      */
     Map<String,Object> searchNickname(User user, String nickname, PageModel page);
+
+    /**
+     * 修改分组
+     *
+     * @param user
+     * @param friend
+     * @return
+     */
+    Map<String,Object> changeGroup(User user, Friend friend);
 }

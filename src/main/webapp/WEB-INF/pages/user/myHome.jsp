@@ -135,13 +135,13 @@
             <ul class="nav navbar-nav show-home">
                 <li><a href="index.do" name="index"><i class="fa fa-home"></i> 主页</a></li>
                 <c:if test="${user != null && acc.userId == user.userId}">
-                    <li class="active home-tab"><a href="javascript:void(0);" name="all"><i class="fa fa-share-alt"></i> 我的分享</a></li>
+                    <li class="active home-tab"><a href="javascript:void(0);" name="share"><i class="fa fa-share-alt"></i> 我的分享</a></li>
                     <li class="home-tab"><a href="javascript:void(0);" name="collect"><i class="fa fa-star"></i> 我的收藏</a></li>
                     <li class="home-tab"><a href="javascript:void(0);" name="friend"><i class="fa fa-heart"></i> 好友列表</a></li>
                     <li class="home-tab"><a href="javascript:void(0);" name="attention"><i class="fa fa-link"></i> 关注好友</a></li>
                 </c:if>
                 <c:if test="${user == null || acc.userId != user.userId}">
-                    <li class="active"><a href="javascript:void(0);" name="all"><i class="fa fa-share-alt"></i> TA的分享</a></li>
+                    <li class="active"><a href="javascript:void(0);" name="share"><i class="fa fa-share-alt"></i> TA的分享</a></li>
                 </c:if>
                 <c:if test="${user == null}">
                     <li><a id="login" href="javascript:void(0);" name="login">立即登录</a></li>
@@ -183,10 +183,10 @@
                         <div class="avatar-view" title="点击更换头像">
                             <c:choose>
                                 <c:when test="${acc.portraitPath != null}">
-                                    <img class="fl imgr imgr20 portrait" src="${pageContext.request.contextPath}/${acc.portraitPath}">
+                                    <img class="fl imgr mrg-r-20 portrait" src="${pageContext.request.contextPath}/${acc.portraitPath}">
                                 </c:when>
                                 <c:otherwise>
-                                    <img class="fl imgr imgr20 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
+                                    <img class="fl imgr mrg-r-20 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
                                 </c:otherwise>
                             </c:choose>
                         </div>
@@ -195,10 +195,10 @@
                         <div>
                             <c:choose>
                                 <c:when test="${acc.portraitPath != null}">
-                                    <img class="fl imgr imgr20 portrait" src="${pageContext.request.contextPath}/${acc.portraitPath}">
+                                    <img class="fl imgr mrg-r-20 portrait" src="${pageContext.request.contextPath}/${acc.portraitPath}">
                                 </c:when>
                                 <c:otherwise>
-                                    <img class="fl imgr imgr20 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
+                                    <img class="fl imgr mrg-r-20 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
                                 </c:otherwise>
                             </c:choose>
                         </div>

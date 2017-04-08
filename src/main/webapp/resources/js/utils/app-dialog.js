@@ -195,7 +195,7 @@ define(['jquery', 'bootstrap', 'jquery/jquery-ui'], function($){
         }
 
         if(!option.modalId){
-            throw new Error('组件必须包含id属性');
+            throw new Error(this + '组件必须包含id属性');
         } else{
             return dialog.open(option);
         }

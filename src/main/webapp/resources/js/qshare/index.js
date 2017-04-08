@@ -2,6 +2,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
         , 'jquery/snowfall.jquery', 'utils/upload-progress']
     , function ($messager, comm, login) {
     var CURRENT_PAGE_NUMBER = 1;
+    var home_ent; // 加载入口
     var share = {};
 
     /*
@@ -1045,9 +1046,11 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
      * @param shareType 分享类型
      * @param account 当前账户
      * @param loadType 加载类型 全部信息、收藏信息
+     * @param ent 加载入口 主页、个人主页:home
      */
-    share.loadShareInfo = function(shareType, account, loadType){
+    share.loadShareInfo = function(shareType, account, loadType, ent){
         var that = this;
+        home_ent = ent;
 
         if(!shareType){
             $('.show-share-type').find('li.active').each(function(){
@@ -1223,9 +1226,11 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
                     dataType: 'json',
                     success: function(result){
                         if(result.msg == 'success'){
-                            that.instance.$sharePanel.after(that.instance.getSharePanel(result.userInfo, result.shareInfo, null, result.userInfo, result.transpondInfo));
+                            if(home_ent != 'home'){
+                                that.instance.$sharePanel.after(that.instance.getSharePanel(result.userInfo, result.shareInfo, null, result.userInfo, result.transpondInfo));
+                                that.transpondCount.text(parseInt(that.transpondCount.text()) + 1);
+                            }
                             $messager.success('转发成功！');
-                            that.transpondCount.text(parseInt(that.transpondCount.text()) + 1);
                             that.target.closeDialog();
                         } else if(result.msg == 'OFFLINE'){
                             $messager.warning('用户未登录');

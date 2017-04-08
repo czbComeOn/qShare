@@ -14,10 +14,13 @@ body{
 .bot50{margin-bottom: 50px;}
 .fl{float: left;}
 .fr{float: right;}
-.imgr20{border-radius: 20px;}
 .imgr{border-radius: 50%;}
 .mrg20{margin: 20px;}
-.imgr20{margin-right: 20px;}
+.mrg-t-10{margi-top:10px;}
+.mrg-r-20{margin-right:20px;}
+.mrg-l-20{margin-right:20px;}
+.mrg-r-10{margin-right:10px;}
+.mrg-l-10{margin-right:10px;}
 .cf{clear: left;}
 em{font-style: normal;}
 /* 雪花样式 */

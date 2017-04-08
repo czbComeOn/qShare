@@ -614,4 +614,28 @@ public class UserServiceImpl implements IUserService {
 
         return result;
     }
+
+    @Override
+    public Map<String, Object> changeGroup(User user, Friend friend) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        if(StringUtils.isEmpty(friend.getFriendId())){
+            logger.debug("-----> 修改分组异常");
+            result.put("msg", "好友信息不存在，请刷新后重试！");
+            return result;
+        }
+
+        if(StringUtils.isEmpty(friend.getGroupId())){
+            logger.debug("-----> 修改分组异常");
+            result.put("msg", "分组信息不存在，请刷新后重试！");
+            return result;
+        }
+
+        friendMapper.updateByPrimaryKeySelective(friend);
+        result.put("friendVo", new FriendVo(friendMapper.selectByPrimaryKey(friend.getFriendId()), user
+            , shareMapper.getShareCountByUser(user.getUserId()), friendMapper.getAttentionCountByUser(user.getUserId())));
+        result.put("msg", "success");
+
+        return result;
+    }
 }

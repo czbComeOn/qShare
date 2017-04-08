@@ -1,5 +1,6 @@
 package edu.gmxx.share.controller;
 
+import edu.gmxx.share.domain.Friend;
 import edu.gmxx.share.domain.FriendGroup;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.service.IUserService;
@@ -322,5 +323,25 @@ public class UserController {
         }
 
         return userService.searchNickname(user, nickname, page);
+    }
+
+    /**
+     * 修改好友分组
+     * @param friend
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="changeGroup.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> changeGroup(Friend friend, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return userService.changeGroup(user, friend);
     }
 }
