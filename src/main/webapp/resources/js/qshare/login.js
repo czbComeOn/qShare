@@ -164,9 +164,12 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
      * 登录验证
      */
     login.login = function(){
+        $('#loginBtn').attr('disabled', 'disabled');
         if(!$('#account').val()){
+            $('#loginBtn').removeAttr('disabled');
             $messager.warning('账号不能为空');
         } else if(!$('#password').val()){
+            $('#loginBtn').removeAttr('disabled');
             $messager.warning('密码不能为空');
         } else{
             // 提交登录信息
@@ -182,6 +185,7 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
                     } else{
                         $messager.error(result.msg);
                     }
+                    $('#loginBtn').removeAttr('disabled');
                 },
                 error: function(){
                     $messager.error('服务器出错！');
@@ -194,9 +198,12 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
      * 注册验证
      */
     login.register = function(){
+        $('#registerBtn').attr('disabled', 'disabled');
         if(!$('#rAccount').val()){
+            $('#registerBtn').removeAttr('disabled');
             $messager.warning('账号不能为空');
         } else if(!$('#rPassword').val() || !$('#againPassword').val()){
+            $('#registerBtn').removeAttr('disabled');
             $messager.warning('密码不能为空');
         } else{
             if ($('#againPassword').val() === $('#rPassword').val()) {
@@ -207,6 +214,7 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
                 // 弹窗提示用户输入手机验证
                 new PhoneValidation(login, $(this), {'account': $('#rAccount').val(), 'password': $('#againPassword').val()});
             } else {
+                $('#registerBtn').removeAttr('disabled');
                 $messager.warning('两次输入的密码不一样');
             }
         }
@@ -403,12 +411,16 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
             });
 
             this.$submitRegisterBtn.on('click', function () {
+                that.$submitRegisterBtn.attr('disabled', 'disabled');
                 that.info.phone = that.$regPhone.val();
                 if(!that.info.phone){
+                    that.$submitRegisterBtn.removeAttr('disabled');
                     $messager.warning('手机号码不能为空！');
                 } else if(!that.$code.val()){
+                    that.$submitRegisterBtn.removeAttr('disabled');
                     $messager.warning('请输入验证码！');
                 } else if(that.$code.val() != that.currCode){
+                    that.$submitRegisterBtn.removeAttr('disabled');
                     $messager.warning('验证码输入有误！');
                 } else{
                     $.ajax({
@@ -429,6 +441,7 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
                             } else {
                                 $messager.error(result.msg);
                             }
+                            that.$submitRegisterBtn.removeAttr('disabled');
                         }
                     });
                 }
@@ -504,7 +517,9 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
             this.$againPassword = $html.find('#againPassword');
             this.$account = $html.find('#account');
 
-            $html.find('#okBtn').on('click', function(){
+            this.$okBtn = $html.find('#okBtn');
+            this.$okBtn.on('click', function(){
+                that.$okBtn.attr('disabled', 'disabled');
                 that.save();
                 return false;
             });
@@ -589,6 +604,7 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
                     } else{
                         $messager.error(result.msg);
                     }
+                    that.$okBtn.removeAttr('disabled');
                 },
                 error: function(){
                     $messager.warning('服务器出错');

@@ -388,7 +388,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
      */
     share.getSharePanel = function (user, share,collects, currUser, transpondInfo, transpondCount) {
         var that = this, i;
-        var $panel = $('<div class="panel panel-default myright-n share-info"></div>');
+        var $panel = $('<div class="panel myright-n share-info"></div>');
         var $title = $('<div class="panel-heading"></div>').appendTo($panel);
         var $body = $('<div class="panel-body"></div>').appendTo($panel);
 

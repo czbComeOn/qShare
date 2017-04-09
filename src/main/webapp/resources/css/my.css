@@ -1,11 +1,12 @@
 *{margin:0;	padding:0;}
 body{
 	width: 100%;
-	background: -ms-linear-gradient(top, #11c1d8,  #a0e3ec);   /* IE 10 */
-	background:-webkit-linear-gradient(#11c1d8, #a0e3ec); /* google */
-	background:-moz-linear-gradient(top,#11c1d8,#a0e3ec); /*火狐*/
-	background: -webkit-linear-gradient(top, #11c1d8, #a0e3ec);   /*Safari5.1 Chrome 10+*/
-	background: -o-linear-gradient(top, #11c1d8, #a0e3ec);  /*Opera 11.10+*/
+    background: #b4daf0;
+	/*background: -ms-linear-gradient(top, #11c1d8,  #a0e3ec);   !* IE 10 *!
+	background:-webkit-linear-gradient(#11c1d8, #a0e3ec); !* google *!
+	background:-moz-linear-gradient(top,#11c1d8,#a0e3ec); !*火狐*!
+	background: -webkit-linear-gradient(top, #11c1d8, #a0e3ec);   !*Safari5.1 Chrome 10+*!
+	background: -o-linear-gradient(top, #11c1d8, #a0e3ec);  !*Opera 11.10+*!*/
 }
 /*------公共样式--------*/
 .list-group-item > a{text-decoration: none;}
@@ -279,6 +280,7 @@ em{font-style: normal;}
 .emotion-img > img{margin-bottom: 8px;}
 .share-panel .panel-footer{height: 50px;}
 .title-center > a{text-decoration: none;}
+.title-center > a:first-child{font-weight:bold;}
 .footer-left{margin-top: 10px;}
 .footer-tool{width: 100%; text-align: right;}
 .footer-left > a, .footer-tool > a{text-decoration: none; margin-left: 10px;}
@@ -291,8 +293,9 @@ em{font-style: normal;}
 }
 
 /*--------分享信息共享面板------*/
+.share-info .panel-heading{border-bottom:1px solid #ddd;}
 .share-info .panel-heading > div{display: inline-block;}
-.share-info .thumb-transpond{border-top: 1px solid #ccc; color: #337ab7;}
+.share-info .thumb-transpond{border-top: 1px solid #ddd; color: #337ab7;}
 .share-info .add-eval-box{text-align: right;}
 .share-info > .panel-heading{height: 60px;}
 .share-info > .panel-heading > .title-center{
@@ -307,6 +310,20 @@ em{font-style: normal;}
 	color: #acaab9;
 }
 @media screen and (max-width:767px){
+    .myright-n{
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        -webkit-border-radius:0;
+        -moz-border-radius:0;
+        border-radius:0;
+        border:0;
+    }
+    .form-control{
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+    }
     .share-info > .panel-heading > .title-center{width: 79%;}
 }
 @media screen and (max-width:480px){

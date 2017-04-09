@@ -88,8 +88,10 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                             // 该分组好友数量减1
                             var $badge = item.parents('.friend-group-item').children('.badge');
                             $badge.text(parseInt($badge.text()) - 1);
-                            item.remove();
-                            $messager.success('删除成功');
+                            item.slideUp('normal', 'swing', function(){
+                                item.remove();
+                                $messager.success('删除成功');
+                            });
                         } else if(result.msg == 'OFFLINE'){
                             $messager.warning('用户未登录');
                             login.show();
@@ -316,7 +318,9 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                 var $groupItem = $('.friend-group-item[group-num="0"]');
                 $groupItem.find('.badge').text(parseInt($groupItem.find('.badge').text()) + 1);
                 $groupItem.find('ul').append(that.getFriendItem(friendVo));
-                $resultItem.remove();
+                $resultItem.slideUp('normal', 'swing', function(){
+                    $resultItem.remove();
+                });
             }).appendTo($resultItem);
         }, function(){
             $resultItem.find('.add-user').remove();
@@ -1050,7 +1054,9 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
             this.$graduateInstitutions = $html.find('#graduateInstitutions');
             this.$occupation = $html.find('#occupation');
 
-            $html.find('#saveData').on('click', function(){
+            this.$saveBtn = $html.find('#saveData');
+            this.$saveBtn.on('click', function(){
+                that.$saveBtn.attr('disabled', 'disabled');
                 that.save();
                 return false;
             });
@@ -1083,6 +1089,7 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                     } else{
                         $messager.error(result.msg);
                     }
+                    that.$saveBtn.removeAttr('disabled');
                 },
                 error: function(){
                     $messager.warning('服务器出错');
@@ -1211,7 +1218,9 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
             '</form></div>');
 
             this.$groupName = $html.find('#groupName');
-            $html.find('#okBtn').on('click', function(){
+            this.$okBtn = $html.find('#okBtn');
+            this.$okBtn.on('click', function(){
+                that.$okBtn.attr('disabled', 'disabled');
                 that.save();
                 return false;
             });
@@ -1284,6 +1293,7 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                     } else{
                         $messager.error(result.msg);
                     }
+                    that.$okBtn.removeAttr('disabled');
                 },
                 error: function(){
                     $messager.warning('服务器出错');
@@ -1328,7 +1338,9 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                 '</div>');
 
             this.$groupBox = $html.find('#groupId');
-            $html.find('#okBtn').on('click', function(){
+            this.$okBtn = $html.find('#okBtn');
+            this.$okBtn.on('click', function(){
+                that.$okBtn.attr('disabled', 'disabled');
                 that.save();
                 return false;
             });
@@ -1352,19 +1364,20 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                         // 与原来分组一样
                         if(that.$groupBox.val() != that.friendVo.friend.groupId){
                             $('.friend-list').each(function(){
+                                var box = $(this);
                                 // 判断该分组是否已加载
-                                if($(this).attr('id') == that.$groupBox.val()){
+                                if(box.attr('id') == that.$groupBox.val()){
                                     var num = parseInt(that.item.parents('.friend-group-item').children('.badge').text());
                                     that.item.parents('.friend-group-item').children('.badge').text(num - 1);
-                                    $(this).parent().children('.badge').text(parseInt($(this).parent().children('.badge').text()) + 1);
-                                    if($(this).attr('isinit') == 0){
+                                    box.parent().children('.badge').text(parseInt(box.parent().children('.badge').text()) + 1);
+                                    if(box.attr('isinit') == 0){
                                         that.item.slideUp('normal', 'swing', function(){
                                             that.item.remove();
                                         });
                                     } else{
                                         that.item.slideUp('normal', 'swing', function(){
+                                            box.append(that.instance.getFriendItem(that.friendVo));
                                             that.item.remove();
-                                            $(this).append(that.item);
                                         });
                                     }
                                     return false;
@@ -1380,6 +1393,7 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                     } else{
                         $messager.error(result.msg);
                     }
+                    that.$okBtn.removeAttr('disabled');
                 },
                 error: function(){
                     $messager.warning('服务器出错');
