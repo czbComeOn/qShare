@@ -180,32 +180,33 @@
             <div class="col-md-4 myleft">
                 <div class="myleft-n mrg20" id="crop-avatar">
                     <c:if test="${user != null && acc.userId == user.userId}">
-                        <div class="avatar-view" title="点击更换头像">
+                        <div class="avatar-view" title="点击更换头像" style="cursor: pointer;">
                             <c:choose>
                                 <c:when test="${acc.portraitPath != null}">
-                                    <img class="fl imgr mrg-r-20 portrait" src="${pageContext.request.contextPath}/${acc.portraitPath}">
+                                    <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/${acc.portraitPath}">
                                 </c:when>
                                 <c:otherwise>
-                                    <img class="fl imgr mrg-r-20 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
+                                    <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
                                 </c:otherwise>
                             </c:choose>
                         </div>
                     </c:if>
                     <c:if test="${user == null || acc.userId != user.userId}">
+                        <a class="fr" id="informUser" userId="${acc.userId}" href="javascript:void(0);" title="点击举报TA" style="display:none;cursor:pointer;text-decoration:none;">举报</a>
                         <div>
                             <c:choose>
                                 <c:when test="${acc.portraitPath != null}">
-                                    <img class="fl imgr mrg-r-20 portrait" src="${pageContext.request.contextPath}/${acc.portraitPath}">
+                                    <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/${acc.portraitPath}">
                                 </c:when>
                                 <c:otherwise>
-                                    <img class="fl imgr mrg-r-20 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
+                                    <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
                                 </c:otherwise>
                             </c:choose>
                         </div>
                     </c:if>
                     <div class="user-info fl">
                         <h4><a class="nickname" href="myHome.do?account=${acc.account}" title="个人主页">${acc.nickname}</a></h4>
-                        <div class="addr" style="color:#b8ecfa">
+                        <div class="addr">
                             <i class="fa fa-map-marker"></i>
                             <c:choose>
                                 <c:when test="${acc.region == null || acc.region == ''}">未知</c:when>

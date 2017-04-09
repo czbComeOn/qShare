@@ -5,6 +5,8 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
     function(login, share, $messager, comm){
     var ME_ATTENTION_NUM = 1; // 我关注谁页码
     var WHO_ATTENTION_NUM = 1; // 谁关注我页码
+    var SEARCH_ACCOUNT_NUM = 1; // 根据账号查找页码
+    var SEARCH_NICKNAME_NUM = 1; // 根据昵称查找页码
     var home_acc; // 当前页面的所属账户
     var home = {};
 
@@ -180,7 +182,6 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
             $row.append($opt);
         }, function(){
             $row.find('.friend-opt').remove();
-            // $row.find('.delete-friend, .change-group').remove();
         });
 
         return $friendItem;
@@ -309,7 +310,7 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         var $resultItem = $('<div class="search-user-result"></div>');
         var src = user.portraitPath ? user.portraitPath : 'resources/img/header/portrait.jpg';
         $('<img class="search-user-portrait"/>').attr('src', src).appendTo($resultItem);
-        $('<span style="margin-left:10px;"></span>').html(user.nickname + '(' + user.account + ')').appendTo($resultItem);
+        $('<a href="myHome.do?account=' + user.account + '" style="margin-left:10px;"></a>').html(user.nickname + '(' + user.account + ')').appendTo($resultItem);
 
         $resultItem.hover(function(){
             $('<i class="fa fa-plus fr add-user" title="加为好友"></i>').on('click', function(){
@@ -334,11 +335,9 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
      * @param box
      * @param url
      * @param data
-     * @param pageNumber
      */
-    home.showSearchResult = function(box, url, data, pageNumber){
+    home.showSearchResult = function(box, url, data){
         var that = this;
-        data.pageNumber = pageNumber;
         $.ajax({
             url: url,
             type: 'post',
@@ -351,6 +350,14 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                     } else{
                         for(var i in result.users){
                             box.append(that.getSearchResult(result.users[i]));
+                        }
+
+                        if(result.page.totalPages > data.pageNumber){
+                            data.pageNumber = data.pageNumber + 1;
+                            $('<div style="text-align:center;cursor:pointer;margin-top:10px;padding-top:10px;border-top:1px solid #ccc;">查看更多</div>').on('click', function(){
+                                that.showSearchResult(box, url, data);
+                                $(this).remove();
+                            }).appendTo(box);
                         }
                     }
                 } else if(result.msg == 'OFFLINE'){
@@ -627,18 +634,20 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                 // 查找事件
                 $addBody.find('#searchAccountBtn').on('click', function(){
                     if($addBody.find('#accountValue').val()){
+                        SEARCH_ACCOUNT_NUM = 1;
                         $searchResult.empty();
                         that.showSearchResult($searchResult, 'user/searchAccount.do'
-                            , {'account': $addBody.find('#accountValue').val()}, 1);
+                            , {'account': $addBody.find('#accountValue').val(), 'pageNumber':SEARCH_ACCOUNT_NUM});
                         $searchResult.appendTo($addBody);
                     }
                 });
 
                 $addBody.find('#searchNicknameBtn').on('click', function(){
                     if($addBody.find('#nicknameValue').val()){
+                        SEARCH_NICKNAME_NUM = 1;
                         $searchResult.empty();
                         that.showSearchResult($searchResult, 'user/searchNickname.do'
-                            , {'nickname': $addBody.find('#nicknameValue').val()}, 1);
+                            , {'nickname': $addBody.find('#nicknameValue').val(), 'pageNumber':SEARCH_NICKNAME_NUM});
                         $searchResult.appendTo($addBody);
                     }
                 });
@@ -768,6 +777,42 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         });
     }
 
+    /**
+     * 添加好友
+     * @param account
+     */
+    home.doAddFriend = function(account){
+        var friendVo;
+        $.ajax({
+            url: 'user/addFriend.do',
+            data: {'account': account},
+            type: 'post',
+            dataType: 'json',
+            async: false,
+            success: function(result){
+                if(result.msg == 'success'){
+                    friendVo = result.friendVo;
+                    $messager.success('添加成功');
+                } else if(result.msg == 'AlreadyFriend'){
+                    $messager.success('对方已经是您的好友！');
+                } else if(result.msg == 'OFFLINE'){
+                    $messager.warning('用户未登录');
+                    login.show();
+                } else{
+                    $messager.error(result.msg);
+                }
+            },
+            error: function(){
+                $messager.warning('服务器出错');
+            }
+        });
+        return friendVo;
+    }
+
+    home.informUser = function(){
+        new InformUserDialog($('#informUser'), $('#informUser').attr('userId'));
+    }
+
     home.initEvent = function(){
         var that = this;
 
@@ -843,38 +888,14 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         $('#addFriend').on('click', function(){
             that.doAddFriend(home_acc);
         });
-    }
 
-    /**
-     * 添加好友
-     * @param account
-     */
-    home.doAddFriend = function(account){
-        var friendVo;
-        $.ajax({
-            url: 'user/addFriend.do',
-            data: {'account': account},
-            type: 'post',
-            dataType: 'json',
-            async: false,
-            success: function(result){
-                if(result.msg == 'success'){
-                    friendVo = result.friendVo;
-                    $messager.success('添加成功');
-                } else if(result.msg == 'AlreadyFriend'){
-                    $messager.success('对方已经是您的好友！');
-                } else if(result.msg == 'OFFLINE'){
-                    $messager.warning('用户未登录');
-                    login.show();
-                } else{
-                    $messager.error(result.msg);
-                }
-            },
-            error: function(){
-                $messager.warning('服务器出错');
-            }
+        $('#crop-avatar').hover(function(){
+            $('#informUser').show();
+        }, function(){
+            $('#informUser').hide();
         });
-        return friendVo;
+
+        $('#informUser').on('click', home.informUser);
     }
 
     home.init = function(acc){
@@ -1114,7 +1135,7 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                                 message: '手机号码不能为空'
                             },
                             regexp: {
-                                regexp: /^1[3|4|5|7|8][0-9]{9}$/,
+                                regexp: /^1[3|5|8][0-9]{9}$/,
                                 message: '手机号码格式不正确'
                             }
                         }
@@ -1122,8 +1143,8 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                     nickname: {
                         validators: {
                             stringLength: {
-                                max: 20,
-                                message: '昵称不能超过20个字符'
+                                max: 10,
+                                message: '昵称不能超过10个字符'
                             }
                         }
                     },
@@ -1132,6 +1153,38 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                             stringLength: {
                                 max: 10,
                                 message: '姓名不能超过10个字符'
+                            }
+                        }
+                    },
+                    signature: {
+                        validators: {
+                            stringLength: {
+                                max: 50,
+                                message: '个性签名不能超过50个字'
+                            }
+                        }
+                    },
+                    notes: {
+                        validators: {
+                            stringLength: {
+                                max: 100,
+                                message: '个人说明不能超过100个字'
+                            }
+                        }
+                    },
+                    graduateInstitutions: {
+                        validators: {
+                            stringLength: {
+                                max: 20,
+                                message: '毕业院校不能超过20个字'
+                            }
+                        }
+                    },
+                    occupation: {
+                        validators: {
+                            stringLength: {
+                                max: 20,
+                                message: '职业信息不能超过20个字'
                             }
                         }
                     }
@@ -1302,6 +1355,14 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         }
     }
 
+    /**
+     * 修改好友分组
+     * @param instance
+     * @param target
+     * @param item
+     * @param friendVo
+     * @constructor
+     */
     var ChangeGroupDialog = function(instance, target, item, friendVo){
         this.instance = instance;
         this.target = target;
@@ -1428,6 +1489,80 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                     $messager.warning('服务器出错');
                 }
             });
+        }
+    }
+
+    var InformUserDialog = function(target, userId){
+        this.target = target;
+        this.userId = userId;
+        this.init();
+    }
+
+    InformUserDialog.prototype = {
+        init: function(){
+            var that = this;
+            var option = {
+                title: '举报',
+                saveBtn: false,
+                closeBtn: false,
+                mode: that.paintComponent()
+            };
+            this.target.openModalDialog(option);
+        },
+        paintComponent: function(){
+            var that = this;
+            var $html = $(
+                '<div class="row">' +
+                    '<div class="col-xs-12">' +
+                        '<textarea class="form-control" id="informContent" name="informContent"' +
+                            'placeholder="请填写举报内容" required></textarea>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="row" style="margin-top:20px;">' +
+                    '<div class="col-xs-12">' +
+                        '<button class="btn btn-primary fr" style="width:80px;" id="cancelBtn">取消</button>' +
+                        '<button class="btn btn-primary fr mrg-r-10" style="width:80px;" id="okBtn">确定</button>' +
+                    '</div>' +
+                '</div>');
+
+            this.$informContent = $html.find('#informContent');
+            that.$okBtn = $html.find('#okBtn');
+            $html.find('#okBtn').on('click', function(){
+                that.$okBtn.attr('disabled', 'disabled');
+                if(!that.$informContent.val()){
+                    $messager.warning('举报内容不能为空！');
+                    that.$okBtn.removeAttr('disabled');
+                } else if(that.$informContent.val().length > 50){
+                    $messager.warning('举报内容不能超过50个字符！');
+                } else{
+                    $.ajax({
+                        url: 'user/informUser.do',
+                        type: 'post',
+                        data: {'buserId': that.userId, 'informContent': that.$informContent.val()},
+                        dataType: 'json',
+                        success: function(result){
+                            if(result.msg == 'success'){
+                                $messager.success('举报成功！');
+                                that.target.closeDialog();
+                            } else if(result.msg == 'OFFLINE'){
+                                $messager.warning('用户未登录');
+                                login.show();
+                            } else{
+                                $messager.error(result.msg);
+                            }
+                        },
+                        error: function(){
+                            $messager.warning('服务器出错');
+                        }
+                    });
+                }
+            });
+
+            $html.find('#cancelBtn').on('click', function(){
+                that.target.closeDialog();
+            });
+
+            return $html;
         }
     }
 

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by BIN on 2017/3/27.
@@ -65,5 +67,17 @@ public class MyStringUtil {
     public static String getTimeFormatter(String formatter){
         SimpleDateFormat sdf = new SimpleDateFormat(formatter);
         return sdf.format(new Date());
+    }
+
+    /**
+     * 验证手机号码格式
+     * @param phone
+     * @return
+     */
+    public static boolean matcherPhone(String phone){
+        Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
+        Matcher m = p.matcher(phone);
+
+        return m.matches();
     }
 }

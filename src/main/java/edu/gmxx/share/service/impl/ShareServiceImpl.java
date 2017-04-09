@@ -261,7 +261,7 @@ public class ShareServiceImpl implements IShareService {
         result.put("msg", "success");
         result.put("shareInfo", share);
         result.put("userInfo", user);
-        result.put("transpondInfo", new TranspondVo(transpond, userMapper.selectByPrimaryKey(transpond.getUserId()).getNickname()));
+        result.put("transpondInfo", new TranspondVo(transpond, userMapper.selectByPrimaryKey(transpond.getUserId())));
 
         return result;
     }
@@ -467,7 +467,7 @@ public class ShareServiceImpl implements IShareService {
             TranspondVo transpondVo = null;
             if(!StringUtils.isEmpty(share.getTranspondId())){
                 Transpond transpond = transpondMapper.selectByPrimaryKey(share.getTranspondId());
-                transpondVo = new TranspondVo(transpond, userMapper.selectByPrimaryKey(transpond.getUserId()).getNickname());
+                transpondVo = new TranspondVo(transpond, userMapper.selectByPrimaryKey(transpond.getUserId()));
             }
             int transpondCount = transpondMapper.getTranspondCount(share.getShareId());
 

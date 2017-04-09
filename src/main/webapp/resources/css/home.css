@@ -47,12 +47,12 @@
 .search-result-box{
     margin-top:20px;
     border-top:1px solid #ccc;
-    max-height:200px;
-    overflow-x: hidden;
-    overflow-y: auto;
 }
 .search-user-result{
     margin-top: 5px;
+}
+.search-user-result > a{
+    text-decoration: none;
 }
 .add-user{
     text-align: center;

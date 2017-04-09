@@ -3,8 +3,8 @@
 <mapper namespace="edu.gmxx.share.dao.InformMapper" >
   <resultMap id="BaseResultMap" type="edu.gmxx.share.domain.Inform" >
     <id column="inform_id" property="informId" jdbcType="VARCHAR" />
-    <result column="a_user_id" property="aUserId" jdbcType="VARCHAR" />
-    <result column="b_user_id" property="bUserId" jdbcType="VARCHAR" />
+    <result column="auser_id" property="auserId" jdbcType="VARCHAR" />
+    <result column="buser_id" property="buserId" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="audit_user_id" property="auditUserId" jdbcType="VARCHAR" />
     <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
@@ -12,7 +12,7 @@
     <result column="inform_content" property="informContent" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    inform_id, a_user_id, b_user_id, create_time, audit_user_id, audit_time, audit_status, 
+    inform_id, auser_id, buser_id, create_time, audit_user_id, audit_time, audit_status, 
     inform_content
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -26,10 +26,10 @@
     where inform_id = #{informId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="edu.gmxx.share.domain.Inform" >
-    insert into s_inform (inform_id, a_user_id, b_user_id, 
+    insert into s_inform (inform_id, auser_id, buser_id, 
       create_time, audit_user_id, audit_time, 
       audit_status, inform_content)
-    values (#{informId,jdbcType=VARCHAR}, #{aUserId,jdbcType=VARCHAR}, #{bUserId,jdbcType=VARCHAR}, 
+    values (#{informId,jdbcType=VARCHAR}, #{auserId,jdbcType=VARCHAR}, #{buserId,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{auditUserId,jdbcType=VARCHAR}, #{auditTime,jdbcType=TIMESTAMP}, 
       #{auditStatus,jdbcType=VARCHAR}, #{informContent,jdbcType=VARCHAR})
   </insert>
@@ -39,11 +39,11 @@
       <if test="informId != null" >
         inform_id,
       </if>
-      <if test="aUserId != null" >
-        a_user_id,
+      <if test="auserId != null" >
+        auser_id,
       </if>
-      <if test="bUserId != null" >
-        b_user_id,
+      <if test="buserId != null" >
+        buser_id,
       </if>
       <if test="createTime != null" >
         create_time,
@@ -65,11 +65,11 @@
       <if test="informId != null" >
         #{informId,jdbcType=VARCHAR},
       </if>
-      <if test="aUserId != null" >
-        #{aUserId,jdbcType=VARCHAR},
+      <if test="auserId != null" >
+        #{auserId,jdbcType=VARCHAR},
       </if>
-      <if test="bUserId != null" >
-        #{bUserId,jdbcType=VARCHAR},
+      <if test="buserId != null" >
+        #{buserId,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null" >
         #{createTime,jdbcType=TIMESTAMP},
@@ -91,11 +91,11 @@
   <update id="updateByPrimaryKeySelective" parameterType="edu.gmxx.share.domain.Inform" >
     update s_inform
     <set >
-      <if test="aUserId != null" >
-        a_user_id = #{aUserId,jdbcType=VARCHAR},
+      <if test="auserId != null" >
+        auser_id = #{auserId,jdbcType=VARCHAR},
       </if>
-      <if test="bUserId != null" >
-        b_user_id = #{bUserId,jdbcType=VARCHAR},
+      <if test="buserId != null" >
+        buser_id = #{buserId,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -117,8 +117,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="edu.gmxx.share.domain.Inform" >
     update s_inform
-    set a_user_id = #{aUserId,jdbcType=VARCHAR},
-      b_user_id = #{bUserId,jdbcType=VARCHAR},
+    set auser_id = #{auserId,jdbcType=VARCHAR},
+      buser_id = #{buserId,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       audit_user_id = #{auditUserId,jdbcType=VARCHAR},
       audit_time = #{auditTime,jdbcType=TIMESTAMP},

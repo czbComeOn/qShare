@@ -2,6 +2,7 @@ package edu.gmxx.share.service;
 
 import edu.gmxx.share.domain.Friend;
 import edu.gmxx.share.domain.FriendGroup;
+import edu.gmxx.share.domain.Inform;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.utils.PageModel;
 
@@ -216,4 +217,6 @@ public interface IUserService {
      * @return
      */
     int getWhoAttentionMeCount(String userId);
+
+    Map<String,Object> informUser(User user, Inform inform);
 }

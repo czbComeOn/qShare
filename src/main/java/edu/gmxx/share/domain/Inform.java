@@ -11,12 +11,12 @@ public class Inform {
     /**
      * 举报者
      */
-    private String aUserId;
+    private String auserId;
 
     /**
      * 被举报者ID
      */
-    private String bUserId;
+    private String buserId;
 
     /**
      * 举报时间
@@ -61,34 +61,34 @@ public class Inform {
 
     /**
      * 举报者
-     * @return a_user_id 举报者
+     * @return auser_id 举报者
      */
-    public String getaUserId() {
-        return aUserId;
+    public String getAuserId() {
+        return auserId;
     }
 
     /**
      * 举报者
-     * @param aUserId 举报者
+     * @param auserId 举报者
      */
-    public void setaUserId(String aUserId) {
-        this.aUserId = aUserId == null ? null : aUserId.trim();
+    public void setAuserId(String auserId) {
+        this.auserId = auserId == null ? null : auserId.trim();
     }
 
     /**
      * 被举报者ID
-     * @return b_user_id 被举报者ID
+     * @return buser_id 被举报者ID
      */
-    public String getbUserId() {
-        return bUserId;
+    public String getBuserId() {
+        return buserId;
     }
 
     /**
      * 被举报者ID
-     * @param bUserId 被举报者ID
+     * @param buserId 被举报者ID
      */
-    public void setbUserId(String bUserId) {
-        this.bUserId = bUserId == null ? null : bUserId.trim();
+    public void setBuserId(String buserId) {
+        this.buserId = buserId == null ? null : buserId.trim();
     }
 
     /**

@@ -44,7 +44,7 @@ em{font-style: normal;}
 .to-top:hover{
     cursor: pointer;
     opacity: 1;
-    background: rgba(216,193,193,.5);
+    background: rgba(216,193,193);
 }
 @media screen and (max-width: 767px){
     .to-top{width: 30px;height: 30px;}
@@ -212,6 +212,7 @@ em{font-style: normal;}
 .myleft .user-info{padding-top:10px;}
 .user-info a{text-decoration:none;}
 .user-info .nickname:hover{color: #d9edf7;}
+.addr{color:#dbe0e2;max-width:220px;overflow:hidden;}
 
 @media screen and (max-width:767px) {
 	.qshare-main {padding: 0;margin-top: 50px;}
@@ -280,7 +281,7 @@ em{font-style: normal;}
 .emotion-img > img{margin-bottom: 8px;}
 .share-panel .panel-footer{height: 50px;}
 .title-center > a{text-decoration: none;}
-.title-center > a:first-child{font-weight:bold;}
+.title-center > .user-title{font-weight:bold;}
 .footer-left{margin-top: 10px;}
 .footer-tool{width: 100%; text-align: right;}
 .footer-left > a, .footer-tool > a{text-decoration: none; margin-left: 10px;}

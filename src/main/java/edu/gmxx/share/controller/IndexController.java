@@ -122,7 +122,7 @@ public class IndexController {
 	 */
 	@RequestMapping(value="myHome.do")
 	public ModelAndView myHome(String account, HttpSession session){
-		ModelAndView view = new ModelAndView("user/myHome");
+		ModelAndView view = new ModelAndView("myHome");
 
 		User user = (User) session.getAttribute("user");
 

@@ -184,7 +184,7 @@
                     <div class="myleft-n unlogin panel panel-info" style="margin-top: 10px;">
                         <div class="panel-body">
                             <a class="login-tab" href="javascript:void(0);" title="点击登录">
-                                <img class="fl imgr mrg-r-20 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
+                                <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
                             </a>
                             <div class="user-info fl">
                                 <h4><a class="login-tab" href="javascript:void(0);" title="点击登录">未登录</a></h4>
@@ -200,16 +200,16 @@
                         <a href="myHome.do?account=${user.account}" title="个人主页">
                             <c:choose>
                                 <c:when test="${user.portraitPath != null}">
-                                    <img class="fl imgr mrg-r-20 portrait" src="${pageContext.request.contextPath}/${user.portraitPath}">
+                                    <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/${user.portraitPath}">
                                 </c:when>
                                 <c:otherwise>
-                                    <img class="fl imgr mrg-r-20 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
+                                    <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
                                 </c:otherwise>
                             </c:choose>
                         </a>
                         <div class="user-info fl">
                             <h4><a class="nickname" href="myHome.do?account=${user.account}" title="个人主页">${user.nickname}</a></h4>
-                            <div class="addr" style="color:#b8ecfa">
+                            <div class="addr">
                                 <i class="fa fa-map-marker"></i>
                                 <c:choose>
                                     <c:when test="${user.region == null}">未知</c:when>

@@ -1,11 +1,9 @@
 package edu.gmxx.share.service.impl;
 
-import edu.gmxx.share.dao.FriendGroupMapper;
-import edu.gmxx.share.dao.FriendMapper;
-import edu.gmxx.share.dao.ShareMapper;
-import edu.gmxx.share.dao.UserMapper;
+import edu.gmxx.share.dao.*;
 import edu.gmxx.share.domain.Friend;
 import edu.gmxx.share.domain.FriendGroup;
+import edu.gmxx.share.domain.Inform;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.dto.UserDTO;
 import edu.gmxx.share.service.IUserService;
@@ -41,6 +39,8 @@ public class UserServiceImpl implements IUserService {
     private FriendGroupMapper friendGroupMapper;
     @Autowired
     private ShareMapper shareMapper;
+    @Autowired
+    private InformMapper informMapper;
 
     @Override
     public Map<String, Object> login(User user) {
@@ -179,6 +179,48 @@ public class UserServiceImpl implements IUserService {
         if(!currUser.getAccount().equals(userData.getAccount())){
             logger.debug("-----> 修改用户数据异常");
             result.put("msg", "用户信息操作异常，请刷新后重试！");
+            return result;
+        }
+
+        if(StringUtils.isEmpty(userData.getPhone())){
+            result.put("msg", "手机号码不能为空！");
+            return result;
+        }
+
+        // 判断格式
+        if(!MyStringUtil.matcherPhone(userData.getPhone())){
+            result.put("msg", "手机号码格式不正确！");
+            return result;
+        }
+
+        if(userData.getNickname().length() > 10){
+            result.put("msg", "昵称不能超过10个字！");
+            return result;
+        }
+
+        if(userData.getName().length() > 10){
+            result.put("msg", "姓名不能超过10个字！");
+            return result;
+        }
+
+        if(!StringUtils.isEmpty(userData.getSignature()) && userData.getSignature().length() > 50){
+            result.put("msg", "个性签名不能超过50个字！");
+            return result;
+        }
+
+        if(!StringUtils.isEmpty(userData.getNotes()) && userData.getNotes().length() > 50){
+            result.put("msg", "个人说明不能超过50个字！");
+            return result;
+        }
+
+        if(!StringUtils.isEmpty(userData.getGraduateInstitutions())
+                && userData.getGraduateInstitutions().length() > 20){
+            result.put("msg", "毕业院校不能超过20个字！");
+            return result;
+        }
+
+        if(!StringUtils.isEmpty(userData.getOccupation()) && userData.getOccupation().length() > 20){
+            result.put("msg", "职业信息不能超过20个字！");
             return result;
         }
 
@@ -587,7 +629,7 @@ public class UserServiceImpl implements IUserService {
 
         // 获取总记录数
         page.setTotalRecord(userMapper.searchAccountCount(acc));
-        page.setPageSize(5);
+        page.setPageSize(10);
 
         ud.setPage(page);
         ud.setUser(acc);
@@ -615,7 +657,7 @@ public class UserServiceImpl implements IUserService {
 
         // 获取总记录数
         page.setTotalRecord(userMapper.searchNicknameCount(acc));
-        page.setPageSize(5);
+        page.setPageSize(10);
 
         ud.setPage(page);
         ud.setUser(acc);
@@ -729,5 +771,38 @@ public class UserServiceImpl implements IUserService {
     @Override
     public int getWhoAttentionMeCount(String userId) {
         return StringUtils.isEmpty(userId) ? 0 : friendMapper.getWhoAttentionMeCount(userId);
+    }
+
+    @Override
+    public Map<String, Object> informUser(User user, Inform inform) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        if(StringUtils.isEmpty(inform)){
+            logger.debug("-----> 举报异常");
+            result.put("msg", "您举报的用户不存在，请刷新后重试！");
+            return result;
+        }
+
+        if(StringUtils.isEmpty(inform.getInformContent())){
+            result.put("msg", "举报内容不能为空！");
+            return result;
+        }
+
+        if(inform.getInformContent().length() > 50){
+            result.put("msg", "举报内容不能超过50个字符！");
+            return result;
+        }
+
+        inform.setInformId(MyStringUtil.getUUID());
+        inform.setAuserId(user.getUserId());
+        int count = informMapper.insertSelective(inform);
+        if(count == 1){
+            result.put("msg", "success");
+        } else{
+            logger.debug("-----> 添加举报信息异常");
+            result.put("msg", "举报失败，请刷新后重试！");
+        }
+
+        return result;
     }
 }

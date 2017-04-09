@@ -2,6 +2,7 @@ package edu.gmxx.share.controller;
 
 import edu.gmxx.share.domain.Friend;
 import edu.gmxx.share.domain.FriendGroup;
+import edu.gmxx.share.domain.Inform;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.service.IUserService;
 import edu.gmxx.share.utils.PageModel;
@@ -406,5 +407,24 @@ public class UserController {
         }
 
         return userService.getWhoAttentionMe(user.getUserId(), page);
+    }
+
+    /**
+     * 举报用户
+     * @param userId
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="informUser.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> informUser(Inform inform, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+        return userService.informUser(user, inform);
     }
 }

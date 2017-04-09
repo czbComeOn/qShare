@@ -395,8 +395,8 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
         // 转发内容
         if(transpondInfo){
             var $transpondContent = $('<div class="transpond-content"></div>').appendTo($body);
-            $transpondContent.append($('<a href="javascript:void(0);"></a>').text(transpondInfo.nickname + '：'));
-            $transpondContent.append($('<a href="javascript:void(0);"></a>').text(share.shareTitle));
+            $transpondContent.append($('<a class="user-title" href="myHome.do?account=' + transpondInfo.user.account + '" style="font-weight:bold;"></a>').text(transpondInfo.user.nickname + '：'));
+            $transpondContent.append($('<a href="viewShare.do?shareId=' + transpondInfo.transpond.shareId +'"></a>').text(share.shareTitle));
         }
         // 分享内容
         $('<div class="share-content-box"></div>').html(AnalyticEmotion(share.shareContent)).appendTo($body);
@@ -425,8 +425,8 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
         if(transpondInfo){
             $titleCenter.append($('<span style="color:#a7a9b7">[转] </span>'));
         }
-        $titleCenter.append($('<a href="myHome.do?account=' + user.account + '"></a>').html(user.nickname + '：'));
-        $titleCenter.append($('<a href="viewShare.do?shareId=' + share.shareId +'"></a>').html(transpondInfo?transpondInfo.transpond.reason:share.shareTitle));
+        $titleCenter.append($('<a class="user-title" href="myHome.do?account=' + user.account + '" title="查看Ta的主页"></a>').html(user.nickname + '：'));
+        $titleCenter.append($('<a href="viewShare.do?shareId=' + share.shareId +'" title="查看详情"></a>').html(transpondInfo?transpondInfo.transpond.reason:share.shareTitle));
         $titleCenter.append($('<small>' + comm.getTime(share.createTime, 'yyyy-MM-dd HH:mm') + '</small>'));
 
         // 右上角删除、关闭按钮
@@ -1228,8 +1228,8 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
                         if(result.msg == 'success'){
                             if(home_ent != 'home'){
                                 that.instance.$sharePanel.after(that.instance.getSharePanel(result.userInfo, result.shareInfo, null, result.userInfo, result.transpondInfo));
-                                that.transpondCount.text(parseInt(that.transpondCount.text()) + 1);
                             }
+                            that.transpondCount.text(parseInt(that.transpondCount.text()) + 1);
                             $messager.success('转发成功！');
                             that.target.closeDialog();
                         } else if(result.msg == 'OFFLINE'){
@@ -1263,18 +1263,17 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
             var option = {
                 title: '添加图片',
                 saveBtn: false,
+                closeBtn: false,
                 mode: that.paintComponent()
             };
             this.target.openModalDialog(option);
             this.initEvent();
         },
         paintComponent: function(){
+            var that = this;
             var $html = $('<div>' +
                 '<div style="height:20px;">' +
                     '共 <em class="img-num">0</em> 张，还可添加 <em class="img-remain">9</em> 张' +
-                    '<button class="btn btn-info fr" id="removeAll" title="清空选择图片">' +
-                        '<i class="fa fa-trash"></i> 清空' +
-                    '</button>' +
                 '</div>' +
                 '<div class="add-img-box">' +
                     '<div class="add-img-btn">' +
@@ -1282,7 +1281,19 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
                         '<input id="addImg" type="file" capture="camera" multiple />' +
                     '</div>' +
                 '</div>' +
+                '<div class="row">' +
+                    '<button class="btn btn-primary fr mrg-r-10" id="okBtn">' +
+                        '<i class="fa fa-check"> 确定</i>' +
+                    '</button>' +
+                    '<button class="btn btn-primary fr mrg-r-10" id="removeAll" title="清空选择图片">' +
+                        '<i class="fa fa-trash"></i> 清空' +
+                    '</button>' +
+                '</div>' +
             '</div>');
+
+            $html.find('#okBtn').on('click', function(){
+                that.target.hideDialog();
+            });
 
             return $html;
         },
