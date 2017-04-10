@@ -308,6 +308,7 @@ public class ShareServiceImpl implements IShareService {
         Eval eval = evalMapper.selectByPrimaryKey(evalId);
         if(eval != null){
             if(StringUtils.isEmpty(eval.getReplyEvalId())){
+                result.put("isEval", true);
                 evalMapper.deleteByReplyEval(evalId);
             }
 
@@ -321,7 +322,6 @@ public class ShareServiceImpl implements IShareService {
         } else{
             result.put("msg", "评论信息不存在，请刷新后重试！");
         }
-
 
         return result;
     }
@@ -474,5 +474,24 @@ public class ShareServiceImpl implements IShareService {
             return new ShareVo(share, user, collects, transpondVo, transpondCount);
         }
         return null;
+    }
+
+    @Override
+    public ShareVo getShareVoByShareId(String shareId) {
+        Share share = shareMapper.selectByPrimaryKey(shareId);
+
+        // 判断分享是否为转发分享
+        String transpondId = share.getTranspondId();
+        TranspondVo transpondVo = null;
+        if(StringUtils.isEmpty(transpondId)){
+            transpondVo = null;
+        } else{
+            Transpond transpond = transpondMapper.selectByPrimaryKey(transpondId);
+            transpondVo = new TranspondVo(transpond, userMapper.selectByPrimaryKey(transpond.getUserId()));
+        }
+
+        return new ShareVo(share, userMapper.selectByPrimaryKey(share.getUserId()),
+                collectMapper.getCollectByShareId(share.getShareId()), transpondVo,
+                transpondMapper.getTranspondCount(share.getShareId()));
     }
 }

@@ -22,7 +22,7 @@
     <script data-main="${pageContext.request.contextPath}/resources/js/main"
             src="${pageContext.request.contextPath}/resources/js/require.min.js"></script>
     <script>
-        require(['jquery', 'qshare/index', 'utils/cropper.min', 'utils/sitelogo'], function($, share){
+        require(['jquery', 'qshare/index'], function($, share){
             share.init();
         });
     </script>

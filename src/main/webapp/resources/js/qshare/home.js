@@ -751,13 +751,14 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
     home.showCollect = function(){
         $('.myright').find('.friend-panel, .share-info').remove();
         share.initNum();
-        share.loadShareInfo('all', home_acc, 'collect', 'home');
+        share.homeEnt();
+        share.loadShareInfo('all', home_acc, 'collect');
 
         $('#loadMore').show();
         $('.load-more').unbind('click');
         // 点击加载更多分享
         $('.load-more').on('click', function(){
-            share.loadShareInfo('all', home_acc, 'collect', 'home');
+            share.loadShareInfo('all', home_acc, 'collect');
         });
     }
 
@@ -767,13 +768,14 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
     home.showShare = function(){
         $('.myright').find('.friend-panel, .attention-panel, .share-info').remove();
         share.initNum();
-        share.loadShareInfo('all', home_acc, null, 'home');
+        share.homeEnt();
+        share.loadShareInfo('all', home_acc, null);
 
         $('#loadMore').show();
         $('.load-more').unbind('click');
         // 点击加载更多分享
         $('.load-more').on('click', function(){
-            share.loadShareInfo('all', home_acc, null, 'home');
+            share.loadShareInfo('all', home_acc, null);
         });
     }
 
@@ -809,10 +811,9 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         return friendVo;
     }
 
-    home.informUser = function(){
-        new InformUserDialog($('#informUser'), $('#informUser').attr('userId'));
-    }
-
+    /**
+     * 初始化事件
+     */
     home.initEvent = function(){
         var that = this;
 
@@ -895,7 +896,9 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
             $('#informUser').hide();
         });
 
-        $('#informUser').on('click', home.informUser);
+        $('#informUser').on('click', function(){
+            new InformUserDialog($(this), $(this).attr('user-id'));
+        });
     }
 
     home.init = function(acc){
@@ -1492,6 +1495,12 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         }
     }
 
+    /**
+     * 举报用户
+     * @param target
+     * @param userId
+     * @constructor
+     */
     var InformUserDialog = function(target, userId){
         this.target = target;
         this.userId = userId;

@@ -1,10 +1,15 @@
 package edu.gmxx.share.controller;
 
+import edu.gmxx.share.domain.Collect;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.service.IShareService;
 import edu.gmxx.share.service.IUserService;
+import edu.gmxx.share.utils.MyStringUtil;
+import edu.gmxx.share.vo.EvalVo;
+import edu.gmxx.share.vo.ShareVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -136,4 +142,59 @@ public class IndexController {
 
 		return view;
 	}
+
+    /**
+     * 查看分享详情
+     * @param shareId
+     * @param session
+     * @return
+     */
+	@RequestMapping(value="viewShare.do")
+	public ModelAndView viewShare(String shareId, HttpSession session){
+        ModelAndView view = new ModelAndView("viewShare");
+
+        User user = (User) session.getAttribute("user");
+
+		// 获取分享信息
+		ShareVo shareVo = shareService.getShareVoByShareId(shareId);
+
+        String imgInfo = shareVo.getShare().getImgInfo();
+
+		view.addObject("shareVo", shareVo);
+        if(!StringUtils.isEmpty(imgInfo)){
+            view.addObject("imgs", MyStringUtil.stringsToList(imgInfo.split(",")));
+        }
+
+        String thumbId = shareVo.getShare().getThumbUpId();
+        List<String> thumbs = MyStringUtil.stringsToList(StringUtils.isEmpty(thumbId) ? new String[0] : thumbId.split(","));
+        view.addObject("thumbs", thumbs);
+
+        if(user != null){
+            // 是否已点赞
+            for(String thumb : thumbs){
+                if(thumb.equals(user.getUserId())){
+                    view.addObject("thumb", true);
+                    break;
+                }
+            }
+
+            // 是否已收藏
+            List<Collect> collects = shareVo.getCollects();
+            for(Collect collect : collects){
+                if(user.getUserId().equals(collect.getUserId())){
+                    view.addObject("collect", true);
+                    break;
+                }
+            }
+        }
+
+        // 评论数
+        Map<String, Object> result = shareService.getEval(shareId);
+        if("success".equals(result.get("msg"))){
+            List<EvalVo> evalVos = (List<EvalVo>) result.get("evals");
+            view.addObject("evalVos", evalVos);
+        }
+
+        return view;
+    }
 }

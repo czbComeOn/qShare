@@ -192,7 +192,7 @@
                         </div>
                     </c:if>
                     <c:if test="${user == null || acc.userId != user.userId}">
-                        <a class="fr" id="informUser" userId="${acc.userId}" href="javascript:void(0);" title="点击举报TA" style="display:none;cursor:pointer;text-decoration:none;">举报</a>
+                        <a class="fr" id="informUser" user-id="${acc.userId}" href="javascript:void(0);" title="点击举报TA" style="display:none;cursor:pointer;text-decoration:none;">举报</a>
                         <div>
                             <c:choose>
                                 <c:when test="${acc.portraitPath != null}">

@@ -13,8 +13,9 @@ import javax.servlet.http.HttpSession;
  * Created by BIN on 2017/3/26.
  */
 public class LoginInterceptor implements HandlerInterceptor {
-    private String[] passUrl = new String[]{"qShare/index.do", "qShare/myHome.do", "qShare/login.do", "qShare/register.do"
-        ,"qShare/logout.do", "qShare/checkUser.do", "share/loadShare.do"};
+    private String[] passUrl = new String[]{"qShare/index.do", "qShare/myHome.do", "qShare/viewShare.do",
+            "qShare/login.do", "qShare/register.do", "qShare/logout.do", "qShare/checkUser.do",
+            "share/loadShare.do"};
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
@@ -33,7 +34,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
             // 进行登录验证
             if(!passing){
-                response.sendRedirect("qShare/index.do");
+                response.sendRedirect("index.do");
             }
         }
 

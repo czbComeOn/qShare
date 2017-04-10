@@ -1,0 +1,54 @@
+/**
+ * Created by BIN on 2017/4/9.
+ */
+define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator'],
+    function(login, share, $messager){
+    var CURR_SHARE; // 当前分享信息
+    var CURR_USER; // 当前用户信息
+    var view = {};
+
+    // 初始化分享信息
+    view.initShareInfo = function(){
+        var $showEvalBox = $('.show-eval-box');
+        share.loadShareEval(CURR_SHARE.shareId, $showEvalBox, CURR_USER);
+    }
+
+    /**
+     * 初始化事件
+     */
+    view.initEvent = function(){
+        $('#login').on('click', login.show);
+
+        // 点赞
+        $('.thumb-up').on('click', function(){
+            share.addThumbUp(CURR_SHARE.shareId, $(this), CURR_USER);
+        });
+
+        // 收藏
+        $('.collect').on('click', function(){
+            share.addCollect(CURR_SHARE.shareId, $(this), CURR_USER);
+        });
+
+        // 转发
+        $('.transpond').on('click', function(){
+            share.homeEnt();
+            share.addTranspond(CURR_SHARE.shareId, $(this), CURR_USER);
+        })
+
+        // 评论
+        $('.footer-tool .eval').on('click', function(){
+            share.addEvalInfo(CURR_SHARE.shareId, CURR_SHARE.userId, $('#currShare .panel-footer'), $('.show-eval-box'), $(this), CURR_USER);
+        });
+    }
+
+    view.init = function(share, user){
+        CURR_SHARE = share;
+        CURR_USER = user;
+        this.initEvent();
+        login.init();
+
+        this.initShareInfo();
+    }
+
+    return view;
+})

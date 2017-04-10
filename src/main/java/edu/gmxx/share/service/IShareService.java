@@ -5,6 +5,7 @@ import edu.gmxx.share.domain.Share;
 import edu.gmxx.share.domain.Transpond;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.utils.PageModel;
+import edu.gmxx.share.vo.ShareVo;
 
 import java.util.Map;
 
@@ -122,4 +123,11 @@ public interface IShareService {
      * @return
      */
     Map<String,Object> getCollectShare(String userId, PageModel page);
+
+    /**
+     * 获取分享信息视图
+     * @param shareId
+     * @return
+     */
+    ShareVo getShareVoByShareId(String shareId);
 }

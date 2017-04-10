@@ -5,7 +5,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
     var home_ent; // 加载入口
     var share = {};
 
-    /*
+    /**
      * 剩余字数统计
      * 注意 最大字数只需要在放数字的节点哪里直接写好即可 如：<var class="word">200</var>
      */
@@ -104,13 +104,17 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
      * @param btnText
      * @param type eval/replay
      * @param event
+     * @param userId 评论用户
      * @returns {*|jQuery|HTMLElement}
      */
-    share.getEvalBox = function(title, btnText, type, event){
+    share.getEvalBox = function(title, btnText, type, event, userId){
         var $evalBox = $('<div class="add-eval-box" style="display:none;">' +
             '<textarea class="add-eval-content form-control" placeholder="说点什么吧..." style="resize:none;"></textarea>' +
             '<button class="add-eval-btn btn btn-primary" style="margin-top:5px;">发表</button>' +
         '</div>');
+        if(userId){
+            $evalBox.attr('userId', userId);
+        }
 
         $evalBox.attr('tag', type);
         $evalBox.find('textarea').attr('placeholder', title ? title : '说点什么吧...');
@@ -132,6 +136,10 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
                     async: false,
                     success: function(result){
                         if(result.msg == 'success'){
+                            if(result.isEval){
+                                var $evalCount = evalItem.parents('.panel-footer').find('.footer-tool .eval-count');
+                                $evalCount.text(parseInt($evalCount.text()) - 1);
+                            }
                             evalItem.remove();
                             $messager.success('删除成功');
                         } else if(result.msg == 'OFFLINE'){
@@ -149,15 +157,13 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
         });
     }
 
-    share.reply = function(evalInfo, footer, replyBox, currUser){
+    share.reply = function(evalInfo, eval, replyBox, currUser){
         var that = this;
-        if(footer.find('.add-eval-box').size() == 1 && footer.find('.add-eval-box').attr('tag') == 'reply'){
-            footer.find('.add-eval-box').slideUp('normal', 'swing', function(){
-                $('.add-eval-box').remove();
-            });
+        var $replyEval = eval.parents('li:first').children('.add-eval-box')
+        if($replyEval.size() == 1){
+            $replyEval.slideToggle().find('textarea').focus();
         } else{
-            $('.add-eval-box').remove();
-            var $replyEval = this.getEvalBox('回复：' + evalInfo.evalUser.nickname, '回复', 'reply', function(){
+            $replyEval = this.getEvalBox('回复：' + evalInfo.evalUser.nickname, '回复', 'reply', function(){
                 // 回复内容
                 var evalContent = $replyEval.find('.add-eval-content').val();
                 if(!evalContent){
@@ -173,8 +179,9 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
                         success: function(result){
                             if(result.msg == 'success'){
                                 that.addReplyItem(result.replyInfo, currUser, replyBox);
-
-                                footer.find('.add-eval-box').remove();
+                                $replyEval.slideUp('normal', 'swing', function(){
+                                    $replyEval.remove();
+                                })
                                 $messager.success('回复成功');
                             } else if(result.msg == 'OFFLINE'){
                                 $messager.warning('用户未登录');
@@ -189,8 +196,11 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
                     });
                 }
             });
-            footer.append($replyEval);
-            $replyEval.slideDown();
+            $('.add-eval-box').remove();
+            eval.parents('li:first').append($replyEval);
+            $replyEval.slideDown('normal', 'swing', function(){
+                $replyEval.find('textarea').focus();
+            });
         }
     }
 
@@ -250,7 +260,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
                 });
                 // 回复
                 $replyTool.find('.eval-reply').on('click', function () {
-                    that.reply(replyInfo, $(this).parents('.panel-footer'), replyBox, currUser);
+                    that.reply(replyInfo, $(this), replyBox, currUser);
                 });
             }
         }
@@ -317,7 +327,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
                 });
                 // 回复
                 $evalTool.find('.eval-reply').on('click', function(){
-                    that.reply(evalInfo, $(this).parents('.panel-footer'), $replyBox, currUser);
+                    that.reply(evalInfo, $(this), $replyBox, currUser);
                 });
             }
         }
@@ -378,6 +388,187 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
     }
 
     /**
+     * 添加新评论
+     * @param shareId 分享id
+     * @param shareUserId 信息分享者
+     * @param $footer 面板footer
+     * @param $evalBox 评论内容盒子
+     * @param $evalBtn 评论按钮
+     * @param currUser 当前操作用户
+     * @returns {boolean}
+     */
+    share.addEvalInfo = function(shareId, shareUserId, $footer, $evalBox, $evalBtn, currUser){
+        var that = this;
+        if(!currUser || !currUser.userId){
+            $messager.warning('用户未登录');
+            that.showLogin();
+            return false;
+        }
+
+        // 判断是否已打开评论
+        if($footer.find('.add-eval-box').size() == 1 && $footer.find('.add-eval-box').attr('tag') == 'eval'){
+            $footer.find('.add-eval-box').find('textarea').slideToggle().focus();
+        } else{
+            $('.add-eval-box').remove();
+            var $addEval = that.getEvalBox('说点什么吧...', '发表', 'eval', function(){
+                var evalContent = $addEval.find('.add-eval-content').val();
+                if(!evalContent){
+                    $messager.warning('评论内容不能为空');
+                } else if(evalContent.length > 50){
+                    $messager.warning('评论内容不能超过50个字符');
+                } else{
+                    $.ajax({
+                        url: 'share/eval.do',
+                        data: {'shareId': shareId, 'shareUserId': shareUserId, 'evalContent': evalContent},
+                        type: 'post',
+                        dataType: 'json',
+                        success: function(result){
+                            if(result.msg == 'success'){
+                                $evalBox.css({'margin-top':'10px', 'border-top':'1px solid #ccc'});
+                                $evalBox.append(that.getEvalItem(result.evalInfo, currUser));
+                                $addEval.find('.add-eval-content').val('');
+                                $footer.find('.add-eval-box').slideToggle();
+                                $messager.success('评论成功');
+                                $evalBtn.find('.eval-count').text(parseInt($evalBtn.find('.eval-count').text()) + 1);
+                            } else if(result.msg == 'OFFLINE'){
+                                $messager.warning('用户未登录');
+                                that.showLogin();
+                            } else{
+                                $messager.error(result.msg);
+                            }
+                        },
+                        error: function(){
+                            $messager.warning('服务器出错');
+                        }
+                    });
+                }
+            });
+            $footer.append($addEval);
+            $addEval.slideDown();
+            $('html, body').animate({
+                scrollTop: $addEval.offset().top - 100
+            }, 500, 'swing', function(){
+                $addEval.find('textarea').focus();
+            });
+        }
+    }
+
+    /**
+     * 点赞
+     * @param shareId
+     * @param $thumbBtn 点赞按钮
+     * @param currUser
+     * @returns {boolean}
+     */
+    share.addThumbUp = function(shareId, $thumbBtn, currUser){
+        var that = this;
+        if(!currUser || !currUser.userId){
+            $messager.warning('用户未登录');
+            that.showLogin();
+            return false;
+        }
+        $thumbBtn.find('i').animate({
+            fontSize: '1.6em'
+        }, 300, 'swing', function(){
+            $thumbBtn.find('i').animate({
+                fontSize: '1em'
+            }, 300, 'swing', function(){
+                // 改变数据库点赞状态
+                $.ajax({
+                    url: 'share/thumbUp.do',
+                    data: {'shareId': shareId},
+                    dataType: 'json',
+                    async: false,
+                    type: 'post',
+                    success: function(result){
+                        if(result.msg == 'success'){
+                            // 如果已点赞则取消赞，否则进行点赞
+                            if($thumbBtn.find('i').hasClass('fa-thumbs-up')){
+                                $thumbBtn.find('i').removeClass('fa-thumbs-up').addClass('fa-thumbs-o-up');
+                                $thumbBtn.find('.thumb-text').text('点赞');
+                                // 赞数-1
+                                $thumbBtn.find('.thumb-count').text(parseInt($thumbBtn.find('.thumb-count').text()) - 1);
+                            } else{
+                                $thumbBtn.find('i').removeClass('fa-thumbs-o-up').addClass('fa-thumbs-up');
+                                $thumbBtn.find('.thumb-text').text('取消赞');
+                                // 赞数+1
+                                $thumbBtn.find('.thumb-count').text(parseInt($thumbBtn.find('.thumb-count').text()) + 1);
+                            }
+                        } else if(result.msg == 'OFFLINE'){
+                            $messager.warning('用户未登录');
+                            that.showLogin();
+                        } else{
+                            $messager.error(result.msg);
+                        }
+                    },
+                    error: function(){
+                        $messager.warning('服务器出错！');
+                    }
+                });
+            });
+        });
+    }
+
+    share.addCollect = function(shareId, $collectBtn, currUser){
+        var that = this;
+        if(!currUser || !currUser.userId){
+            $messager.warning('用户未登录');
+            that.showLogin();
+            return false;
+        }
+        $collectBtn.find('i').animate({
+            fontSize: '1.6em'
+        }, 300, 'swing', function(){
+            $collectBtn.find('i').animate({
+                fontSize: '1em'
+            }, 300, 'swing', function(){
+                // 改变数据库点赞状态
+                $.ajax({
+                    url: 'share/collect.do',
+                    data: {'shareId': shareId},
+                    dataType: 'json',
+                    async: false,
+                    type: 'post',
+                    success: function(result){
+                        if(result.msg == 'success'){
+                            // 如果已收藏则取消，否则收藏
+                            if($collectBtn.find('i').hasClass('fa-star')){
+                                $collectBtn.find('i').removeClass('fa-star').addClass('fa-star-o');
+                                $collectBtn.find('.collect-text').text('收藏');
+                                $collectBtn.find('.collect-count').text(parseInt($collectBtn.find('.collect-count').text()) - 1);
+                                $messager.success('已取消收藏');
+                            } else{
+                                $collectBtn.find('i').removeClass('fa-star-o').addClass('fa-star');
+                                $collectBtn.find('.collect-text').text('取消收藏');
+                                $collectBtn.find('.collect-count').text(parseInt($collectBtn.find('.collect-count').text()) + 1);
+                                $messager.success('已收藏');
+                            }
+                        } else if(result.msg == 'OFFLINE'){
+                            $messager.warning('用户未登录');
+                            that.showLogin();
+                        } else{
+                            $messager.error(result.msg);
+                        }
+                    },
+                    error: function(){
+                        $messager.warning('服务器出错！');
+                    }
+                });
+            });
+        });
+    }
+
+    share.addTranspond = function(shareId, $transpondBtn, currUser){
+        if(!currUser || !currUser.userId){
+            $messager.warning('用户未登录');
+            this.showLogin();
+            return false;
+        }
+        // 弹出转发框
+        new TranspondDialog(this, $transpondBtn, {'shareId':shareId}, $transpondBtn.find('.transpond-count'));
+    }
+
+    /**
      * 获取用户分享信息面板
      * @param user 发布者
      * @param share 信息内容
@@ -386,7 +577,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
      * @param transpondCount 被转发量
      * @returns {*|jQuery|HTMLElement}
      */
-    share.getSharePanel = function (user, share,collects, currUser, transpondInfo, transpondCount) {
+    share.getSharePanel = function (user, share, collects, currUser, transpondInfo, transpondCount) {
         var that = this, i;
         var $panel = $('<div class="panel myright-n share-info"></div>');
         var $title = $('<div class="panel-heading"></div>').appendTo($panel);
@@ -396,7 +587,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
         if(transpondInfo){
             var $transpondContent = $('<div class="transpond-content"></div>').appendTo($body);
             $transpondContent.append($('<a class="user-title" href="myHome.do?account=' + transpondInfo.user.account + '" style="font-weight:bold;"></a>').text(transpondInfo.user.nickname + '：'));
-            $transpondContent.append($('<a href="viewShare.do?shareId=' + transpondInfo.transpond.shareId +'"></a>').text(share.shareTitle));
+            $transpondContent.append($('<a href="viewShare.do?shareId=' + transpondInfo.transpond.shareId +'" target="_blank"></a>').text(share.shareTitle));
         }
         // 分享内容
         $('<div class="share-content-box"></div>').html(AnalyticEmotion(share.shareContent)).appendTo($body);
@@ -426,7 +617,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
             $titleCenter.append($('<span style="color:#a7a9b7">[转] </span>'));
         }
         $titleCenter.append($('<a class="user-title" href="myHome.do?account=' + user.account + '" title="查看Ta的主页"></a>').html(user.nickname + '：'));
-        $titleCenter.append($('<a href="viewShare.do?shareId=' + share.shareId +'" title="查看详情"></a>').html(transpondInfo?transpondInfo.transpond.reason:share.shareTitle));
+        $titleCenter.append($('<a href="viewShare.do?shareId=' + share.shareId +'" title="查看详情" target="_blank"></a>').html(transpondInfo?transpondInfo.transpond.reason:share.shareTitle));
         $titleCenter.append($('<small>' + comm.getTime(share.createTime, 'yyyy-MM-dd HH:mm') + '</small>'));
 
         // 右上角删除、关闭按钮
@@ -449,8 +640,8 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
             '<span class="share-info-type"></span>' +
             '<a class="thumb-up" href="javascript:void(0);" title="给TA点赞"></a>' +
             '<a class="collect" href="javascript:void(0);" title="喜欢就收藏吧"></a>' +
-            '<a class="transpond" href="javascript:void(0);" title="分享给你的好友"><i class="fa fa-share-square-o"></i>转发</a>' +
-            '<a class="eval" href="javascript:void(0);" title="说点什么吧..."><i class="fa fa-commenting"></i>评论</a>' +
+            '<a class="transpond" href="javascript:void(0);" title="转发给你的好友"><i class="fa fa-share-square-o"></i><span class="transpond-text">转发</span></a>' +
+            '<a class="eval" href="javascript:void(0);" title="说点什么吧..."><i class="fa fa-commenting"></i><span class="eval-text">评论</span></a>' +
         '</div>');
 
         // 分享信息类型
@@ -470,38 +661,24 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
             default: $shareType.text('其他'); break;
         }
 
-        // 点赞数、转发数
-        var $thumbTranspond = $('<div class="thumb-transpond">' +
-            '<i class="fa fa-thumbs-up"></i><span><em class="thumb-count">0</em>&nbsp;赞&nbsp;&nbsp;</span>' +
-            '<i class="fa fa-share-square tc"></i><span class="tc"><em class="transpond-count">0</em>&nbsp;转发</span>' +
-        '</div>');
-
-        // 初始化评论信息
-        var $evalBox = $('<ul class="show-eval-box" style="list-style:none;"></ul>');
-        this.loadShareEval(share.shareId, $evalBox, currUser);
-
-        $footer.append($tool);
-        $footer.append($thumbTranspond);
-        $footer.append($evalBox);
-
-        // 初始化点赞按钮
-        var $thumb = $tool.find('.thumb-up');
+        // 初始化点赞
+        var $thumbBtn = $tool.find('.thumb-up');
         if(!currUser || !currUser.userId){
-            $thumb.html('<i class="fa fa-thumbs-o-up"></i>点赞');
+            $thumbBtn.html('<i class="fa fa-thumbs-o-up"></i><span class="thumb-text">点赞</span>');
         } else{
             var upIds = share.thumbUpId;
-            $thumbTranspond.find('.thumb-count').text(upIds ? upIds.split(',').length:0);
             if(upIds && comm.contains(upIds.split(','), currUser.userId)){
-                $thumb.html('<i class="fa fa-thumbs-up"></i>取消赞');
+                $thumbBtn.html('<i class="fa fa-thumbs-up"></i><span class="thumb-text">取消赞</span>');
             } else{
-                $thumb.html('<i class="fa fa-thumbs-o-up"></i>点赞');
+                $thumbBtn.html('<i class="fa fa-thumbs-o-up"></i><span class="thumb-text">点赞</span>');
             }
         }
+        $thumbBtn.append($('<em class="thumb-count"></em>').text(share.thumbUpId ? share.thumbUpId.split(',').length : 0));
 
-        // 初始化收藏按钮
-        var $collect = $tool.find('.collect');
+        // 初始化收藏
+        var $collectBtn = $tool.find('.collect');
         if(!currUser || !currUser.userId){
-            $collect.html('<i class="fa fa-star-o"></i>收藏');
+            $collectBtn.html('<i class="fa fa-star-o"></i><span class="collect-text">收藏</span>');
         } else{
             if(collects){
                 var collect = false;
@@ -511,173 +688,59 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
                         break;
                     }
                 }
-                $collect.html(collect ? '<i class="fa fa-star"></i>取消收藏' : '<i class="fa fa-star-o"></i>收藏');
+                $collectBtn.html(collect ? '<i class="fa fa-star"></i><span class="collect-text">取消收藏</span>'
+                    : '<i class="fa fa-star-o"></i><span class="collect-text">收藏</span>');
             } else{
-                $collect.html('<i class="fa fa-star-o"></i>收藏');
+                $collectBtn.html('<i class="fa fa-star-o"></i><span class="collect-text">收藏</span>');
             }
         }
+        $collectBtn.append($('<em class="collect-count"></em>').text(collects ? collects.length : 0));
 
         // 初始化转发
-        if(transpondInfo){
-            $thumbTranspond.find('.tc').remove();
-        } else{
-            $thumbTranspond.find('.transpond-count').text(transpondCount ? transpondCount : 0);
-        }
+        var $transpondBtn = $tool.find('.transpond');
+        $transpondBtn.append($('<em class="transpond-count"></em>').text(transpondCount ? transpondCount : 0));
+
+        // 初始化评论信息
+        var $evalBtn = $tool.find('.eval');
+        var $evalBox = $('<ul class="show-eval-box"></ul>');
+        $.ajax({
+            url: 'share/getEval.do',
+            data: {'shareId':share.shareId},
+            type: 'post',
+            dataType: 'json',
+            success: function(result){
+                if(result.msg == 'success'){
+                    $evalBtn.append($('<em class="eval-count"></em>').text(result.evals ? result.evals.length : 0));
+                } else{
+                    $messager.error(result.msg);
+                }
+            },
+            error: function(){
+                $messager.warning('服务器出错');
+            }
+        });
+        // 默认主页不加载评论内容
+        // this.loadShareEval(share.shareId, $evalBox, currUser);
+
+        $footer.append($tool);
+        $footer.append($evalBox);
 
         //-------------事件处理----------
         // 点赞
-        $tool.find('.thumb-up').on('click', function(){
-            if(!currUser || !currUser.userId){
-                $messager.warning('用户未登录');
-                that.showLogin();
-                return false;
-            }
-            var $i = $thumb.find('i');
-            $i.animate({
-                fontSize: '1.6em'
-            }, 300, 'swing', function(){
-                $i.animate({
-                    fontSize: '1em'
-                }, 300, 'swing', function(){
-                    // 改变数据库点赞状态
-                    $.ajax({
-                        url: 'share/thumbUp.do',
-                        data: {'shareId': share.shareId},
-                        dataType: 'json',
-                        async: false,
-                        type: 'post',
-                        success: function(result){
-                            if(result.msg == 'success'){
-                                // 如果已点赞则取消赞，否则进行点赞
-                                if($i.hasClass('fa-thumbs-up')){
-                                    $thumb.empty();
-                                    $thumb.html('<i class="fa fa-thumbs-o-up"></i>点赞');
-                                    // 赞数-1
-                                    $thumbTranspond.find('.thumb-count').text(parseInt($thumbTranspond.find('.thumb-count').text()) - 1);
-                                } else{
-                                    $thumb.empty();
-                                    $thumb.html('<i class="fa fa-thumbs-up"></i>取消赞');
-                                    // 赞数+1
-                                    $thumbTranspond.find('.thumb-count').text(parseInt($thumbTranspond.find('.thumb-count').text()) + 1);
-                                }
-                            } else if(result.msg == 'OFFLINE'){
-                                $messager.warning('用户未登录');
-                                that.showLogin();
-                            } else{
-                                $messager.error(result.msg);
-                            }
-                        },
-                        error: function(){
-                            $messager.warning('服务器出错！');
-                        }
-                    });
-                });
-            });
+        $thumbBtn.on('click', function(){
+            that.addThumbUp(share.shareId, $thumbBtn, currUser);
         });
         // 收藏
-        $tool.find('.collect').on('click', function(){
-            if(!currUser || !currUser.userId){
-                $messager.warning('用户未登录');
-                that.showLogin();
-                return false;
-            }
-            var $i = $collect.find('i');
-            $i.animate({
-                fontSize: '1.6em'
-            }, 300, 'swing', function(){
-                $i.animate({
-                    fontSize: '1em'
-                }, 300, 'swing', function(){
-                    // 改变数据库点赞状态
-                    $.ajax({
-                        url: 'share/collect.do',
-                        data: {'shareId': share.shareId},
-                        dataType: 'json',
-                        async: false,
-                        type: 'post',
-                        success: function(result){
-                            if(result.msg == 'success'){
-                                // 如果已点赞则取消赞，否则进行点赞
-                                if($i.hasClass('fa-star')){
-                                    $collect.empty();
-                                    $('#collectCount').text(parseInt($('#collectCount').text()) - 1);
-                                    $collect.html('<i class="fa fa-star-o"></i>收藏');
-                                } else{
-                                    $collect.empty();
-                                    $('#collectCount').text(parseInt($('#collectCount').text()) + 1)
-                                    $collect.html('<i class="fa fa-star"></i>取消收藏');
-                                }
-                            } else if(result.msg == 'OFFLINE'){
-                                $messager.warning('用户未登录');
-                                that.showLogin();
-                            } else{
-                                $messager.error(result.msg);
-                            }
-                        },
-                        error: function(){
-                            $messager.warning('服务器出错！');
-                        }
-                    });
-                });
-            });
+        $collectBtn.on('click', function(){
+            that.addCollect(share.shareId, $collectBtn, currUser);
         });
         // 转发
-        $tool.find('.transpond').on('click', function(){
-            if(!currUser || !currUser.userId){
-                $messager.warning('用户未登录');
-                that.showLogin();
-                return false;
-            }
-            // 弹出转发框
-            new TranspondDialog(that, $(this), share, $thumbTranspond.find('.transpond-count'));
+        $transpondBtn.on('click', function(){
+            that.addTranspond(share.shareId, $transpondBtn, currUser);
         });
         // 评论
-        $tool.find('.eval').on('click', function(){
-            if(!currUser || !currUser.userId){
-                $messager.warning('用户未登录');
-                that.showLogin();
-                return false;
-            }
-
-            // 判断是否已打开评论
-            if($footer.find('.add-eval-box').size() == 1 && $footer.find('.add-eval-box').attr('tag') == 'eval'){
-                $footer.find('.add-eval-box').slideToggle();
-            } else{
-                $('.add-eval-box').remove();
-                var $addEval = that.getEvalBox('说点什么吧...', '发表', 'eval', function(){
-                    var evalContent = $addEval.find('.add-eval-content').val();
-                    if(!evalContent){
-                        $messager.warning('评论内容不能为空');
-                    } else if(evalContent.length > 50){
-                        $messager.warning('评论内容不能超过50个字符');
-                    } else{
-                        $.ajax({
-                            url: 'share/eval.do',
-                            data: {'shareId': share.shareId, 'shareUserId': user.userId, 'evalContent': evalContent},
-                            type: 'post',
-                            dataType: 'json',
-                            success: function(result){
-                                if(result.msg == 'success'){
-                                    $evalBox.append(that.getEvalItem(result.evalInfo, currUser));
-                                    $addEval.find('.add-eval-content').val('');
-                                    $footer.find('.add-eval-box').slideToggle();
-                                    $messager.success('评论成功');
-                                } else if(result.msg == 'OFFLINE'){
-                                    $messager.warning('用户未登录');
-                                    that.showLogin();
-                                } else{
-                                    $messager.error(result.msg);
-                                }
-                            },
-                            error: function(){
-                                $messager.warning('服务器出错');
-                            }
-                        });
-                    }
-                });
-                $footer.append($addEval);
-                $addEval.slideDown();
-            }
+        $evalBtn.on('click', function(){
+            that.addEvalInfo(share.shareId, user.userId, $footer, $evalBox, $evalBtn, currUser);
         });
 
         // 关闭不看该动态
@@ -1120,6 +1183,10 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
         }, 500);
     }
 
+    share.homeEnt = function(){
+        home_ent = 'home';
+    }
+
     /**
      * 显示分享信息
      * @param shares
@@ -1139,7 +1206,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
     share.toTop = function(){
         // 窗体滚动事件
         $(window).scroll(function(){
-            if($(window).scrollTop() > 300){$('#toTop').show();} else{$('#toTop').hide();}
+            if($(window).scrollTop() > 600){$('#toTop').show();} else{$('#toTop').hide();}
         });
 
         // 置顶

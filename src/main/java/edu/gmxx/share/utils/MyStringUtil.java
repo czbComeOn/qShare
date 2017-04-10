@@ -53,7 +53,9 @@ public class MyStringUtil {
         List<String> list = new ArrayList<String>();
 
         for(String str : strs){
-            list.add(str);
+            if(!StringUtils.isEmpty(str)){
+                list.add(str);
+            }
         }
 
         return list;
