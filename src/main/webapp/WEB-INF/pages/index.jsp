@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -28,7 +29,7 @@
     </script>
 </head>
 <body>
-<div class="qshare-container snowbg">
+<div class="qshare-container">
     <div id="toTop" class="to-top" title="返回顶部">
         <img src="${pageContext.request.contextPath}/resources/img/top.png" alt="">
     </div>
@@ -266,39 +267,65 @@
                     </div>
                     <div class="cf"></div>
                     <div class="myleft-n">
+                        <!-- 显示最近三条好友动态 -->
                         <div class="panel panel-info">
                             <div class="panel-heading">
                                 <i class="fa fa-heart-o"></i> 好友动态
                             </div>
                             <div class="panel-body">
-                                <div class="friend-dyn">
-                                    张三
-                                </div>
-                                <div class="friend-dyn">
-                                    李四
-                                </div>
-                                <div class="friend-dyn">
-                                    王五
-                                </div>
+                                <c:choose>
+                                    <c:when test="${friendShareVos != null && fn:length(friendShareVos) > 0}">
+                                        <c:forEach items="${friendShareVos}" var="friendShareVo">
+                                            <div class="friend-dynamic">
+                                                <a href="myHome.do?account=${friendShareVo.user.account}" style="font-weight:bold;">${friendShareVo.user.nickname}</a>：
+                                                <c:if test="${friendShareVo.transpondVo != null}">
+                                                    <span style="color:#ab8d8d;">[转]</span>
+                                                    <a href="viewShare.do?shareId=${friendShareVo.share.shareId}" target="_blank">${friendShareVo.transpondVo.transpond.reason}</a>
+                                                </c:if>
+                                                <c:if test="${friendShareVo.transpondVo == null}">
+                                                    <a href="viewShare.do?shareId=${friendShareVo.share.shareId}" target="_blank">${friendShareVo.share.shareTitle}</a>
+                                                </c:if>
+                                            </div>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="friend-dynamic" style="text-align:center;">
+                                            暂时没有动态
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                     </div>
                     <div class="cf"></div>
                     <div class="myleft-n">
+                        <!-- 显示最近三条关注动态 -->
                         <div class="panel panel-info">
                             <div class="panel-heading">
                                 <i class="fa fa-link"></i> 关注动态
                             </div>
                             <div class="panel-body">
-                                <div class="friend-dyn">
-                                    张三
-                                </div>
-                                <div class="friend-dyn">
-                                    李四
-                                </div>
-                                <div class="friend-dyn">
-                                    王五
-                                </div>
+                                <c:choose>
+                                    <c:when test="${attentionShareVos != null && fn:length(attentionShareVos) > 0}">
+                                        <c:forEach items="${attentionShareVos}" var="attentionShareVo">
+                                            <div class="friend-dynamic">
+                                                <a href="myHome.do?account=${attentionShareVo.user.account}" style="font-weight:bold;">${attentionShareVo.user.nickname}</a>：
+                                                <c:if test="${attentionShareVo.transpondVo != null}">
+                                                    <span style="color:#ab8d8d;">[转]</span>
+                                                    <a href="viewShare.do?shareId=${attentionShareVo.share.shareId}" target="_blank">${attentionShareVo.transpondVo.transpond.reason}</a>
+                                                </c:if>
+                                                <c:if test="${attentionShareVo.transpondVo == null}">
+                                                    <a href="viewShare.do?shareId=${attentionShareVo.share.shareId}" target="_blank">${attentionShareVo.share.shareTitle}</a>
+                                                </c:if>
+                                            </div>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="attention-dynamic" style="text-align:center;">
+                                            暂时没有动态
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                     </div>

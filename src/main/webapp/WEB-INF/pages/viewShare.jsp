@@ -31,7 +31,7 @@
     </script>
 </head>
 <body>
-<div class="qshare-container snowbg">
+<div class="qshare-container">
     <div id="toTop" class="to-top" title="返回顶部">
         <img src="${pageContext.request.contextPath}/resources/img/top.png" alt="">
     </div>

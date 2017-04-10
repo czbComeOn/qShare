@@ -18,6 +18,10 @@ public class TranspondVo {
 
     }
 
+    public TranspondVo(Transpond transpond){
+        this.transpond = transpond;
+    }
+
     public TranspondVo(Transpond transpond, User user) {
         this.transpond = transpond;
         this.user = user;

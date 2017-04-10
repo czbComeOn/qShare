@@ -24,8 +24,6 @@ body{
 .mrg-l-10{margin-right:10px;}
 .cf{clear: left;}
 em{font-style: normal;}
-/* 雪花样式 */
-.snow{position:absolute;top:0;color:#fff;}
 
 /*----------置顶---------*/
 .to-top{
@@ -169,6 +167,8 @@ em{font-style: normal;}
     box-shadow: 3px 3px 5px rgba(0,0,0,.2);
     border-radius: 3px;
 }
+.friend-dynamic, .attention-dynamic{margin: 5px 0;}
+.friend-dynamic a, .attention-dynamic a{text-decoration: none;}
 /* 右侧分享信息块 */
 .myright{margin-left: 0; margin-right: 0;}
 @media screen and (max-width:767px){

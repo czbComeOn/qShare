@@ -318,7 +318,9 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                 var friendVo = that.doAddFriend(user.account);
                 var $groupItem = $('.friend-group-item[group-num="0"]');
                 $groupItem.find('.badge').text(parseInt($groupItem.find('.badge').text()) + 1);
-                $groupItem.find('ul').append(that.getFriendItem(friendVo));
+                if($groupItem.find('ul').attr('isinit') == 1){
+                    $groupItem.find('ul').append(that.getFriendItem(friendVo));
+                }
                 $resultItem.slideUp('normal', 'swing', function(){
                     $resultItem.remove();
                 });

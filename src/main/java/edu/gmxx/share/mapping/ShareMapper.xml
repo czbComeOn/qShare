@@ -236,4 +236,22 @@
     ORDER BY create_time DESC
     LIMIT #{page.currentCount},#{page.pageSize}
   </select>
+
+  <select id="getFriendDynamic" parameterType="edu.gmxx.share.dto.ShareDTO" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from s_share
+    where user_id in (
+      SELECT buser_id user_id FROM s_friend
+      WHERE is_friend = 1  AND auser_id = #{share.userId,jdbcType=VARCHAR})
+    order by create_time desc
+    limit 0,${page.pageSize}
+  </select>
+
+  <select id="getAttentionDynamic" parameterType="edu.gmxx.share.dto.ShareDTO" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from s_share
+    where user_id in (
+      SELECT buser_id user_id FROM s_friend
+      WHERE is_attention = 1  AND auser_id = #{share.userId,jdbcType=VARCHAR})
+    order by create_time desc
+    limit 0,${page.pageSize}
+  </select>
 </mapper>

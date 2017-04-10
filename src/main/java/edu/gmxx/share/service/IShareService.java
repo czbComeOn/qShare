@@ -7,6 +7,7 @@ import edu.gmxx.share.domain.User;
 import edu.gmxx.share.utils.PageModel;
 import edu.gmxx.share.vo.ShareVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -130,4 +131,18 @@ public interface IShareService {
      * @return
      */
     ShareVo getShareVoByShareId(String shareId);
+
+    /**
+     * 获取最近好友动态
+     * @param user
+     * @return
+     */
+    List<ShareVo> getFriendDynamic(User user);
+
+    /**
+     * 获取最近关注好友动态
+     * @param user
+     * @return
+     */
+    List<ShareVo> getAttentionDynamic(User user);
 }

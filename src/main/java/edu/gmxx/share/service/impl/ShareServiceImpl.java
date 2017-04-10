@@ -458,6 +458,75 @@ public class ShareServiceImpl implements IShareService {
         return result;
     }
 
+    @Override
+    public ShareVo getShareVoByShareId(String shareId) {
+        Share share = shareMapper.selectByPrimaryKey(shareId);
+
+        // 判断分享是否为转发分享
+        String transpondId = share.getTranspondId();
+        TranspondVo transpondVo = null;
+        if(StringUtils.isEmpty(transpondId)){
+            transpondVo = null;
+        } else{
+            Transpond transpond = transpondMapper.selectByPrimaryKey(transpondId);
+            transpondVo = new TranspondVo(transpond, userMapper.selectByPrimaryKey(transpond.getUserId()));
+        }
+
+        return new ShareVo(share, userMapper.selectByPrimaryKey(share.getUserId()),
+                collectMapper.getCollectByShareId(share.getShareId()), transpondVo,
+                transpondMapper.getTranspondCount(share.getShareId()));
+    }
+
+    @Override
+    public List<ShareVo> getFriendDynamic(User user) {
+        if(user == null || StringUtils.isEmpty(user.getUserId())){
+            return null;
+        }
+
+        Share share = new Share();
+        share.setUserId(user.getUserId());
+        PageModel page = new PageModel();
+        page.setPageSize(3);
+
+        List<Share> shares = shareMapper.getFriendDynamic(new ShareDTO(share, page));
+        List<ShareVo> shareVos = new ArrayList<ShareVo>();
+        for(Share sh : shares){
+            if(!StringUtils.isEmpty(sh.getTranspondId())){
+                shareVos.add(new ShareVo(sh, userMapper.selectByPrimaryKey(sh.getUserId()),
+                        new TranspondVo(transpondMapper.selectByPrimaryKey(sh.getTranspondId()))));
+            } else{
+                shareVos.add(new ShareVo(sh, userMapper.selectByPrimaryKey(sh.getUserId())));
+            }
+        }
+
+        return shareVos;
+    }
+
+    @Override
+    public List<ShareVo> getAttentionDynamic(User user) {
+        if(user == null || StringUtils.isEmpty(user.getUserId())){
+            return null;
+        }
+
+        Share share = new Share();
+        share.setUserId(user.getUserId());
+        PageModel page = new PageModel();
+        page.setPageSize(3);
+
+        List<Share> shares = shareMapper.getAttentionDynamic(new ShareDTO(share, page));
+        List<ShareVo> shareVos = new ArrayList<ShareVo>();
+        for(Share sh : shares){
+            if(!StringUtils.isEmpty(sh.getTranspondId())){
+                shareVos.add(new ShareVo(sh, userMapper.selectByPrimaryKey(sh.getUserId()),
+                        new TranspondVo(transpondMapper.selectByPrimaryKey(sh.getTranspondId()))));
+            } else{
+                shareVos.add(new ShareVo(sh, userMapper.selectByPrimaryKey(sh.getUserId())));
+            }
+        }
+
+        return shareVos;
+    }
+
     /**
      * 包装分享信息
      * @param share
@@ -479,24 +548,5 @@ public class ShareServiceImpl implements IShareService {
             return new ShareVo(share, user, collects, transpondVo, transpondCount);
         }
         return null;
-    }
-
-    @Override
-    public ShareVo getShareVoByShareId(String shareId) {
-        Share share = shareMapper.selectByPrimaryKey(shareId);
-
-        // 判断分享是否为转发分享
-        String transpondId = share.getTranspondId();
-        TranspondVo transpondVo = null;
-        if(StringUtils.isEmpty(transpondId)){
-            transpondVo = null;
-        } else{
-            Transpond transpond = transpondMapper.selectByPrimaryKey(transpondId);
-            transpondVo = new TranspondVo(transpond, userMapper.selectByPrimaryKey(transpond.getUserId()));
-        }
-
-        return new ShareVo(share, userMapper.selectByPrimaryKey(share.getUserId()),
-                collectMapper.getCollectByShareId(share.getShareId()), transpondVo,
-                transpondMapper.getTranspondCount(share.getShareId()));
     }
 }

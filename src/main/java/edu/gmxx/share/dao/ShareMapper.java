@@ -45,4 +45,18 @@ public interface ShareMapper {
      * @return
      */
     List<Share> getCollectShare(ShareDTO shareDTO);
+
+    /**
+     * 获取最近好友动态
+     * @param userId
+     * @return
+     */
+    List<Share> getFriendDynamic(ShareDTO shareDTO);
+
+    /**
+     * 获取关注好友动态
+     * @param shareDTO
+     * @return
+     */
+    List<Share> getAttentionDynamic(ShareDTO shareDTO);
 }

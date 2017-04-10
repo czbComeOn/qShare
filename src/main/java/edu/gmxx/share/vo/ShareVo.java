@@ -44,6 +44,12 @@ public class ShareVo {
         this.collects = collects;
     }
 
+    public ShareVo(Share share, User user, TranspondVo transpondVo){
+        this.share = share;
+        this.user = user;
+        this.transpondVo = transpondVo;
+    }
+
     public ShareVo(Share share, User user, List<Collect> collects, TranspondVo transpondVo) {
         this.share = share;
         this.user = user;

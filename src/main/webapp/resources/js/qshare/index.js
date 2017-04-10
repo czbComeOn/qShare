@@ -1,5 +1,5 @@
 define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jquery/jquery.sinaEmotion', 'bootstrap', 'bootstrapValidator',
-        , 'jquery/snowfall.jquery', 'utils/upload-progress']
+        , 'utils/upload-progress']
     , function ($messager, comm, login) {
     var CURRENT_PAGE_NUMBER = 1;
     var home_ent; // 加载入口
@@ -20,44 +20,6 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
                 numItem.text(max - $(this).val().length);
             });
         }
-    }
-
-    /**
-     * 显示花瓣背景
-     */
-    share.showHuaban = function () {
-        $(document).snowfall({
-            image: "resources/img/huaban.png",
-            flakeCount: 20,
-            minSize: 5,
-            maxSize: 22
-        });
-    }
-
-    /**
-     * 显示背景雪花
-     */
-    share.showSnow = function () {
-        var d = "<div class='snow'>❅<div>"
-        this.setInterval = setInterval(function () {
-            var f = $(document).width();
-            var e = Math.random() * f - 100;
-            var o = 0.3 + Math.random();
-            var fon = 10 + Math.random() * 30;
-            var l = e - 100 + 200 * Math.random();
-            var k = 2000 + 5000 * Math.random();
-            $(d).clone().appendTo(".snowbg").css({
-                left: e + "px",
-                opacity: o,
-                "font-size": fon,
-            }).animate({
-                top: "400px",
-                left: l + "px",
-                opacity: 0.2,
-            }, k, "linear", function () {
-                $(this).remove()
-            });
-        }, 200);
     }
 
     /**
@@ -1228,14 +1190,6 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
         this.toTop();
 
         login.init();
-
-        // 随机使用雪花背景或花瓣背景
-        // if(Math.floor(Math.random()*10) % 2 == 0){
-        //     this.showSnow();
-        // } else{
-        //     this.showHuaban();
-        // }
-
         this.$sharePanel = $('#sharePanel');
 
         //先选出 textarea 和 统计字数 dom 节点

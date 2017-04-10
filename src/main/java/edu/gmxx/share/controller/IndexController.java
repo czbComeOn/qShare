@@ -46,6 +46,12 @@ public class IndexController {
 			view.addObject("attentionCount", userService.getMeAttentionWhoCount(user.getUserId()));
 			view.addObject("shareCount", shareService.getShareCountByUser(user.getUserId()));
 			view.addObject("collectCount", shareService.getCollectCountByUser(user.getUserId()));
+
+			// 获取最近好友动态
+			view.addObject("friendShareVos", shareService.getFriendDynamic(user));
+
+			// 获取最近关注动态
+			view.addObject("attentionShareVos", shareService.getAttentionDynamic(user));
 		}
 
 		return view;

@@ -11,6 +11,15 @@ public class ShareDTO {
 
     private PageModel page;
 
+    public ShareDTO(){
+
+    }
+
+    public ShareDTO(Share share, PageModel page){
+        this.share = share;
+        this.page = page;
+    }
+
     public Share getShare() {
         return share;
     }
