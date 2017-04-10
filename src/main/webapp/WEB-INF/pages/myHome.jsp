@@ -195,7 +195,7 @@
                         <a class="fr" id="informUser" user-id="${acc.userId}" href="javascript:void(0);" title="点击举报TA" style="display:none;cursor:pointer;text-decoration:none;">举报</a>
                         <div>
                             <c:choose>
-                                <c:when test="${acc.portraitPath != null}">
+                                <c:when test="${acc.portraitPath != null && acc.portraitPath != ''}">
                                     <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/${acc.portraitPath}">
                                 </c:when>
                                 <c:otherwise>

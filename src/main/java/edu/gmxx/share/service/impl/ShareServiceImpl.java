@@ -220,6 +220,11 @@ public class ShareServiceImpl implements IShareService {
             return result;
         }
 
+        if(StringUtils.isEmpty(transpond.getReason())){
+            result.put("msg", "转发理由不能为空！");
+            return result;
+        }
+
         // 1.获取原始分享的id
         Share share = shareMapper.selectByPrimaryKey(transpond.getShareId());
 

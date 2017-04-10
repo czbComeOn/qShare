@@ -1284,35 +1284,43 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
                 that.target.closeDialog();
             });
 
-            $html.find('#okBtn').on('click', function(){
-                $.ajax({
-                    async: false,
-                    url: 'share/transpond.do',
-                    data: {'shareId': that.share.shareId, 'reason':that.$reason.val()},
-                    type: 'post',
-                    dataType: 'json',
-                    success: function(result){
-                        if(result.msg == 'success'){
-                            if(home_ent != 'home'){
-                                that.instance.$sharePanel.after(that.instance.getSharePanel(result.userInfo, result.shareInfo, null, result.userInfo, result.transpondInfo));
+            var $okBtn = $html.find('#okBtn');
+            $okBtn.on('click', function(){
+                $okBtn.attr('disabled', 'disabled');
+                if(!that.$reason.val()){
+                    $messager.warning('转发理由不能为空！');
+                    $okBtn.removeAttr('disabled');
+                } else{
+                    $.ajax({
+                        async: false,
+                        url: 'share/transpond.do',
+                        data: {'shareId': that.share.shareId, 'reason':that.$reason.val()},
+                        type: 'post',
+                        dataType: 'json',
+                        success: function(result){
+                            if(result.msg == 'success'){
+                                if(home_ent != 'home'){
+                                    that.instance.$sharePanel.after(that.instance.getSharePanel(result.userInfo, result.shareInfo, null, result.userInfo, result.transpondInfo));
+                                }
+                                that.transpondCount.text(parseInt(that.transpondCount.text()) + 1);
+                                $messager.success('转发成功！');
+                                that.target.closeDialog();
+                            } else if(result.msg == 'OFFLINE'){
+                                $messager.warning('用户未登录');
+                                that.instance.showLogin();
+                                that.target.closeDialog();
+                            } else{
+                                $messager.error(result.msg);
+                                that.target.closeDialog();
                             }
-                            that.transpondCount.text(parseInt(that.transpondCount.text()) + 1);
-                            $messager.success('转发成功！');
+                            $okBtn.removeAttr('disabled');
+                        },
+                        error: function(){
                             that.target.closeDialog();
-                        } else if(result.msg == 'OFFLINE'){
-                            $messager.warning('用户未登录');
-                            that.instance.showLogin();
-                            that.target.closeDialog();
-                        } else{
-                            $messager.error(result.msg);
-                            that.target.closeDialog();
+                            $messager.warning('服务器出错');
                         }
-                    },
-                    error: function(){
-                        that.target.closeDialog();
-                        $messager.warning('服务器出错');
-                    }
-                })
+                    });
+                }
             });
             return $html;
         }

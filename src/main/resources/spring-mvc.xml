@@ -48,12 +48,12 @@
 		<property name="maxInMemorySize" value="40960" />    
 	</bean>
 
-	<mvc:interceptors>
+	<!--<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/*"/>
 			<bean class="edu.gmxx.share.interceptor.LoginInterceptor" />
 		</mvc:interceptor>
-	</mvc:interceptors>
+	</mvc:interceptors>-->
 
 	<mvc:annotation-driven/>
 </beans>

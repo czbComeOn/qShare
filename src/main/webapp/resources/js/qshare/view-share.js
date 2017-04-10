@@ -39,6 +39,28 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/app-dialog', 'b
         $('.footer-tool .eval').on('click', function(){
             share.addEvalInfo(CURR_SHARE.shareId, CURR_SHARE.userId, $('#currShare .panel-footer'), $('.show-eval-box'), $(this), CURR_USER);
         });
+
+        // 退出登录
+        $('#logout').on('click', function(){
+            $.confirmDialog({
+                title: '确定退出登录？',
+                okCall: function(){
+                    $.ajax({
+                        url: 'logout.do',
+                        dataType: 'json',
+                        success: function(){
+                            location.reload();
+                        },
+                        error: function(){
+                            location.reload();
+                        }
+                    });
+                }
+            });
+        });
+
+        // 修改密码
+        $('#changePwd').on('click', login.changePwd);
     }
 
     view.init = function(share, user){

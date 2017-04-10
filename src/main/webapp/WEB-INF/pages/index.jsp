@@ -199,7 +199,7 @@
                     <div class="myleft-n mrg20" id="crop-avatar">
                         <a href="myHome.do?account=${user.account}" title="个人主页">
                             <c:choose>
-                                <c:when test="${user.portraitPath != null}">
+                                <c:when test="${user.portraitPath != null && acc.portraitPath != ''}">
                                     <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/${user.portraitPath}">
                                 </c:when>
                                 <c:otherwise>
@@ -212,7 +212,7 @@
                             <div class="addr">
                                 <i class="fa fa-map-marker"></i>
                                 <c:choose>
-                                    <c:when test="${user.region == null}">未知</c:when>
+                                    <c:when test="${user.region == null || user.region == ''}">未知</c:when>
                                     <c:otherwise>${user.region}</c:otherwise>
                                 </c:choose>
                             </div>

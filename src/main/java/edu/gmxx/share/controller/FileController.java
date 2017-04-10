@@ -3,7 +3,6 @@ package edu.gmxx.share.controller;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.service.IUserService;
 import edu.gmxx.share.utils.MyStringUtil;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,7 +53,6 @@ public class FileController {
         String path = sc.getRealPath("/portrait") + "\\"; // 设定文件保存的目录
 
         String avatarData = request.getParameter("avatarData");
-        JSONObject jsonObject = new JSONObject(avatarData);
 
         File f = new File(path);
         // 判断路径是否存在
@@ -92,7 +90,7 @@ public class FileController {
             session.setAttribute("user", userService.getUserByAccount(user.getAccount()));
             result.put("portraitPath", "\\" + newFileName);
             result.put("msg", "success");
-        result.put("result", "portrait/" + newFileName);
+            result.put("result", "portrait/" + newFileName);
         } else{
             result.put("error", "修改图片失败");
         }
