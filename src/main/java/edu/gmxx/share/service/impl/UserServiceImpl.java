@@ -805,4 +805,31 @@ public class UserServiceImpl implements IUserService {
 
         return result;
     }
+
+    @Override
+    public Map<String, Object> resetPassword(String account, String newPassword, String againPassword) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        if(StringUtils.isEmpty(newPassword) || StringUtils.isEmpty(againPassword)){
+            result.put("msg", "输入的密码不能为空！");
+            return result;
+        }
+
+        if(!newPassword.equals(againPassword)){
+            result.put("msg", "两次输入的密码不一致！");
+            return result;
+        }
+
+        User user = userMapper.getUserByAccount(account);
+        user.setPassword(newPassword);
+        int count = userMapper.updateByPrimaryKeySelective(user);
+        if(count == 1){
+            result.put("msg", "success");
+        } else{
+            logger.debug("-----> 密码重置异常");
+            result.put("msg", "密码重置失败，请刷新后重试！");
+        }
+
+        return result;
+    }
 }

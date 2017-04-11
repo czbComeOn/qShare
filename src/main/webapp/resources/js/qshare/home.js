@@ -1140,7 +1140,7 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                                 message: '手机号码不能为空'
                             },
                             regexp: {
-                                regexp: /^1[3|5|8][0-9]{9}$/,
+                                regexp: /^1[3|5|7|8][0-9]{9}$/,
                                 message: '手机号码格式不正确'
                             }
                         }

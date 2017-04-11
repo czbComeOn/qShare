@@ -5,9 +5,11 @@ import edu.gmxx.share.domain.FriendGroup;
 import edu.gmxx.share.domain.Inform;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.service.IUserService;
+import edu.gmxx.share.utils.MyStringUtil;
 import edu.gmxx.share.utils.PageModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 用户信息操作
@@ -411,7 +415,7 @@ public class UserController {
 
     /**
      * 举报用户
-     * @param userId
+     * @param inform
      * @param session
      * @return
      */
@@ -426,5 +430,88 @@ public class UserController {
             return result;
         }
         return userService.informUser(user, inform);
+    }
+
+    /**
+     * 重置密码验证
+     * @param account
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "resetPassword.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> resetPassword(String account, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        if(StringUtils.isEmpty(account)){
+            result.put("msg", "账户不能为空");
+            return result;
+        }
+
+        User user = userService.getUserByAccount(account);
+
+        if(user == null){
+            result.put("msg", "账户不存在！");
+            return result;
+        }
+
+        // 向手机发送验证码
+        String code = MyStringUtil.getRandomCode(6);
+        // 将验证码存放到session域里面，半小时内有效
+        session.setAttribute("userCode", user.getPhone() + "-" + code);
+
+        result.put("code" , code);
+        result.put("user", user);
+        result.put("msg", "success");
+
+        return result;
+    }
+
+    /**
+     * 校验验证码
+     * @param code
+     * @param phone
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="doCodeChcek.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> doCodeChcek(String code, String phone, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        if(StringUtils.isEmpty(code)){
+            result.put("msg", "验证码不能为空！");
+            return result;
+        }
+
+        Pattern p = Pattern.compile("^\\d{6}$");
+        Matcher m = p.matcher(phone);
+        if(m.matches()){
+            result.put("msg", "验证码必须为6位数字！");
+            return result;
+        }
+
+        // 判断验证码输入是否正确
+        String userCode = (String) session.getAttribute("userCode");
+        if(phone.equals(userCode.split("-")[0])){
+            result.put("msg", code.equals(userCode.split("-")[1]) ? "success" : "验证码输入错误！");
+        } else{
+            result.put("msg", "验证码输入错误！");
+        }
+
+        return result;
+    }
+
+    /**
+     * 重置密码
+     * @param newPassword
+     * @param againPassword
+     * @param account
+     * @return
+     */
+    @RequestMapping(value="doResetPwd.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> doResetPwd(String newPassword, String againPassword, String account){
+        return userService.resetPassword(account, newPassword, againPassword);
     }
 }

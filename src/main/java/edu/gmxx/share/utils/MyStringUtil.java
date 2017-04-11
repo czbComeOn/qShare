@@ -3,10 +3,7 @@ package edu.gmxx.share.utils;
 import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,9 +74,24 @@ public class MyStringUtil {
      * @return
      */
     public static boolean matcherPhone(String phone){
-        Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
+        Pattern p = Pattern.compile("^((13[0-9])|(17[0-9])|(15[0-9])|(18[0-9]))\\d{8}$");
         Matcher m = p.matcher(phone);
 
         return m.matches();
+    }
+
+    /**
+     * 生成随机验证码
+     * @param length 验证码长度
+     * @return
+     */
+    public static String getRandomCode(int length){
+        String code = "";
+        Random random = new Random();
+        for(int i = 0; i < length; i++){
+            code += random.nextInt(10);
+        }
+
+        return code;
     }
 }

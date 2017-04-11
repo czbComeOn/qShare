@@ -218,5 +218,20 @@ public interface IUserService {
      */
     int getWhoAttentionMeCount(String userId);
 
+    /**
+     * 举报用户
+     * @param user
+     * @param inform
+     * @return
+     */
     Map<String,Object> informUser(User user, Inform inform);
+
+    /**
+     * 重置密码
+     * @param account
+     * @param newPassword
+     * @param againPassword
+     * @return
+     */
+    Map<String,Object> resetPassword(String account, String newPassword, String againPassword);
 }

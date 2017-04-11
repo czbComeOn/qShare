@@ -25,7 +25,7 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
                         },
                         regexp: {
                             regexp: /^[a-zA-Z][a-zA-Z0-9]*$/,
-                            message: '账号不能以数字开头'
+                            message: '账号只能由数字和字母组成，且不能以数字开头'
                         },
                         stringLength: {
                             min: 3,
@@ -69,7 +69,7 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
                         },
                         regexp: {
                             regexp: /^[a-zA-Z][a-zA-Z0-9]*$/,
-                            message: '账号不能以数字开头'
+                            message: '账号只能由数字和字母组成，且不能以数字开头'
                         },
                         stringLength: {
                             min: 3,
@@ -137,8 +137,24 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
                             message: '手机号码不能为空'
                         },
                         regexp: {
-                            regexp: /^1[3|4|5|7|8][0-9]{9}$/,
+                            regexp: /^1[3|5|7|8][0-9]{9}$/,
                             message: '手机号码格式不正确'
+                        }
+                    }
+                },
+                resetAccount: {
+                    validators: {
+                        notEmpty: {
+                            message: '账号不能为空'
+                        },
+                        regexp: {
+                            regexp: /^[a-zA-Z][a-zA-Z0-9]*$/,
+                            message: '账号只能由数字和字母组成，且不能以数字开头'
+                        },
+                        stringLength: {
+                            min: 3,
+                            max: 18,
+                            message: '账号必须3-18个字符'
                         }
                     }
                 }
@@ -221,7 +237,35 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
     }
 
     login.resetPwd = function(){
-        $messager.success('密码重置');
+        var resetAccount = $('#resetAccount').val();
+        if(!resetAccount){
+            $messager.warning('请输入账号');
+        } else if(!/^[a-zA-Z][a-zA-Z0-9]*$/.test(resetAccount)){
+            $messager.warning('账号只能由字母和数字组成，且不能以数字开头');
+        } else if(resetAccount.length < 3 || resetAccount > 18){
+            $messager.warning('账号必须3-18个字符');
+        } else{
+            // 后台验证账号，并通过账号对应的手机，向手机发送验证码
+            $.ajax({
+                url: 'user/resetPassword.do',
+                data: {'account': resetAccount},
+                type: 'post',
+                dataType: 'json',
+                success: function(result){
+                    if(result.msg == 'success'){
+                        $('.login-box-show').slideUp('normal', 'swing', function(){
+                            $('.login-box-show').parent().hide();
+                        });
+                        new ResetPwdDialog(login, $('#resetBtn'), result.user, result.code);
+                    } else{
+                        $messager.error(result.msg);
+                    }
+                },
+                error: function(){
+                    $messager.warning('服务器出错');
+                }
+            });
+        }
     }
 
     /**
@@ -325,7 +369,7 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
                         '<div class="form-group">' +
                             '<label for="regPhone" class="col-xs-12 col-sm-3 control-label">手机：</label>' +
                             '<div class="col-xs-7 col-sm-5">' +
-                                '<input class="form-control" id="regPhone" name="regPhone" placeholder="手机号码">' +
+                                '<input class="form-control" id="regPhone" name="regPhone" type="number" placeholder="手机号码">' +
                             '</div>' +
                             '<div class="col-xs-5 col-sm-4">' +
                                 '<button class="btn btn-primary" id="sendCode" disabled type="submit" title="点击向手机发送验证码">发送验证码</button>' +
@@ -336,7 +380,7 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
                         '<div class="form-group">' +
                             '<label class="control-label col-xs-12 col-sm-3" for="code">验证码：</label>' +
                             '<div class="col-xs-12 col-sm-9">' +
-                                '<input class="form-control" id="code" name="code" placeholder="请输入验证码">' +
+                                '<input class="form-control" id="code" name="code" type="number" placeholder="请输入验证码">' +
                             '</div>' +
                         '</div>' +
                         '<div class="form-group">' +
@@ -377,7 +421,7 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
                                 message: '手机号码不能为空'
                             },
                             regexp: {
-                                regexp: /^1[3|4|5|7|8][0-9]{9}$/,
+                                regexp: /^1[3|5|7|8][0-9]{9}$/,
                                 message: '手机号码格式不正确'
                             }
                         }
@@ -459,9 +503,16 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
         }
     }
 
-    var ChangePwdDialog = function(userData, target){
+    /**
+     * 修改密码
+     * @param userData
+     * @param target
+     * @constructor
+     */
+    var ChangePwdDialog = function(userData, target, url){
         this.userData = userData;
         this.target = target;
+        this.url = url;
         this.init();
     }
 
@@ -487,7 +538,7 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
             var $html = $('<div>' +
                 '<form class="form-horizontal" id="changePwdForm">' +
                     '<input id="account" name="account" type="hidden"/>' +
-                    '<div class="form-group">' +
+                    '<div id="oldPwdBox" class="form-group">' +
                         '<label for="oldPassword" class="col-xs-4 control-label">原密码：</label>' +
                         '<div class="col-xs-8">' +
                             '<input class="form-control" id="oldPassword" name="oldPassword" type="password" placeholder="请输入原密码">' +
@@ -512,6 +563,9 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
                 '</form>' +
             '</div>');
 
+            if(this.url){
+                $html.find('#oldPwdBox').hide();
+            }
             this.$oldPassword = $html.find('#oldPassword');
             this.$newPassword = $html.find('#newPassword');
             this.$againPassword = $html.find('#againPassword');
@@ -587,15 +641,22 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
         },
         save: function(){
             var that = this;
+            var data = {'account': that.$account.val(), 'newPassword': that.$newPassword.val(), 'againPassword': that.$againPassword.val()};
+            if(!this.url){
+                data.oldPassword = that.$oldPassword.val();
+            }
             $.ajax({
-                url: 'user/changePassword.do',
+                url: that.url ? that.url:'user/changePassword.do',
                 type: 'post',
-                data: {'account': that.$account.val(), 'oldPassword': that.$oldPassword.val()
-                    ,'newPassword': that.$newPassword.val(), 'againPassword': that.$againPassword.val()},
+                data: data,
                 dataType: 'json',
                 success: function(result){
                     if(result.msg == 'success'){
-                        $messager.success('密码修改成功');
+                        if(that.url){
+                            $messager.success('密码重置成功');
+                        } else{
+                            $messager.success('密码修改成功');
+                        }
                         that.target.closeDialog();
                     } else if(result.msg == 'OFFLINE'){
                         $messager.warning('用户未登录');
@@ -613,6 +674,138 @@ define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator']
         },
         initData: function(){
             this.$account.val(this.userData.account);
+        }
+    }
+
+    /**
+     * 忘记密码重置
+     * @param instance
+     * @param target
+     * @param user
+     * @param code
+     * @constructor
+     */
+    var ResetPwdDialog = function(instance, target, user, code){
+        this.instance = instance;
+        this.target = target;
+        this.user = user;
+        this.code = code;
+        this.init();
+    }
+
+    ResetPwdDialog.prototype = {
+        init: function () {
+            var that = this;
+            var option = {
+                title: '密码重置',
+                saveBtn: false,
+                mode: that.paintComponent()
+            };
+            this.target.openModalDialog(option);
+            this.initData();
+        },
+        /**
+         * 绘制弹窗内容
+         * @returns {*|jQuery|HTMLElement}
+         */
+        paintComponent: function () {
+            var that = this;
+            var $html = $('<div>' +
+                '<div class="row">' +
+                    '<label id="resetPhone" class="col-xs-7 control-label"></label>' +
+                    '<div class="col-xs-5">' +
+                        '<button class="btn btn-primary" id="sendCode" disabled type="submit" title="重新发送">重新发送</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="row" style="margin-top:10px;">' +
+                    '<label class="control-label col-xs-4 col-sm-2" for="code">验证码：</label>' +
+                    '<div class="col-xs-8">' +
+                        '<input class="form-control" id="code" name="code" type="number" placeholder="请输入验证码">' +
+                    '</div>' +
+                '</div>' +
+                '<div class="row mrg-t-10" style="margin-top:10px;padding:0 15px;">' +
+                    '<button class="btn btn-primary col-xs-12" id="okBtn" type="submit">确认</button>' +
+                '</div>' +
+            '</div>');
+
+            this.$resetPhone = $html.find('#resetPhone');
+            this.$sendCode = $html.find('#sendCode');
+            this.$code = $html.find('#code');
+            this.$sendCode.on('click', function(){
+                $.ajax({
+                    url: 'user/resetPassword.do',
+                    data: {'account': that.user.account},
+                    type: 'post',
+                    dataType: 'json',
+                    success: function(result){
+                        if(result.msg == 'success'){
+                            that.$sendCode.attr('disablde', 'disabled');
+                            $messager.success('验证码已发送');
+                            that.code = result.code;
+                            that.sendCode();
+                        } else{
+                            that.$sendCode.removeAttr('disabled');
+                            $messager.error(result.msg);
+                        }
+                    },
+                    error: function(){
+                        that.$sendCode.removeAttr('disabled');
+                        $messager.warning('服务器出错');
+                    }
+                });
+            });
+            this.$okBtn = $html.find('#okBtn');
+            this.$okBtn.on('click', function(){
+                that.$okBtn.attr('disabled', 'disabled');
+                if(!that.$code.val()){
+                    $messager.warning('请输入验证码');
+                    that.$okBtn.removeAttr('disabled');
+                }  else if(!/^\d{6}$/.test(that.$code.val())){
+                    $messager.warning('验证码必须为6位数字');
+                    that.$okBtn.removeAttr('disabled');
+                } else{
+                    // 后台验证验证码输入是否正确
+                    $.ajax({
+                        url: 'user/doCodeChcek.do',
+                        data: {'code': that.$code.val(), 'phone':that.user.phone},
+                        type: 'post',
+                        dataType: 'json',
+                        success: function(result){
+                            if(result.msg == 'success'){
+                                that.$okBtn.removeAttr('disabled');
+                                that.target.closeDialog();
+                                new ChangePwdDialog(that.user, $('#changePwd'), 'user/doResetPwd.do');
+                            } else{
+                                $messager.error(result.msg);
+                                that.$okBtn.removeAttr('disabled');
+                            }
+                        },
+                        error: function(){
+                            $messager.warning('服务器出错');
+                            that.$okBtn.removeAttr('disabled');
+                        }
+                    });
+                }
+            });
+
+            return $html;
+        },
+        initData: function(){
+            var phone = this.user.phone;
+            this.$resetPhone.text('已向手机 ' + phone.substring(0,3) + '***' + phone.substring(phone.length-4) + '发送验证码');
+            this.sendCode();
+        },
+        sendCode: function() {
+            var that = this;
+            var i = 60;
+            this.$code.val(this.code);
+            this.interval = setInterval(function(){
+                that.$sendCode.text('重新发送(' + i + ')');
+                if(i-- <= 0){
+                    clearInterval(that.interval);
+                    that.$sendCode.text('重新发送').removeAttr('disabled');
+                }
+            }, 1000);
         }
     }
 
