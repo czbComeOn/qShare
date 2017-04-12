@@ -20,7 +20,7 @@
     <script data-main="${pageContext.request.contextPath}/resources/js/main"
             src="${pageContext.request.contextPath}/resources/js/require.min.js"></script>
     <script>
-        require(['jquery', 'qshare/view-share'], function($, view){
+        require(['jquery', 'qshare/view-share', 'utils/app-dialog'], function($, view){
             view.init({'shareId': '${shareVo.share.shareId}',
                 'userId': <c:choose>
                             <c:when test="${shareVo.transpondVo != null}">'${shareVo.transpondVo.transpond.userId}'</c:when>
@@ -36,7 +36,7 @@
         <img src="${pageContext.request.contextPath}/resources/img/top.png" alt="">
     </div>
     <!-- start login -->
-    <jsp:include page="login.jsp"/>
+    <jsp:include page="common/login.jsp"/>
     <!--end login-->
 
     <!-- start nav -->
@@ -74,6 +74,9 @@
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
+                            <c:if test="${user.userType != 'NORMAL'}">
+                                <li><a href="manage.do"><i class="fa fa-sign-in">&nbsp;</i>进入后台</a></li>
+                            </c:if>
                             <li><a href="myHome.do?account=${user.account}"><i class="fa fa-home">&nbsp;</i>我的主页</a></li>
                             <li><a id="changePwd" href="javascript:void(0);"><i class="fa fa-edit">&nbsp;</i>修改密码</a></li>
                             <li><a id="logout" href="javascript:void(0);"><i class="fa fa-sign-out">&nbsp;</i>退出登录</a></li>
@@ -249,7 +252,7 @@
         </div>
     </div>
 
-    <jsp:include page="footer.jsp"/>
+    <jsp:include page="common/footer.jsp"/>
 </div>
 </body>
 </html>

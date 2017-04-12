@@ -2,6 +2,7 @@
 body{
 	width: 100%;
     background: #b4daf0;
+    color: #676a6c;
 	/*background: -ms-linear-gradient(top, #11c1d8,  #a0e3ec);   !* IE 10 *!
 	background:-webkit-linear-gradient(#11c1d8, #a0e3ec); !* google *!
 	background:-moz-linear-gradient(top,#11c1d8,#a0e3ec); !*火狐*!
@@ -87,7 +88,7 @@ em{font-style: normal;}
     border-bottom: 1px solid #d3dbdc;
 }
 .login-box-all > div .panel-heading a{display: block;}
-.login-box-all > div .panel-heading a:hover{color: #337ab7;}
+.login-box-all > div .panel-heading a:hover{color: #676a6c;}
 .login-box-all > div .panel-heading a > i{
     -webkit-transform: rotate(0deg);
     -moz-transform: rotate(0deg);
@@ -249,7 +250,7 @@ em{font-style: normal;}
 	right: 6px;
 	bottom: 6px;
 }
-.wordCount .word{color: #a2b6c7;padding: 0 4px;}
+.wordCount .word{color: #676a6c;padding: 0 4px;}
 /*分享视频*/
 .add-video{width: 300px; height: 180px;}
 .add-video .remove-video{
@@ -268,7 +269,7 @@ em{font-style: normal;}
 }
 .jwlogo{display:none;}
 /* 分享信息类别选择 */
-.share-type{height: 150px;overflow-y: auto;}
+.share-type{min-width:100px !important; height: 150px;overflow-y: auto;}
 .share-type > li > a, .visibility-type > li > a{color: #777;}
 @media screen and(max-width: 767px){
 	.share-type{left: 16px;}
@@ -286,12 +287,9 @@ em{font-style: normal;}
 .footer-left{margin-top: 10px;}
 .footer-tool{width: 100%; text-align: right;}
 .footer-left > a, .footer-tool > a{text-decoration: none; margin-left: 10px;}
-.insert-attachment:hover, .footer-tool > a:hover, .panel a:hover{color: #a2b6c7;}
+.insert-attachment:hover, .footer-tool > a:hover, .panel a:hover{color: #676a6c;}
 .panel{margin-bottom: 10px;}
 @media screen and (max-width:480px){
-    .share-panel .panel-footer{height: 100px;}
-    .share-panel .panel-footer .footer-left{width:100%;}
-    .share-panel .panel-footer .footer-right{float: left; margin-left:5px;}
     .share-video-box video{width:100%; height:100%;}
 }
 

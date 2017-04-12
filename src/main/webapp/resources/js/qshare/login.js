@@ -2,7 +2,7 @@
  * 初始化登录组件
  * Created by BIN on 2017/4/4.
  */
-define(['utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator'], function($messager){
+define(['utils/messager', 'bootstrap', 'bootstrapValidator', 'utils/app-dialog'], function($messager){
     var login = {};
 
     /**

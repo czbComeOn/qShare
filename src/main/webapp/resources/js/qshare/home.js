@@ -1,7 +1,7 @@
 /**
  * Created by BIN on 2017/4/3.
  */
-define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator'],
+define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'bootstrap', 'bootstrapValidator'],
     function(login, share, $messager, comm){
     var ME_ATTENTION_NUM = 1; // 我关注谁页码
     var WHO_ATTENTION_NUM = 1; // 谁关注我页码
@@ -892,11 +892,15 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
             that.doAddFriend(home_acc);
         });
 
-        $('#crop-avatar').hover(function(){
+        if(document.body.clientWidth >= 768){
+            $('#crop-avatar').hover(function(){
+                $('#informUser').show();
+            }, function(){
+                $('#informUser').hide();
+            });
+        } else{
             $('#informUser').show();
-        }, function(){
-            $('#informUser').hide();
-        });
+        }
 
         $('#informUser').on('click', function(){
             new InformUserDialog($(this), $(this).attr('user-id'));
@@ -908,9 +912,7 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
         home_acc = acc;
         this.initEvent();
         login.init();
-        setTimeout(function(){
-            that.showShare();
-        }, 1000);
+        that.showShare();
 
         share.toTop();
     }
@@ -1059,8 +1061,8 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'utils
                     '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
-                    '<button class="col-xs-offset-1 col-xs-4 btn btn-primary" type="submit" id="saveData">保存</button>' +
-                    '<button class="col-xs-offset-2 col-xs-4 btn btn-primary" id="cancelData">取消</button>' +
+                    '<button class="col-xs-offset-1 col-xs-4 btn btn-success" type="submit" id="saveData">保存</button>' +
+                    '<button class="col-xs-offset-2 col-xs-4 btn btn-success" id="cancelData">取消</button>' +
                 '</div>' +
             '</form></div>');
 

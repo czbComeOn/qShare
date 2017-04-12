@@ -1,6 +1,6 @@
-define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jquery/jquery.sinaEmotion', 'bootstrap', 'bootstrapValidator',
-        , 'utils/upload-progress']
-    , function ($messager, comm, login) {
+define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmotion', 'bootstrap',
+        'bootstrapValidator', 'utils/upload-progress'],
+    function ($messager, comm, login) {
     var CURRENT_PAGE_NUMBER = 1;
     var home_ent; // 加载入口
     var share = {};
@@ -974,6 +974,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
         var that = this;
         $('#changePwd').on('click', login.changePwd);
         $('#logout').on('click', that.logout);
+        $('#login').on('click', login.show);
         // 选择图片
         $('#insertImg').click(function () {
             // 弹窗选择图片
@@ -1098,51 +1099,49 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
             data = {'pageNumber': CURRENT_PAGE_NUMBER};
         }
 
-        setTimeout(function(){
-            $.ajax({
-                url: url,
-                type: 'get',
-                data: data,
-                dataType: 'json',
-                async: false,
-                success: function(result){
-                    if(result.msg == 'success'){
-                        // 当前选择的分享信息类型
-                        $('.show-share-type').find('li').removeClass('active');
-                        $('.show-share-type').children('li').each(function(){
-                            if($(this).children('a').attr('name') == result.shareTypeId){
-                                $(this).addClass('active');
-                            }
-                        });
-                        $('.more-type').children('li').each(function(){
-                            if($(this).children('a').attr('name') == result.shareTypeId){
-                                $(this).addClass('active');
-                                $('.more-type').parent().addClass('active');
-                            }
-                        });
-
-                        CURRENT_PAGE_NUMBER = parseInt(result.page.pageNumber) + 1;
-                        if(CURRENT_PAGE_NUMBER > result.page.totalPages){
-                            $('#loadMore .load-more').hide();
-                            $('#loadMore .in-load').hide();
-                            $('#loadMore .load-finish').show();
-                            $('.load-more').unbind('click');
-                        } else{
-                            $('#loadMore .load-more').show();
-                            $('#loadMore .in-load').hide();
-                            $('#loadMore .load-finish').hide();
+        $.ajax({
+            url: url,
+            type: 'get',
+            data: data,
+            dataType: 'json',
+            async: false,
+            success: function(result){
+                if(result.msg == 'success'){
+                    // 当前选择的分享信息类型
+                    $('.show-share-type').find('li').removeClass('active');
+                    $('.show-share-type').children('li').each(function(){
+                        if($(this).children('a').attr('name') == result.shareTypeId){
+                            $(this).addClass('active');
                         }
+                    });
+                    $('.more-type').children('li').each(function(){
+                        if($(this).children('a').attr('name') == result.shareTypeId){
+                            $(this).addClass('active');
+                            $('.more-type').parent().addClass('active');
+                        }
+                    });
 
-                        that.showShareInfo(result.shares, result.userInfo);
+                    CURRENT_PAGE_NUMBER = parseInt(result.page.pageNumber) + 1;
+                    if(CURRENT_PAGE_NUMBER > result.page.totalPages){
+                        $('#loadMore .load-more').hide();
+                        $('#loadMore .in-load').hide();
+                        $('#loadMore .load-finish').show();
+                        $('.load-more').unbind('click');
                     } else{
-                        $messager.error(result.msg);
+                        $('#loadMore .load-more').show();
+                        $('#loadMore .in-load').hide();
+                        $('#loadMore .load-finish').hide();
                     }
-                },
-                error: function(){
-                    $messager.warning('服务器出错');
+
+                    that.showShareInfo(result.shares, result.userInfo);
+                } else{
+                    $messager.error(result.msg);
                 }
-            });
-        }, 500);
+            },
+            error: function(){
+                $messager.warning('服务器出错');
+            }
+        });
     }
 
     share.homeEnt = function(){
@@ -1197,9 +1196,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'utils/app-dialog','jq
 
         // 选择表情
         $('#face').SinaEmotion($('.emotion'));
-        setTimeout(function(){
-            that.loadShareInfo();
-        }, 2000);
+        that.loadShareInfo();
     }
 
     // -----------------弹窗-----------------

@@ -18,10 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 用户信息操作服务
@@ -61,8 +58,17 @@ public class UserServiceImpl implements IUserService {
 
         // 2.验证账户是否被锁定
         if("LOCK".equalsIgnoreCase(account.getStatus())){
-            result.put("msg", "该账号已被锁定");
-            return result;
+            // 验证是否已过解锁时间
+            long unlockTime = account.getUnlockTime().getTime();
+            long currTime = System.currentTimeMillis();
+            long time = unlockTime - currTime;
+
+            if(time > 0){
+                int minute = (int) (time/60000);
+                result.put("msg", "该账号已被锁定，" + (minute >= 1440 ? (minute/1440 + "天" + (minute%1440/60) + "小时后解锁") :
+                        ((minute/60 > 0 ? minute/60 + "小时" : "") + (minute%60 > 1 ? minute%60 : 1) + "分钟后解锁")));
+                return result;
+            }
         }
 
         // 3.验证密码
@@ -71,15 +77,21 @@ public class UserServiceImpl implements IUserService {
             return result;
         } else{
             if(!user.getPassword().equals(account.getPassword())){
-                // 密码输入错误记录错误次数,超过5次将被锁定当天不能登录
+                // 密码输入错误记录错误次数,超过5次将被锁定24小时后才可以再次登录
                 account.setPwdErrorCount(account.getPwdErrorCount() + 1);
 
                 // 判断是否超过5次
                 if(account.getPwdErrorCount() >= 5){
                     account.setStatus("LOCK");
+                    account.setUnlockTime(new Date(System.currentTimeMillis() + 86400000));
+                    account.setPwdErrorCount(0);
+                    userMapper.updateByPrimaryKeySelective(account);
+                    result.put("msg", "密码输入错误5次，账户已被锁定，24小时候解锁");
+                } else{
+                    userMapper.updateByPrimaryKeySelective(account);
+                    result.put("msg", "密码输入错误" + account.getPwdErrorCount() + "次，连续5次错误账户将被锁定！");
                 }
-                userMapper.updateByPrimaryKey(account);
-                result.put("msg", "密码输入错误！");
+
                 return result;
             }
         }
@@ -88,7 +100,7 @@ public class UserServiceImpl implements IUserService {
         account.setStatus("ONLINE");
         account.setLastTime(new Timestamp(System.currentTimeMillis()));
         account.setPwdErrorCount(0);
-        account.setUnlockTime(null);
+        account.setUnlockTime(new Date());
         userMapper.updateByPrimaryKeySelective(account);
 
         result.put("user",account);
@@ -131,6 +143,7 @@ public class UserServiceImpl implements IUserService {
 
         // 4.添加用户
         user.setUserId(MyStringUtil.getUUID());
+        user.setUserType("NORMAL");
         int count = userMapper.insert(user);
         if(count != 1){
             result.put("msg", "用户注册失败，请刷新后重试！");
@@ -831,5 +844,27 @@ public class UserServiceImpl implements IUserService {
         }
 
         return result;
+    }
+
+    @Override
+    public List<User> getAllUserByPage(User user, PageModel page) {
+        // 初始化分页
+        if(page.getPageSize() < 1){
+            page.setPageSize(10);
+        }
+
+        // 获取总记录数
+        page.setTotalRecord(userMapper.getAllUserCount(user.getUserId()));
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUser(user);
+        userDTO.setPage(page);
+
+        return userMapper.getAllUserByPage(userDTO);
+    }
+
+    @Override
+    public int getShareCountByUser(String userId) {
+        return StringUtils.isEmpty(userId) ? 0 : shareMapper.getShareCountByUser(userId);
     }
 }

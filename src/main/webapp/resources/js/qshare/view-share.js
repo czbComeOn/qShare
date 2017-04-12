@@ -1,7 +1,7 @@
 /**
  * Created by BIN on 2017/4/9.
  */
-define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/app-dialog', 'bootstrap', 'bootstrapValidator'],
+define(['qshare/login', 'qshare/index', 'utils/messager', 'bootstrap', 'bootstrapValidator'],
     function(login, share, $messager){
     var CURR_SHARE; // 当前分享信息
     var CURR_USER; // 当前用户信息

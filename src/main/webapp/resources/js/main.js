@@ -7,21 +7,25 @@ require.config({
     },
 	shim: {
         'base/backbone': {
-            deps: [ "underscore","jquery" ],
-            exports: "Backbone"
+            deps: [ 'underscore','jquery' ],
+            exports: 'Backbone'
         },
         'base/underscore': {
-            exports: "_"
+            exports: '_'
         },
         'base/json2': {
-            exports: "JSON"
+            exports: 'JSON'
         },
         'jQuery': {
             exports: '$'
         },
         'jquery-ui': {
-            deps: ["jQuery"],
+            deps: ['jQuery'],
             exports: '$'
-        }
+        },
+        'jquery.Paginator.min': {
+            deps: ['jQuery'],
+            exports: '$'
+        },
     }
 })

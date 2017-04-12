@@ -44,6 +44,19 @@ public class Inform {
     private String informContent;
 
     /**
+     * 审核信息备注
+     */
+    private String auditRemark;
+
+    public Inform(){
+
+    }
+
+    public Inform(String auditStatus){
+        this.auditStatus = auditStatus;
+    }
+
+    /**
      * 举报ID
      * @return inform_id 举报ID
      */
@@ -169,5 +182,13 @@ public class Inform {
      */
     public void setInformContent(String informContent) {
         this.informContent = informContent == null ? null : informContent.trim();
+    }
+
+    public String getAuditRemark() {
+        return auditRemark;
+    }
+
+    public void setAuditRemark(String auditRemark) {
+        this.auditRemark = auditRemark;
     }
 }

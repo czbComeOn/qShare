@@ -24,7 +24,7 @@
     <script data-main="${pageContext.request.contextPath}/resources/js/main"
             src="${pageContext.request.contextPath}/resources/js/require.min.js"></script>
     <script>
-        require(['jquery', 'qshare/home', 'utils/cropper.min', 'utils/sitelogo'],
+        require(['jquery', 'qshare/home', 'utils/cropper.min', 'utils/sitelogo', 'utils/app-dialog'],
                 function($, home){
             home.init('${acc.account}');
         });
@@ -36,7 +36,7 @@
         <img src="${pageContext.request.contextPath}/resources/img/top.png" alt="">
     </div>
     <!-- start login -->
-    <jsp:include page="login.jsp"/>
+    <jsp:include page="common/login.jsp"/>
     <!--end login-->
 
     <!-- start nav -->
@@ -60,11 +60,15 @@
                 <c:if test="${user != null && acc.userId == user.userId}">
                     <li class="active home-tab"><a href="javascript:void(0);" name="share"><i class="fa fa-share-alt"></i> 我的分享</a></li>
                     <li class="home-tab"><a href="javascript:void(0);" name="collect"><i class="fa fa-star"></i> 我的收藏</a></li>
-                    <li class="home-tab"><a href="javascript:void(0);" name="friend"><i class="fa fa-heart"></i> 好友列表</a></li>
-                    <li class="home-tab"><a href="javascript:void(0);" name="attention"><i class="fa fa-link"></i> 关注好友</a></li>
+                    <c:if test="${user.userType == 'NORMAL'}">
+                        <li class="home-tab"><a href="javascript:void(0);" name="friend"><i class="fa fa-heart"></i> 好友列表</a></li>
+                        <li class="home-tab"><a href="javascript:void(0);" name="attention"><i class="fa fa-link"></i> 关注好友</a></li>
+                    </c:if>
                 </c:if>
                 <c:if test="${user == null || acc.userId != user.userId}">
-                    <li class="active"><a href="javascript:void(0);" name="share"><i class="fa fa-share-alt"></i> TA的分享</a></li>
+                    <li class="active"><a href="javascript:void(0);" name="share">
+                        <i class="fa fa-share-alt"></i>&nbsp;TA的分享&nbsp;(${shareCount})</a>
+                    </li>
                 </c:if>
                 <c:if test="${user == null}">
                     <li><a id="login" href="javascript:void(0);" name="login">立即登录</a></li>
@@ -85,6 +89,9 @@
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
+                            <c:if test="${user.userType != 'NORMAL'}">
+                                <li><a href="manage.do"><i class="fa fa-sign-in">&nbsp;</i>进入后台</a></li>
+                            </c:if>
                             <li><a href="myHome.do?account=${user.account}"><i class="fa fa-home">&nbsp;</i>我的主页</a></li>
                             <li><a id="changePwd" href="javascript:void(0);"><i class="fa fa-edit">&nbsp;</i>修改密码</a></li>
                             <li><a id="logout" href="javascript:void(0);"><i class="fa fa-sign-out">&nbsp;</i>退出登录</a></li>
@@ -115,7 +122,10 @@
                         </div>
                     </c:if>
                     <c:if test="${user == null || acc.userId != user.userId}">
-                        <a class="fr" id="informUser" user-id="${acc.userId}" href="javascript:void(0);" title="点击举报TA" style="display:none;cursor:pointer;text-decoration:none;">举报</a>
+                        <c:if test="${user.userType == 'NORMAL' || acc.userType == 'NORMAL'}">
+                            <a class="fr" id="informUser" user-id="${acc.userId}" href="javascript:void(0);"
+                               title="点击举报TA" style="display:none;cursor:pointer;text-decoration:none;">举报</a>
+                        </c:if>
                         <div>
                             <c:choose>
                                 <c:when test="${acc.portraitPath != null && acc.portraitPath != ''}">
@@ -260,6 +270,17 @@
                                             </c:if>
                                         </div>
                                     </li>
+                                    <li class="list-group-item list-group-item-warning">
+                                        <div>电子邮箱：</div>
+                                        <div class="acc-occupation">
+                                            <c:if test="${acc.email == null || acc.email == ''}">
+                                                无
+                                            </c:if>
+                                            <c:if test="${acc.email != null && acc.email != ''}">
+                                                ${acc.email}
+                                            </c:if>
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
                             <c:if test="${user != null}">
@@ -271,10 +292,12 @@
                                         <c:if test="${isAttention == false}">
                                             <button class="btn btn-info" id="addAttention" style="width:49%;">关注TA</button>
                                         </c:if>
-                                        <button class="btn btn-info" id="addFriend" style="width:49%;">加为好友</button>
+                                        <c:if test="${acc.userType == 'NORMAL'}">
+                                            <button class="btn btn-info" id="addFriend" style="width:49%;">加为好友</button>
+                                        </c:if>
                                     </c:if>
                                     <c:if test="${acc.userId == user.userId}">
-                                        <button class="btn btn-info" id="changeData" style="width:100%;">
+                                        <button class="btn btn-success" id="changeData" style="width:100%;">
                                             <i class="fa fa-edit"></i> 修改资料
                                         </button>
                                     </c:if>
@@ -298,12 +321,7 @@
         </div>
     </div>
 
-    <!-- 版权信息 -->
-    <div class="qshare-footer">
-        <footer>
-            Copyright 2017 国脉信息学院 软件1302 陈志斌 版权所有
-        </footer>
-    </div>
+    <jsp:include page="common/footer.jsp"/>
 </div>
 
 <div class="modal fade" id="avatar-modal" aria-hidden="true" aria-labelledby="avatar-modal-label" role="dialog" tabindex="-1">
@@ -351,8 +369,6 @@
             </form>
         </div>
     </div>
-
-    <jsp:include page="footer.jsp"/>
 </div>
 </body>
 </html>

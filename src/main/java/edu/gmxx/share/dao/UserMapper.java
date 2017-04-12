@@ -3,6 +3,7 @@ package edu.gmxx.share.dao;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.dto.ShareDTO;
 import edu.gmxx.share.dto.UserDTO;
+import edu.gmxx.share.utils.PageModel;
 
 import java.util.List;
 
@@ -119,4 +120,12 @@ public interface UserMapper {
      * @return
      */
     int searchNicknameCount(User user);
+
+    /**
+     * 获取所有用户
+     * @return
+     */
+    int getAllUserCount(String userId);
+
+    List<User> getAllUserByPage(UserDTO userDTO);
 }

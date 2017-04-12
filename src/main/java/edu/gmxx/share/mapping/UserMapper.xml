@@ -404,6 +404,7 @@
       SELECT DISTINCT(buser_id) user_id FROM s_friend
       WHERE is_friend = 1 AND auser_id = #{user.userId,jdbcType=VARCHAR}
     ) AND account LIKE '%${user.account}%' AND user_id != #{user.userId,jdbcType=VARCHAR}
+    AND user_type = 'NORMAL'
     ORDER BY create_time
     LIMIT #{page.currentCount},#{page.pageSize}
   </select>
@@ -416,6 +417,7 @@
       SELECT DISTINCT(buser_id) user_id FROM s_friend
       WHERE is_friend = 1 AND auser_id = #{user.userId,jdbcType=VARCHAR}
     ) AND nickname LIKE '%${user.nickname}%' AND user_id != #{user.userId,jdbcType=VARCHAR}
+    AND user_type = 'NORMAL'
     ORDER BY create_time
     LIMIT #{page.currentCount},#{page.pageSize}
   </select>
@@ -426,6 +428,7 @@
     SELECT DISTINCT(buser_id) user_id FROM s_friend
     WHERE is_friend = 1 AND auser_id = #{userId,jdbcType=VARCHAR}
     ) AND account LIKE '%${account}%' AND user_id != #{userId,jdbcType=VARCHAR}
+    AND user_type = 'NORMAL'
   </select>
 
   <select id="searchNicknameCount" parameterType="edu.gmxx.share.domain.User" resultType="int">
@@ -434,5 +437,17 @@
     SELECT DISTINCT(buser_id) user_id FROM s_friend
     WHERE is_friend = 1 AND auser_id = #{userId,jdbcType=VARCHAR}
     ) AND nickname LIKE '%${nickname}%' AND user_id != #{userId,jdbcType=VARCHAR}
+    AND user_type = 'NORMAL'
+  </select>
+
+  <select id="getAllUserCount" parameterType="java.lang.String" resultType="int">
+    SELECT COUNT(user_id) FROM s_user where user_id != #{userId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getAllUserByPage" parameterType="edu.gmxx.share.dto.UserDTO" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_user where user_id != #{user.userId,jdbcType=VARCHAR} ORDER BY create_time DESC
+    LIMIT #{page.currentCount},#{page.pageSize}
   </select>
 </mapper>

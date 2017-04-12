@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -513,5 +514,31 @@ public class UserController {
     @ResponseBody
     public Map<String, Object> doResetPwd(String newPassword, String againPassword, String account){
         return userService.resetPassword(account, newPassword, againPassword);
+    }
+
+    /**
+     * 分页获取用户信息
+     * @param page
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="getAllUserByPage.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> getAllUserByPage(PageModel page, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+        User user = (User) session.getAttribute("user");
+
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        List<User> users = userService.getAllUserByPage(user, page);
+        result.put("page", page);
+        result.put("users", users);
+        result.put("msg", "success");
+        result.put("currUser", user);
+
+        return result;
     }
 }

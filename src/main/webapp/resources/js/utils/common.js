@@ -9,6 +9,9 @@ define([], function(){
      * @param time
      */
     comm.getTime = function(time, formatter){
+        if(!time){
+            return '';
+        }
         var oDate = new Date(time),
         oYear = oDate.getFullYear(),
         oMonth = oDate.getMonth()+1,

@@ -72,6 +72,9 @@ public class IndexController {
         if("success".equalsIgnoreCase(msg)){
             User account = (User) result.get("user");
             session.setAttribute("user", account);
+			if("admin".equalsIgnoreCase(account.getUserType())){
+				result.put("userType", "admin");
+			}
         }
 
 		return result;
@@ -140,6 +143,7 @@ public class IndexController {
 
         User acc = userService.getUserByAccount(account);
         view.addObject("acc", acc);
+		view.addObject("shareCount", userService.getShareCountByUser(acc.getUserId()));
 
         if(user != null){
             view.addObject("isAttention", userService.isAttention(user.getUserId(), acc.getUserId()));
@@ -203,4 +207,71 @@ public class IndexController {
 
         return view;
     }
+
+	/**
+	 * 进入管理员后台
+	 * @return
+	 */
+	@RequestMapping(value="manage.do")
+    public ModelAndView manageIndex(HttpSession session){
+		ModelAndView view = new ModelAndView("manage/manageIndex");
+
+		User user = (User) session.getAttribute("user");
+		if(user == null){
+			view.setViewName("redirect:index.do");
+			return view;
+		}
+
+		view.addObject("manageUser", user);
+		if("NORMAL".equalsIgnoreCase(user.getUserType())){
+			view.setViewName("redirect:index.do");
+		}
+
+		return view;
+	}
+
+	/**
+	 * 重定向到主页
+	 * @return
+	 */
+	@RequestMapping(value="redirectIndex.do")
+	public String redirectIndex(){
+		return "redirect:index.do";
+	}
+
+	/**
+	 * 用户管理
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(value="userManage.do")
+	public ModelAndView userManage(HttpSession session){
+		ModelAndView view = new ModelAndView("manage/userManage");
+
+		User user = (User) session.getAttribute("user");
+		if(user == null){
+			view.setViewName("redirect:index.do");
+			return view;
+		}
+
+		return view;
+	}
+
+	/**
+	 * 举报信息管理
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(value="informManage.do")
+	public ModelAndView informManage(HttpSession session){
+		ModelAndView view = new ModelAndView("manage/informManage");
+
+		User user = (User) session.getAttribute("user");
+		if(user == null){
+			view.setViewName("redirect:index.do");
+			return view;
+		}
+
+		return view;
+	}
 }

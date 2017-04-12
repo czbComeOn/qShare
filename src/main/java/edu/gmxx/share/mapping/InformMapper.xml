@@ -10,10 +10,11 @@
     <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
     <result column="audit_status" property="auditStatus" jdbcType="VARCHAR" />
     <result column="inform_content" property="informContent" jdbcType="VARCHAR" />
+    <result column="audit_remark" property="auditRemark" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     inform_id, auser_id, buser_id, create_time, audit_user_id, audit_time, audit_status, 
-    inform_content
+    inform_content, audit_remark
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -28,10 +29,10 @@
   <insert id="insert" parameterType="edu.gmxx.share.domain.Inform" >
     insert into s_inform (inform_id, auser_id, buser_id, 
       create_time, audit_user_id, audit_time, 
-      audit_status, inform_content)
+      audit_status, inform_content, audit_remark)
     values (#{informId,jdbcType=VARCHAR}, #{auserId,jdbcType=VARCHAR}, #{buserId,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{auditUserId,jdbcType=VARCHAR}, #{auditTime,jdbcType=TIMESTAMP}, 
-      #{auditStatus,jdbcType=VARCHAR}, #{informContent,jdbcType=VARCHAR})
+      #{auditStatus,jdbcType=VARCHAR}, #{informContent,jdbcType=VARCHAR}, #{auditRemark,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="edu.gmxx.share.domain.Inform" >
     insert into s_inform
@@ -60,6 +61,9 @@
       <if test="informContent != null" >
         inform_content,
       </if>
+      <if test="auditRemark != null">
+        audit_remark,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="informId != null" >
@@ -85,6 +89,9 @@
       </if>
       <if test="informContent != null" >
         #{informContent,jdbcType=VARCHAR},
+      </if>
+      <if test="auditRemark != null">
+        #{auditRemark,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -112,6 +119,9 @@
       <if test="informContent != null" >
         inform_content = #{informContent,jdbcType=VARCHAR},
       </if>
+      <if test="auditRemark != null">
+        audit_remark = #{auditRemark,jdbcType=VARCHAR},
+      </if>
     </set>
     where inform_id = #{informId,jdbcType=VARCHAR}
   </update>
@@ -123,7 +133,27 @@
       audit_user_id = #{auditUserId,jdbcType=VARCHAR},
       audit_time = #{auditTime,jdbcType=TIMESTAMP},
       audit_status = #{auditStatus,jdbcType=VARCHAR},
-      inform_content = #{informContent,jdbcType=VARCHAR}
+      inform_content = #{informContent,jdbcType=VARCHAR},
+      audit_remark = #{auditRemark,jdbcType=VARCHAR}
     where inform_id = #{informId,jdbcType=VARCHAR}
   </update>
+
+  <select id="getInformDataByStatusCount" parameterType="java.lang.String" resultType="int">
+    SELECT count(inform_id)
+    FROM s_inform
+    <if test="status!= 'ALL'">
+      WHERE audit_status = #{status,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <select id="getInformDataByStatus" parameterType="edu.gmxx.share.dto.InformDTO" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_inform
+    <if test="inform.auditStatus != 'ALL'">
+      WHERE audit_status = #{auditStatus,jdbcType=VARCHAR}
+    </if>
+    ORDER BY create_time DESC
+    LIMIT #{page.currentCount},#{page.pageSize}
+  </select>
 </mapper>

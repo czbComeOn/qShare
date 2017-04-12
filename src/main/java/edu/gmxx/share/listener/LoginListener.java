@@ -19,7 +19,7 @@ public class LoginListener implements HttpSessionAttributeListener {
     /**
      * 记录在线用户的session
      */
-    private Map<String, HttpSession> loginSession = new HashMap<String, HttpSession>();
+    public static Map<String, HttpSession> loginSession = new HashMap<String, HttpSession>();
 
     @Override
     public void attributeAdded(HttpSessionBindingEvent event) {

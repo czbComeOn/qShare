@@ -23,7 +23,7 @@
     <script data-main="${pageContext.request.contextPath}/resources/js/main"
             src="${pageContext.request.contextPath}/resources/js/require.min.js"></script>
     <script>
-        require(['jquery', 'qshare/index'], function($, share){
+        require(['jquery', 'qshare/index', 'utils/app-dialog'], function($, share){
             share.init();
         });
     </script>
@@ -34,7 +34,7 @@
         <img src="${pageContext.request.contextPath}/resources/img/top.png" alt="">
     </div>
     <!-- start login -->
-    <jsp:include page="login.jsp"/>
+    <jsp:include page="common/login.jsp"/>
     <!--end login-->
 
     <!-- start nav -->
@@ -75,6 +75,9 @@
                         <li class="share-nav"><a href="#" name="qt">其他</a></li>
                     </ul>
                 </li>
+                <c:if test="${user == null}">
+                    <li><a id="login" href="javascript:void(0);" name="login">立即登录</a></li>
+                </c:if>
                 <c:if test="${user != null}">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -88,6 +91,9 @@
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
+                            <c:if test="${user.userType != 'NORMAL'}">
+                                <li><a href="manage.do"><i class="fa fa-sign-in">&nbsp;</i>进入后台</a></li>
+                            </c:if>
                             <li><a href="myHome.do?account=${user.account}"><i class="fa fa-home">&nbsp;</i>我的主页</a></li>
                             <li><a id="changePwd" href="javascript:void(0);"><i class="fa fa-edit">&nbsp;</i>修改密码</a></li>
                             <li><a id="logout" href="javascript:void(0);"><i class="fa fa-sign-out">&nbsp;</i>退出登录</a></li>
@@ -189,69 +195,71 @@
                         </ul>
                     </div>
                     <div class="cf"></div>
-                    <div class="myleft-n">
-                        <!-- 显示最近三条好友动态 -->
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                                <i class="fa fa-heart-o"></i> 好友动态
-                            </div>
-                            <div class="panel-body">
-                                <c:choose>
-                                    <c:when test="${friendShareVos != null && fn:length(friendShareVos) > 0}">
-                                        <c:forEach items="${friendShareVos}" var="friendShareVo">
-                                            <div class="friend-dynamic">
-                                                <a href="myHome.do?account=${friendShareVo.user.account}" style="font-weight:bold;">${friendShareVo.user.nickname}</a>：
-                                                <c:if test="${friendShareVo.transpondVo != null}">
-                                                    <span style="color:#ab8d8d;">[转]</span>
-                                                    <a href="viewShare.do?shareId=${friendShareVo.share.shareId}" target="_blank">${friendShareVo.transpondVo.transpond.reason}</a>
-                                                </c:if>
-                                                <c:if test="${friendShareVo.transpondVo == null}">
-                                                    <a href="viewShare.do?shareId=${friendShareVo.share.shareId}" target="_blank">${friendShareVo.share.shareTitle}</a>
-                                                </c:if>
+                    <c:if test="${user.userType == 'NORMAL'}">
+                        <div class="myleft-n">
+                            <!-- 显示最近三条好友动态 -->
+                            <div class="panel panel-info">
+                                <div class="panel-heading">
+                                    <i class="fa fa-heart-o"></i> 好友动态
+                                </div>
+                                <div class="panel-body">
+                                    <c:choose>
+                                        <c:when test="${friendShareVos != null && fn:length(friendShareVos) > 0}">
+                                            <c:forEach items="${friendShareVos}" var="friendShareVo">
+                                                <div class="friend-dynamic">
+                                                    <a href="myHome.do?account=${friendShareVo.user.account}" style="font-weight:bold;">${friendShareVo.user.nickname}</a>：
+                                                    <c:if test="${friendShareVo.transpondVo != null}">
+                                                        <span style="color:#ab8d8d;">[转]</span>
+                                                        <a href="viewShare.do?shareId=${friendShareVo.share.shareId}" target="_blank">${friendShareVo.transpondVo.transpond.reason}</a>
+                                                    </c:if>
+                                                    <c:if test="${friendShareVo.transpondVo == null}">
+                                                        <a href="viewShare.do?shareId=${friendShareVo.share.shareId}" target="_blank">${friendShareVo.share.shareTitle}</a>
+                                                    </c:if>
+                                                </div>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="friend-dynamic" style="text-align:center;">
+                                                暂时没有动态
                                             </div>
-                                        </c:forEach>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div class="friend-dynamic" style="text-align:center;">
-                                            暂时没有动态
-                                        </div>
-                                    </c:otherwise>
-                                </c:choose>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="cf"></div>
-                    <div class="myleft-n">
-                        <!-- 显示最近三条关注动态 -->
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                                <i class="fa fa-link"></i> 关注动态
-                            </div>
-                            <div class="panel-body">
-                                <c:choose>
-                                    <c:when test="${attentionShareVos != null && fn:length(attentionShareVos) > 0}">
-                                        <c:forEach items="${attentionShareVos}" var="attentionShareVo">
-                                            <div class="friend-dynamic">
-                                                <a href="myHome.do?account=${attentionShareVo.user.account}" style="font-weight:bold;">${attentionShareVo.user.nickname}</a>：
-                                                <c:if test="${attentionShareVo.transpondVo != null}">
-                                                    <span style="color:#ab8d8d;">[转]</span>
-                                                    <a href="viewShare.do?shareId=${attentionShareVo.share.shareId}" target="_blank">${attentionShareVo.transpondVo.transpond.reason}</a>
-                                                </c:if>
-                                                <c:if test="${attentionShareVo.transpondVo == null}">
-                                                    <a href="viewShare.do?shareId=${attentionShareVo.share.shareId}" target="_blank">${attentionShareVo.share.shareTitle}</a>
-                                                </c:if>
+                        <div class="cf"></div>
+                        <div class="myleft-n">
+                            <!-- 显示最近三条关注动态 -->
+                            <div class="panel panel-info">
+                                <div class="panel-heading">
+                                    <i class="fa fa-link"></i> 关注动态
+                                </div>
+                                <div class="panel-body">
+                                    <c:choose>
+                                        <c:when test="${attentionShareVos != null && fn:length(attentionShareVos) > 0}">
+                                            <c:forEach items="${attentionShareVos}" var="attentionShareVo">
+                                                <div class="friend-dynamic">
+                                                    <a href="myHome.do?account=${attentionShareVo.user.account}" style="font-weight:bold;">${attentionShareVo.user.nickname}</a>：
+                                                    <c:if test="${attentionShareVo.transpondVo != null}">
+                                                        <span style="color:#ab8d8d;">[转]</span>
+                                                        <a href="viewShare.do?shareId=${attentionShareVo.share.shareId}" target="_blank">${attentionShareVo.transpondVo.transpond.reason}</a>
+                                                    </c:if>
+                                                    <c:if test="${attentionShareVo.transpondVo == null}">
+                                                        <a href="viewShare.do?shareId=${attentionShareVo.share.shareId}" target="_blank">${attentionShareVo.share.shareTitle}</a>
+                                                    </c:if>
+                                                </div>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="attention-dynamic" style="text-align:center;">
+                                                暂时没有动态
                                             </div>
-                                        </c:forEach>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div class="attention-dynamic" style="text-align:center;">
-                                            暂时没有动态
-                                        </div>
-                                    </c:otherwise>
-                                </c:choose>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </c:if>
                 </c:if>
             </div>
             <!-- end left -->
@@ -287,7 +295,7 @@
                             <!-- end footer left -->
                             <!-- footer right -->
                             <div class="footer-right fr">
-                                <div class="btn-group">
+                                <%--<div class="btn-group">--%>
                                     <div class="btn-group" id="shareType">
                                         <button class="btn btn-info dropdown-toggle share-type-btn" name="qt" data-toggle="dropdown">
                                             <span class="share-type-text">其他</span>&nbsp;<span class="caret"></span>
@@ -307,7 +315,7 @@
                                         </ul>
                                     </div>
 
-                                    <div class="btn-group" id="visibility">
+                                    <div class="btn-group" style="display:none;" id="visibility">
                                         <button class="btn btn-info dropdown-toggle visibility-type-btn" name="all" data-toggle="dropdown">
                                             <span class="visibility-type-text">公开</span>&nbsp;<span class="caret"></span>
                                         </button>
@@ -317,7 +325,7 @@
                                             <li><a name="self" href="javascript:void(0);"><i class="fa fa-lock"></i> 仅自己可见</a></li>
                                         </ul>
                                     </div>
-                                </div>
+                                <%--</div>--%>
                                 <button class="btn btn-info" id="sendInfoBtn" type="submit">发布</button>
                             </div>
                             <!-- end footer right -->
@@ -340,7 +348,7 @@
         </div>
     </div>
 
-    <jsp:include page="footer.jsp"/>
+    <jsp:include page="common/footer.jsp"/>
 </div>
 </body>
 </html>

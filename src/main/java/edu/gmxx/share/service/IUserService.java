@@ -6,6 +6,7 @@ import edu.gmxx.share.domain.Inform;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.utils.PageModel;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -234,4 +235,19 @@ public interface IUserService {
      * @return
      */
     Map<String,Object> resetPassword(String account, String newPassword, String againPassword);
+
+    /**
+     * 分页获取除了自己之外的所有用户
+     * @param user
+     * @param page
+     * @return
+     */
+    List<User> getAllUserByPage(User user, PageModel page);
+
+    /**
+     * 获取分享数
+     * @param userId
+     * @return
+     */
+    int getShareCountByUser(String userId);
 }
