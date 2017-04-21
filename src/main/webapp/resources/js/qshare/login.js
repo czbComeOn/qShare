@@ -204,7 +204,7 @@ define(['utils/messager', 'bootstrap', 'bootstrapValidator', 'utils/app-dialog']
                     $('#loginBtn').removeAttr('disabled');
                 },
                 error: function(){
-                    $messager.error('服务器出错！');
+                    $messager.warning('服务器出错！');
                 }
             });
         }
