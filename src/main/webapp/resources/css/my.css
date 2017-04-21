@@ -19,10 +19,13 @@ body{
 .imgr{border-radius: 50%;}
 .mrg20{margin: 20px;}
 .mrg-t-10{margi-top:10px;}
+.mrg-t-20{margi-top:20px;}
 .mrg-r-20{margin-right:20px;}
-.mrg-l-20{margin-right:20px;}
+.mrg-l-20{margin-left:20px;}
 .mrg-r-10{margin-right:10px;}
-.mrg-l-10{margin-right:10px;}
+.mrg-l-10{margin-left:10px;}
+.mrg-b-10{margin-bottom:10px;}
+.mrg-b-20{margin-bottom:20px;}
 .cf{clear: left;}
 em{font-style: normal;}
 
@@ -172,6 +175,14 @@ em{font-style: normal;}
 .friend-dynamic a, .attention-dynamic a{text-decoration: none;}
 /* 右侧分享信息块 */
 .myright{margin-left: 0; margin-right: 0;}
+/* 搜索栏 */
+.search-text{
+    display: inline-block;
+    width:90%;
+    width:-moz-calc(100% - (80px));
+    width:-webkit-calc(100% - (80px));
+    width: calc(100% - (80px));
+}
 @media screen and (max-width:767px){
 	.myleft{
 		padding-top: 10px;
@@ -179,6 +190,13 @@ em{font-style: normal;}
 		margin-bottom: 10px;
 	}
 	.myright{padding:0 !important;}
+    .search-btn-text{display: none;}
+    .search-box{
+        width:90%;
+        width:-moz-calc(100% - (50px));
+        width:-webkit-calc(100% - (50px));
+        width: calc(100% - (50px));
+    }
 }
 /* 评论内容 */
 .show-eval-box{margin: 0;list-style:none;}

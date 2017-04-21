@@ -1,9 +1,13 @@
 /**
  * Created by BIN on 2017/4/11.
  */
-define(['utils/messager', 'qshare/content', 'jquery/jquery.Paginator.min', 'bootstrap'],
-    function($messager){
-    var um = {};
+define(['utils/messager', 'utils/common', 'qshare/content', 'jquery/jquery.Paginator.min', 'bootstrap'],
+    function($messager, comm){
+    var um = {
+        USER_TYPE: '',
+        USER_STATUS: '',
+        SEARCH_TEXT: ''
+    };
 
     /**
      * 渲染分页
@@ -36,7 +40,8 @@ define(['utils/messager', 'qshare/content', 'jquery/jquery.Paginator.min', 'boot
         $.ajax({
             url: 'user/getAllUserByPage.do',
             type: 'post',
-            data: {'pageNumber': num, 'pageSize': $('#PageSize').val()},
+            data: {'account': um.SEARCH_TEXT, 'userType': um.USER_TYPE, 'status': um.USER_STATUS,
+                'pageNumber': num, 'pageSize': $('#PageSize').val()},
             dataType: 'json',
             success: function(result){
                 if(result.msg == 'success'){
@@ -63,8 +68,8 @@ define(['utils/messager', 'qshare/content', 'jquery/jquery.Paginator.min', 'boot
      * @param $item
      * @param user
      */
-    um.lockUser = function($item, user){
-        new LockUserDialog(this, $item, user);
+    um.lockUser = function($item, user, isHome){
+        new LockUserDialog(this, $item, user, isHome);
     }
 
     /**
@@ -72,7 +77,7 @@ define(['utils/messager', 'qshare/content', 'jquery/jquery.Paginator.min', 'boot
      * @param $item
      * @param user
      */
-    um.unlockUser = function($item, user){
+    um.unlockUser = function($item, user, isHome){
         var that = this;
         $.confirmDialog({
             title: '确定解锁用户 <b style="color:#6a8fd4;">' + user.nickname + '</b>',
@@ -85,15 +90,17 @@ define(['utils/messager', 'qshare/content', 'jquery/jquery.Paginator.min', 'boot
                     success: function(result){
                         if(result.msg == 'success'){
                             $messager.success('解锁成功');
-                            $item.unbind(); // 解绑事件
-                            $item.find('.status').html('<i class="fa fa-futbol-o mrg-r-10"></i>离线');
-                            animationHover($item, 'pulse', function(){
-                                $('<i class="fa fa-lock fr lock-user" style="cursor:pointer;margin:5px 10px 0 0;" title="锁定用户"></i>').on('click', function(){
-                                    that.lockUser($item, user);
-                                }).prependTo($item);
-                            }, function(){
-                                $item.find('.lock-user').remove();
-                            });
+                            if(!isHome){
+                                $item.unbind(); // 解绑事件
+                                $item.find('.status').html('<i class="fa fa-futbol-o mrg-r-10"></i>离线');
+                                animationHover($item, 'pulse', function(){
+                                    $('<i class="fa fa-lock fr lock-user" style="cursor:pointer;margin:5px 10px 0 0;" title="锁定用户"></i>').on('click', function(){
+                                        that.lockUser($item, user);
+                                    }).prependTo($item);
+                                }, function(){
+                                    $item.find('.lock-user').remove();
+                                });
+                            }
                         } else if(result.msg == 'OFFLINE') {
                             $messager.warning('用户未登录');
                             window.location.href = 'index.do';
@@ -128,10 +135,10 @@ define(['utils/messager', 'qshare/content', 'jquery/jquery.Paginator.min', 'boot
                         '</div>' +
                     '</div>' +
                     '<div class="col-sm-8">' +
-                        '<a class="to-home" href="myHome.do?account='+ user.account +'" target="_blank">' +
+                        '<a class="to-home" title="查看TA的主页" href="myHome.do?account='+ user.account +'" target="_blank">' +
                             '<strong class="user-nickname"></strong>' +
                         '</a>' +
-                        '<p class="region"><i class="fa fa-map-marker"></i></p>' +
+                        '<p class="region"><i class="fa fa-map-marker"></i>&nbsp;</p>' +
                         '<address>' +
                         '</address>' +
                     '</div>' +
@@ -152,14 +159,17 @@ define(['utils/messager', 'qshare/content', 'jquery/jquery.Paginator.min', 'boot
             $item.find('.user-nickname').text(user.nickname);
         }
 
+        // 用户基本数据
         $item.find('.occupation').text('职业：' + (user.occupation ? user.occupation : '未知'));
         $item.find('.region').append(user.region ? user.region : '未知');
         $item.find('address').append($('<div class="status"></div>').html('<i class="fa fa-futbol-o mrg-r-10"></i>'
             + (user.status == 'OFFLINE'? '离线' : (user.status == 'ONLINE' ?
-                '<span style="color:#00e;">在线</span>' : '<span style="color:#e00;">锁定</span>'))));
-        $item.find('address').append($('<div></div>').html('<i class="fa fa-user mrg-r-10"></i>' + (user.name ? user.name : '未知')));
-        $item.find('address').append($('<div></div>').html('<i class="fa fa-envelope mrg-r-10"></i>' + (user.email ? user.email : '未知')));
-        $item.find('address').append($('<div></div>').html('<i class="fa fa-phone mrg-r-10"></i>' + user.phone));
+                '<span style="color:#00e;">在线</span>'
+                : '<span style="color:#e00;cursor:pointer;" title="' + comm.getTime(user.unlockTime) + ' 解锁">锁定</span>'))));
+        $item.find('address').append($('<div title="真实姓名"></div>').html('<i class="fa fa-user mrg-r-10"></i>' + (user.name ? user.name : '未知')));
+        $item.find('address').append($('<div title="电子邮箱"></div>').html('<i class="fa fa-envelope mrg-r-10"></i>' + (user.email ? user.email : '未知')));
+        $item.find('address').append($('<div title="联系方式"></div>').html('<i class="fa fa-phone mrg-r-10"></i>' + user.phone));
+        $item.find('address').append($('<div title="最近登录时间"></div>').html('<i class="fa fa-clock-o mrg-r-10"></i>' + comm.getTime(user.lastTime)));
 
         if(currUser.userType == 'SUPERADMIN' || (currUser.userType == 'ADMIN' && user.userType == 'NORMAL')){
             // 事件
@@ -194,20 +204,43 @@ define(['utils/messager', 'qshare/content', 'jquery/jquery.Paginator.min', 'boot
         }
     }
 
+    um.initEvent = function(){
+        var that = this;
+        // 提交搜索表单
+        $('#searchUserForm').submit(function(){
+            um.SEARCH_TEXT = $(this).find('.user-search-text').val();
+            that.loadData(1);
+        });
+
+        // 用户类型搜索
+        $('#userTypeSelect').on('change', function(){
+            um.USER_TYPE = $(this).val();
+            that.loadData(1);
+        });
+
+        // 状态搜索
+        $('#statusSelect').on('change', function(){
+            um.USER_STATUS = $(this).val();
+            that.loadData(1);
+        });
+    }
+
     /**
      * 初始化函数
      */
     um.init = function(){
         // 初始化第一页数据
-        um.loadData(1);
+        this.loadData(1);
+        this.initEvent();
     }
 
     // 弹窗
-    var LockUserDialog = function(instance, item, user){
+    var LockUserDialog = function(instance, item, user, isHome){
         this.instance = instance;
         this.item = item;
         this.target = item;
         this.user = user;
+        this.isHome = isHome;
         this.init();
     }
 
@@ -256,17 +289,19 @@ define(['utils/messager', 'qshare/content', 'jquery/jquery.Paginator.min', 'boot
                     success: function(result){
                         if(result.msg == 'success'){
                             $messager.success('锁定成功');
-                            that.item.unbind(); // 解绑事件
-                            that.item.find('.status').html('<i class="fa fa-futbol-o mrg-r-10"></i><span style="color:#e00;">锁定</span>');
-                            animationHover(that.item, 'pulse', function(){
-                                $('<i class="fa fa-unlock fr lock-user" style="cursor:pointer;margin:5px 10px 0 0;" title="解锁用户"></i>').on('click', function(){
-                                    that.instance.unlockUser(that.item, that.user);
-                                }).prependTo(that.item);
-                            }, function(){
-                                that.item.find('.lock-user').remove();
-                            });
+                            if(!that.isHome){
+                                that.item.unbind(); // 解绑事件
+                                that.item.find('.status').html('<i class="fa fa-futbol-o mrg-r-10"></i><span style="color:#e00;cursor:pointer;" title="' + comm.getTime(result.user.unlockTime) + ' 解锁">锁定</span>');
+                                animationHover(that.item, 'pulse', function(){
+                                    $('<i class="fa fa-unlock fr lock-user" style="cursor:pointer;margin:5px 10px 0 0;" title="解锁用户"></i>').on('click', function(){
+                                        that.instance.unlockUser(that.item, result.user);
+                                    }).prependTo(that.item);
+                                }, function(){
+                                    that.item.find('.lock-user').remove();
+                                });
+                                that.target.removeAttr('id');
+                            }
                             that.target.closeDialog();
-                            that.target.removeAttr('id');
                         } else if(result.msg == 'OFFLINE') {
                             $messager.warning('用户未登录');
                             window.location.href = 'index.do';

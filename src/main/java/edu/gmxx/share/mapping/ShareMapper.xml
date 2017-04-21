@@ -192,6 +192,9 @@
     from s_share
     <where>
       del_status = 0
+      <if test="share.shareTitle != null and share.shareTitle != ''">
+        AND share_title LIKE '%${share.shareTitle}%'
+      </if>
       <if test="share.shareTypeId != 'all'">
         AND share_type_id = #{share.shareTypeId,jdbcType=VARCHAR}
       </if>
@@ -207,6 +210,9 @@
     SELECT COUNT(share_id) FROM s_share
     <where>
       del_status = 0
+      <if test="shareTitle != null and shareTitle != ''">
+        AND share_title LIKE '%${shareTitle}%'
+      </if>
       <if test="shareTypeId != 'all'">
         AND share_type_id = #{shareTypeId,jdbcType=VARCHAR}
       </if>

@@ -1,12 +1,12 @@
 package edu.gmxx.share.listener;
 
 import edu.gmxx.share.domain.User;
+import edu.gmxx.share.service.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionAttributeListener;
-import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,8 +44,23 @@ public class LoginListener implements HttpSessionAttributeListener {
         // 用户下线
         if("user".equals(name)){
             User user = (User) event.getValue();
-            loginSession.remove(user.getAccount());
+            user.setStatus("OFFLINE");
+
+            HttpSession session = loginSession.get(user.getAccount());
+            IUserService userService = WebApplicationContextUtils
+                    .getWebApplicationContext(session.getServletContext())
+                    .getBean(IUserService.class);
+
+            // 将账户数据更新为离线状态
+            User acc = userService.getUserByAccount(user.getAccount());
+            if(!"LOCK".equals(acc.getStatus())){
+                acc.setStatus("OFFLINE");
+                userService.updateUserById(acc);
+            }
+
             logger.info("-----用户[" + user.getAccount() + "]下线-----");
+            // 移除session
+            loginSession.remove(user.getAccount());
         }
     }
 

@@ -239,10 +239,12 @@ public interface IUserService {
     /**
      * 分页获取除了自己之外的所有用户
      * @param user
-     * @param page
-     * @return
+     * @param userType
+     * @param status
+     * @param account
+     * @param page  @return
      */
-    List<User> getAllUserByPage(User user, PageModel page);
+    List<User> getAllUserByPage(User user, String userType, String status, String account, PageModel page);
 
     /**
      * 获取分享数

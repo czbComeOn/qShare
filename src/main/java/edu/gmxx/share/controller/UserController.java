@@ -518,13 +518,17 @@ public class UserController {
 
     /**
      * 分页获取用户信息
+     * @param userType 用户类型
+     * @param status 状态
+     * @param account 根据账号或昵称搜索
      * @param page
      * @param session
      * @return
      */
     @RequestMapping(value="getAllUserByPage.do", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> getAllUserByPage(PageModel page, HttpSession session){
+    public Map<String, Object> getAllUserByPage(String userType, String status, String account,
+            PageModel page, HttpSession session){
         Map<String, Object> result = new HashMap<String, Object>();
         User user = (User) session.getAttribute("user");
 
@@ -533,7 +537,7 @@ public class UserController {
             return result;
         }
 
-        List<User> users = userService.getAllUserByPage(user, page);
+        List<User> users = userService.getAllUserByPage(user, userType, status, account, page);
         result.put("page", page);
         result.put("users", users);
         result.put("msg", "success");

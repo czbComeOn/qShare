@@ -847,14 +847,18 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public List<User> getAllUserByPage(User user, PageModel page) {
+    public List<User> getAllUserByPage(User user, String userType, String status, String account,
+                                       PageModel page) {
         // 初始化分页
         if(page.getPageSize() < 1){
             page.setPageSize(10);
         }
 
+        user.setUserType(userType);
+        user.setStatus(status);
+        user.setAccount(account);
         // 获取总记录数
-        page.setTotalRecord(userMapper.getAllUserCount(user.getUserId()));
+        page.setTotalRecord(userMapper.getAllUserCount(user));
 
         UserDTO userDTO = new UserDTO();
         userDTO.setUser(user);

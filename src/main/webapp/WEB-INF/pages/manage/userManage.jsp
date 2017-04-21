@@ -34,12 +34,41 @@
 </head>
 <body class="gray-bg">
     <div class="wrapper wrapper-content animated fadeInRight">
+        <form class="form-horizontal" id="searchUserForm" action="#">
+            <div class="row mrg-b-10" id="searchBox">
+                <div class="col-sm-3 mrg-b-10">
+                    <label for="userType">用户类型：</label>
+                    <div class="user-type-select">
+                        <select class="form-control" id="userTypeSelect">
+                            <option value="">全部</option>
+                            <option value="ADMIN">管理员</option>
+                            <option value="NORMAL">普通用户</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-sm-offset-1 mrg-b-10">
+                    <label for="status">用户状态：</label>
+                    <div class="user-status-select">
+                        <select class="form-control" id="statusSelect">
+                            <option value="">全部</option>
+                            <option value="ONLINE">在线</option>
+                            <option value="OFFLINE">离线</option>
+                            <option value="LOCK">锁定</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-sm-offset-1 mrg-b-10">
+                    <input class="form-control user-search-text" type="text" placeholder="账号/昵称" />
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+        </form>
         <div class="row" id="userDataBox">
         </div>
         <div class="row" style="text-align:center;">
             <ul class="pagination" id="pagination">
             </ul>
-            <input type="hidden" id="PageSize" value="12"/>
+            <input type="hidden" id="PageSize" value="9"/>
         </div>
     </div>
 </body>

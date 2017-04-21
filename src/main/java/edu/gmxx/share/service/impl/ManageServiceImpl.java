@@ -40,6 +40,13 @@ public class ManageServiceImpl implements IManageService {
             return result;
         }
 
+        // 判断是否已被锁定
+        if("LOCK".equals(user.getStatus())){
+            result.put("msg", "用户已被锁定，请刷新后重试！");
+            return result;
+        }
+
+        // 设置锁定时间
         long unlockTime = System.currentTimeMillis();
         if(time <= 0) {
             // 默认锁定一年
@@ -77,6 +84,12 @@ public class ManageServiceImpl implements IManageService {
         if(user == null){
             logger.debug("-----> 解锁用户异常");
             result.put("msg", "用户不存在，请刷新后重试！");
+            return result;
+        }
+
+        // 判断用户是否已被解锁
+        if(!"LOCK".equals(user.getStatus())){
+            result.put("msg", "用户已被解锁！");
             return result;
         }
 

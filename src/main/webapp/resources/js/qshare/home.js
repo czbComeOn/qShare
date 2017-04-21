@@ -1,8 +1,8 @@
 /**
  * Created by BIN on 2017/4/3.
  */
-define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'bootstrap', 'bootstrapValidator'],
-    function(login, share, $messager, comm){
+define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', 'utils/common', 'bootstrap', 'bootstrapValidator'],
+    function(login, share, um, $messager, comm){
     var ME_ATTENTION_NUM = 1; // 我关注谁页码
     var WHO_ATTENTION_NUM = 1; // 谁关注我页码
     var SEARCH_ACCOUNT_NUM = 1; // 根据账号查找页码
@@ -754,13 +754,13 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'boots
         $('.myright').find('.friend-panel, .share-info').remove();
         share.initNum();
         share.homeEnt();
-        share.loadShareInfo('all', home_acc, 'collect');
+        share.loadShareInfo('all', home_acc.account, 'collect');
 
         $('#loadMore').show();
         $('.load-more').unbind('click');
         // 点击加载更多分享
         $('.load-more').on('click', function(){
-            share.loadShareInfo('all', home_acc, 'collect');
+            share.loadShareInfo('all', home_acc.account, 'collect');
         });
     }
 
@@ -771,13 +771,13 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'boots
         $('.myright').find('.friend-panel, .attention-panel, .share-info').remove();
         share.initNum();
         share.homeEnt();
-        share.loadShareInfo('all', home_acc, null);
+        share.loadShareInfo('all', home_acc.account, null);
 
         $('#loadMore').show();
         $('.load-more').unbind('click');
         // 点击加载更多分享
         $('.load-more').on('click', function(){
-            share.loadShareInfo('all', home_acc, null);
+            share.loadShareInfo('all', home_acc.account, null);
         });
     }
 
@@ -856,7 +856,7 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'boots
 
             $.ajax({
                 url: url,
-                data: {'account':home_acc},
+                data: {'account':home_acc.account},
                 type: 'post',
                 dataType: 'json',
                 success: function(result){
@@ -889,21 +889,34 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'boots
 
         // 添加好友
         $('#addFriend').on('click', function(){
-            that.doAddFriend(home_acc);
+            that.doAddFriend(home_acc.account);
         });
 
         if(document.body.clientWidth >= 768){
             $('#crop-avatar').hover(function(){
                 $('#informUser').show();
+                $('#unlockUser').show();
+                $('#lockUser').show();
             }, function(){
                 $('#informUser').hide();
+                $('#unlockUser').hide();
+                $('#lockUser').hide();
             });
         } else{
             $('#informUser').show();
+            $('#unlockUser').show();
+            $('#lockUser').show();
         }
 
         $('#informUser').on('click', function(){
-            new InformUserDialog($(this), $(this).attr('user-id'));
+            new InformUserDialog($(this), home_acc);
+        });
+
+        $('#lockUser').on('click', function(){
+            um.lockUser($(this), home_acc, true);
+        });
+        $('#unlockUser').on('click', function(){
+            um.unlockUser(null, home_acc, true);
         });
     }
 
@@ -912,7 +925,9 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'boots
         home_acc = acc;
         this.initEvent();
         login.init();
-        that.showShare();
+        setTimeout(function(){
+            that.showShare();
+        }, 500);
 
         share.toTop();
     }
@@ -1502,12 +1517,12 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'boots
     /**
      * 举报用户
      * @param target
-     * @param userId
+     * @param user
      * @constructor
      */
-    var InformUserDialog = function(target, userId){
+    var InformUserDialog = function(target, user){
         this.target = target;
-        this.userId = userId;
+        this.user = user;
         this.init();
     }
 
@@ -1515,7 +1530,7 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'boots
         init: function(){
             var that = this;
             var option = {
-                title: '举报',
+                title: '举报用户 <b style="color:#6a8fd4;">' + that.user.nickname + '</b>',
                 saveBtn: false,
                 closeBtn: false,
                 mode: that.paintComponent()
@@ -1551,7 +1566,7 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'utils/common', 'boots
                     $.ajax({
                         url: 'user/informUser.do',
                         type: 'post',
-                        data: {'buserId': that.userId, 'informContent': that.$informContent.val()},
+                        data: {'buserId': that.user.userId, 'informContent': that.$informContent.val()},
                         dataType: 'json',
                         success: function(result){
                             if(result.msg == 'success'){

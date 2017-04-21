@@ -26,7 +26,11 @@
     <script>
         require(['jquery', 'qshare/home', 'utils/cropper.min', 'utils/sitelogo', 'utils/app-dialog'],
                 function($, home){
-            home.init('${acc.account}');
+            home.init({
+                'userId': '${acc.userId}',
+                'account': '${acc.account}',
+                'nickname': '${acc.nickname}'
+            });
         });
     </script>
 </head>
@@ -122,9 +126,37 @@
                         </div>
                     </c:if>
                     <c:if test="${user == null || acc.userId != user.userId}">
-                        <c:if test="${user.userType == 'NORMAL' || acc.userType == 'NORMAL'}">
+                        <c:if test="${user.userType == 'NORMAL' && acc.userType == 'NORMAL'}">
                             <a class="fr" id="informUser" user-id="${acc.userId}" href="javascript:void(0);"
                                title="点击举报TA" style="display:none;cursor:pointer;text-decoration:none;">举报</a>
+                        </c:if>
+                        <c:if test="${user.userType == 'ADMIN' && acc.userType == 'NORMAL'}">
+                            <c:if test="${acc.status == 'LOCK'}">
+                                <a class="fr" id="unlockUser" user-id="${acc.userId}" href="javascript:void(0);"
+                                   title="解锁用户" style="display:none;cursor:pointer;text-decoration:none;">
+                                    <i class="fa fa-unlock"></i> 解锁
+                                </a>
+                            </c:if>
+                            <c:if test="${acc.status != 'LOCK'}">
+                                <a class="fr" id="lockUser" user-id="${acc.userId}" href="javascript:void(0);"
+                                   title="锁定用户" style="display:none;cursor:pointer;text-decoration:none;">
+                                    <i class="fa fa-lock"></i> 锁定
+                                </a>
+                            </c:if>
+                        </c:if>
+                        <c:if test="${user.userType == 'SUPERADMIN' && acc.userType != 'SUPERADMIN'}">
+                            <c:if test="${acc.status == 'LOCK'}">
+                                <a class="fr" id="unlockUser" user-id="${acc.userId}" href="javascript:void(0);"
+                                   title="解锁用户" style="display:none;cursor:pointer;text-decoration:none;">
+                                    <i class="fa fa-unlock"></i> 解锁
+                                </a>
+                            </c:if>
+                            <c:if test="${acc.status != 'LOCK'}">
+                                <a class="fr" id="lockUser" user-id="${acc.userId}" href="javascript:void(0);"
+                                   title="锁定用户" style="display:none;cursor:pointer;text-decoration:none;">
+                                    <i class="fa fa-lock"></i> 锁定
+                                </a>
+                            </c:if>
                         </c:if>
                         <div>
                             <c:choose>

@@ -7,14 +7,23 @@ define(['utils/messager', 'utils/common', 'qshare/footable.all.min', 'jquery/jqu
 
     /**
      * 创建表格
+     * @param auditStatus 默认审核状态
      * @returns {*|jQuery|HTMLElement}
      */
-    inform.createTable = function(){
+    inform.createTable = function(auditStatus){
+        var that = this;
         var $table  = $('<div class="col-sm-12">' +
             '<div class="ibox float-e-margins">' +
                 '<div class="ibox-title">' +
-                    '<h5>举报信息列表</h5>' +
+                    '<h5>举报信息列表 <span class="data-count"></span></h5>' +
                     '<div class="ibox-tools">' +
+                        '<select class="form-control" id="auditStatusSelect" ' +
+                            'style="padding:0; height:22px; font-size:10px;">' +
+                            '<option value="ALL">全部</option>' +
+                            '<option value="NOTAUDIT">待审核</option>' +
+                            '<option value="LOCK">已处理</option>' +
+                            '<option value="NORMAL">正常</option>' +
+                        '</select>' +
                     '</div>' +
                 '</div>' +
                 '<div class="ibox-content">' +
@@ -39,10 +48,26 @@ define(['utils/messager', 'utils/common', 'qshare/footable.all.min', 'jquery/jqu
             '</div>' +
         '</div>');
 
+        var statusSelect = $table.find('#auditStatusSelect');
+        statusSelect.find('option').each(function(){
+            if($(this).val() == auditStatus){
+                $(this).attr('selected', 'selected');
+                return false;
+            }
+        });
+        statusSelect.on('change', function(){
+            that.loadData(1, $(this).val());
+        });
+
         return $table;
     }
 
-    inform.loadpage = function(page){
+    /**
+     * 加载分页信息
+     * @param page
+     * @param auditStatus
+     */
+    inform.loadpage = function(page, auditStatus){
         var that = this;
         $('#informTable').footable();
         $.jqPaginator('#pagination', {
@@ -56,7 +81,7 @@ define(['utils/messager', 'utils/common', 'qshare/footable.all.min', 'jquery/jqu
             page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
             onPageChange: function (num, type) {
                 if (type == "change") {
-                    that.loadData(num);
+                    that.loadData(num, auditStatus);
                 }
             }
         });
@@ -65,24 +90,31 @@ define(['utils/messager', 'utils/common', 'qshare/footable.all.min', 'jquery/jqu
     /**
      * 加载数据
      * @param num
+     * @param auditStatus 审核状态
      */
-    inform.loadData = function(num){
+    inform.loadData = function(num, auditStatus){
         var that = this;
+        if(!auditStatus){
+            auditStatus = 'ALL';
+        }
         $.ajax({
             url: 'manage/getInformDataByStatus.do',
-            data: {'pageNumber': num, 'pageSize': $('#PageSize').val()},
+            data: {'pageNumber': num, 'pageSize': $('#PageSize').val(), 'auditStatus':auditStatus},
             type: 'post',
             dataType: 'json',
             success: function(result){
                 if(result.msg == 'success'){
-                    var box = $('#informDataBox').empty().append(that.createTable());
+                    var $table = that.createTable(result.auditStatus);
+                    var box = $('#informDataBox').empty().append($table);
+
+                    $table.find('.data-count').text('(' + result.page.totalRecord + ')');
                     for(var i = 0; i < result.informVos.length; i++){
                         var num = (result.page.pageNumber - 1) * result.page.pageSize + i + 1;
                         box.find('tbody').append(that.getInformItem(result.informVos[i], num));
                     }
-                    box.find('.footable').footable();
+                    box.find('.footable').footable({'sort':false});
                     // 加载分页
-                    that.loadpage(result.page);
+                    that.loadpage(result.page, result.auditStatus);
                 } else if(result.msg == 'OFFLINE'){
                     location.href = 'redirectIndex.do';
                 } else{
@@ -132,7 +164,7 @@ define(['utils/messager', 'utils/common', 'qshare/footable.all.min', 'jquery/jqu
         } else if(informVo.inform.auditStatus == 'LOCK'){
             $('<td class="audit-opr"></td>').append($('<a class="text-navy" style="text-decoration:none;"><i class="fa fa-check text-navy"></i>已处理</a>')).appendTo($item);
         } else{
-            $('<td class="audit-opr"></td>').append($('<a style="text-decoration:none;">审核</a>').on('click', function(){
+            $('<td class="audit-opr"></td>').append($('<a style="text-decoration:none;" title="审核该举报信息">审核</a>').on('click', function(){
                 $(this).attr('id', informVo.inform.informId);
                 new AuditDialog(that, $(this), $item, informVo);
             })).appendTo($item);
@@ -158,7 +190,7 @@ define(['utils/messager', 'utils/common', 'qshare/footable.all.min', 'jquery/jqu
         init: function(){
             var that = this;
             var option = {
-                title: '举报审核',
+                title: '审核举报信息',
                 saveBtn: false,
                 closeBtn: false,
                 mode: that.paintComponent()

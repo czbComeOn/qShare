@@ -336,6 +336,19 @@
                 </c:if>
                 <!-- end 分享 panel -->
 
+                <!-- start 分享信息搜索 -->
+                <form id="searchForm" action="#">
+                <div class="panel panel-info myright-n share-search">
+                    <div class="panel-body">
+                        <input class="form-control search-text" type="text" placeholder="搜你想要" />
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-search"></i><span class="search-btn-text"> 搜索</span>
+                        </button>
+                    </div>
+                </div>
+                </form>
+                <!-- end 分享信息搜索 -->
+
                 <div class="panel panel-default" id="loadMore">
                     <div class="panel-body">
                         <div class="load-more" style="display: none;text-align: center;">点击加载更多 <i class="fa fa-angle-double-down"></i></div>

@@ -124,8 +124,14 @@ public interface UserMapper {
     /**
      * 获取所有用户
      * @return
+     * @param user
      */
-    int getAllUserCount(String userId);
+    int getAllUserCount(User user);
 
+    /**
+     * 分页获取用户数据
+     * @param userDTO
+     * @return
+     */
     List<User> getAllUserByPage(UserDTO userDTO);
 }

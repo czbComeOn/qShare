@@ -32,39 +32,26 @@ var uSinaEmotionsHt = new Hashtable();
 // 初始化缓存，页面仅仅加载一次就可以了
 $(function() {
 	var app_id = '1362404091';
-	$.ajax( {
-		dataType : 'jsonp',
-		url : 'https://api.weibo.com/2/emotions.json?source=' + app_id,
-		success : function(response) {
-			var data = response.data;
-			for ( var i in data) {
-				if (data[i].category == '') {
-					data[i].category = '默认';
-				}
-				if (emotions[data[i].category] == undefined) {
-					emotions[data[i].category] = new Array();
-					categorys.push(data[i].category);
-				}
-				emotions[data[i].category].push( {
-					name : data[i].phrase,
-					icon : data[i].icon
-				});
-				uSinaEmotionsHt.put(data[i].phrase, data[i].icon);
+	$.getJSON('resources/js/emotions.json', function(data){
+		for ( var i in data) {
+			if (data[i].category == '') {
+				data[i].category = '默认';
 			}
+			if (emotions[data[i].category] == undefined) {
+				emotions[data[i].category] = new Array();
+				categorys.push(data[i].category);
+			}
+			emotions[data[i].category].push( {
+				name : data[i].phrase,
+				icon : data[i].icon
+			});
+			uSinaEmotionsHt.put(data[i].phrase, data[i].icon);
 		}
 	});
 });
 
 //替换
 function AnalyticEmotion(s) {
-	var that = this;
-	this.interval = setInterval(function(){
-		if(this._hash){
-			clearInterval(that.interval);
-			return false;
-		}
-	}, 100);
-
 	if(typeof (s) != "undefined") {
 		var sArr = s.match(/\[.*?\]/g);
 		if(sArr){
@@ -76,7 +63,6 @@ function AnalyticEmotion(s) {
 			}
 		}
 	}
-
 
 	return s;
 }

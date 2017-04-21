@@ -5,3 +5,16 @@ address{font-size:13px;}
 .footable .audit a{color:#6d7072; text-decoration: none;}
 .footable .audit a:hover{color:#0d8ddb; font-weight:600;}
 .audit-user-portrait{width:30px; height:30px; border-radius:50%;margin-right:5px;}
+.user-search-text{
+    display: inline-block;
+    width: 90%;
+    width:-moz-calc(100% - (50px));
+    width:-webkit-calc(100% - (50px));
+    width: calc(100% - (50px));
+}
+.user-status-select, .user-type-select{
+    display:inline-block;
+    width:-moz-calc(100% - (80px));
+    width:-webkit-calc(100% - (80px));
+    width: calc(100% - (80px));
+}

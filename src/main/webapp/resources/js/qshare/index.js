@@ -2,6 +2,8 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         'bootstrapValidator', 'utils/upload-progress'],
     function ($messager, comm, login) {
     var CURRENT_PAGE_NUMBER = 1;
+    var CURRENT_SHARE_TYPE = 'all'; // 当前页面的分享信息类型
+    var CURRENT_SEARCH_TEXT; // 当前搜索分享信息标题
     var home_ent; // 加载入口
     var share = {};
 
@@ -588,8 +590,20 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
             .append($('<i class="fa fa-trash"></i>'));
         var $closeShare = $('<a class="close-share"></a>').attr({'href':'javascript:void(0);', 'title':'关闭'}).css({'margin-left': '10px'})
             .append($('<i class="fa fa-remove">'));
-        if(currUser && currUser.userId == share.userId){
+        if(currUser && (currUser.userId == share.userId || currUser.userType != 'NORMAL')){
             $titleRight.append($deleteShare);
+        }
+
+        if(document.body.clientWidth > 767){
+            $deleteShare.hide();
+            $closeShare.hide();
+            $panel.hover(function(){
+                $deleteShare.show();
+                $closeShare.show();
+            }, function(){
+                $deleteShare.hide();
+                $closeShare.hide();
+            });
         }
         $titleRight.append($closeShare);
 
@@ -914,7 +928,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
             success: function(result){
                 if(result.msg == 'success'){
                     // 发布成功
-                    that.$sharePanel.after(that.getSharePanel(result.userInfo, result.shareInfo, null, result.userInfo));
+                    $('#searchForm').after(that.getSharePanel(result.userInfo, result.shareInfo, null, result.userInfo));
 
                     $('#shareForm')[0].reset();
                     $('#shareTheme').parent('.form-group').removeClass('has-success has-feedback');
@@ -975,6 +989,15 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         $('#changePwd').on('click', login.changePwd);
         $('#logout').on('click', that.logout);
         $('#login').on('click', login.show);
+
+        // 搜索分享信息
+        $('#searchForm').submit(function(){
+            CURRENT_PAGE_NUMBER = 1;
+            $('.myright').find('.share-info').remove();
+            CURRENT_SEARCH_TEXT = $(this).find('.search-text').val();
+            that.loadShareInfo(CURRENT_SHARE_TYPE, null, null);
+        });
+
         // 选择图片
         $('#insertImg').click(function () {
             // 弹窗选择图片
@@ -1044,8 +1067,13 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         $('.show-share-type').find('.share-nav').each(function(){
             $(this).on('click', function(){
                 CURRENT_PAGE_NUMBER = 1;
+
+                // 清除搜索
+                $('#searchForm .search-text').val('');
+                CURRENT_SEARCH_TEXT = '';
                 $('.myright').find('.share-info').remove();
-                that.loadShareInfo($(this).children('a').attr('name'));
+                CURRENT_SHARE_TYPE = $(this).children('a').attr('name');
+                that.loadShareInfo(CURRENT_SHARE_TYPE);
 
                 if(document.body.clientWidth < 768){
                     $('.navbar-toggle').trigger('click');
@@ -1053,14 +1081,14 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
 
                 $('.load-more').unbind('click');
                 $('.load-more').on('click', function(){
-                    that.loadShareInfo();
+                    that.loadShareInfo(CURRENT_SHARE_TYPE);
                 });
             });
         });
 
         // 点击加载更多
         $('.load-more').on('click', function(){
-            that.loadShareInfo();
+            that.loadShareInfo(CURRENT_SHARE_TYPE);
         });
     }
 
@@ -1072,11 +1100,9 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
      * @param shareType 分享类型
      * @param account 当前账户
      * @param loadType 加载类型 全部信息、收藏信息
-     * @param ent 加载入口 主页、个人主页:home
      */
-    share.loadShareInfo = function(shareType, account, loadType, ent){
+    share.loadShareInfo = function(shareType, account, loadType){
         var that = this;
-        home_ent = ent;
 
         if(!shareType){
             $('.show-share-type').find('li.active').each(function(){
@@ -1092,7 +1118,8 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         $('#loadMore .load-more, #loadMore .load-finish').hide();
 
         var url = 'share/loadShare.do';
-        var data = {'type':shareType, 'account':account, 'pageNumber': CURRENT_PAGE_NUMBER};
+        var data = {'type':shareType, 'account':account, 'pageNumber': CURRENT_PAGE_NUMBER,
+            'shareTitle':CURRENT_SEARCH_TEXT};
 
         if(loadType == 'collect'){
             url = 'share/getCollectShare.do';
@@ -1101,10 +1128,9 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
 
         $.ajax({
             url: url,
-            type: 'get',
+            type: 'post',
             data: data,
             dataType: 'json',
-            async: false,
             success: function(result){
                 if(result.msg == 'success'){
                     // 当前选择的分享信息类型
@@ -1196,7 +1222,10 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
 
         // 选择表情
         $('#face').SinaEmotion($('.emotion'));
-        that.loadShareInfo();
+        CURRENT_SHARE_TYPE = 'all'; // 默认全部
+        setTimeout(function(){
+            that.loadShareInfo(CURRENT_SHARE_TYPE);
+        }, 500);
     }
 
     // -----------------弹窗-----------------

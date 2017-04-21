@@ -56,7 +56,8 @@ public class ShareController {
      */
     @RequestMapping("loadShare.do")
     @ResponseBody
-    public Map<String, Object> loadShare(String type, String account, PageModel page, HttpSession session){
+    public Map<String, Object> loadShare(String type, String shareTitle, String account,
+         PageModel page, HttpSession session){
         User user = (User) session.getAttribute("user");
 
         // 保存当前请求的信息类型
@@ -68,7 +69,7 @@ public class ShareController {
         }
         session.setAttribute("shareTypeId", type);
 
-        return shareService.getShareByType(type, account, user, page);
+        return shareService.getShareByType(type, shareTitle, account, user, page);
     }
 
     /**

@@ -364,11 +364,14 @@
         FROM s_share s
         <where>
           s.del_status = 0
+          <if test="share.shareTitle != null and share.shareTitle != ''">
+            AND s.share_title LIKE '%${share.shareTitle}%'
+          </if>
           <if test="share.shareTypeId != 'all'">
             AND s.share_type_id = #{share.shareTypeId}
           </if>
           <if test="share.userId != null">
-            AND user_id = #{share.userId,jdbcType=VARCHAR}
+            AND s.user_id = #{share.userId,jdbcType=VARCHAR}
           </if>
         </where>
         ORDER BY s.create_time DESC
@@ -441,13 +444,38 @@
   </select>
 
   <select id="getAllUserCount" parameterType="java.lang.String" resultType="int">
-    SELECT COUNT(user_id) FROM s_user where user_id != #{userId,jdbcType=VARCHAR}
+    SELECT COUNT(user_id) FROM s_user
+    <where>
+      AND user_id != #{userId,jdbcType=VARCHAR}
+      <if test="account != null and account != ''">
+        AND (account LIKE '%${account}%' OR nickname LIKE '%${account}%')
+      </if>
+      <if test="userType != null and userType != ''">
+        AND user_type = #{userType,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null and status != ''">
+        AND status = #{status,jdbcType=VARCHAR}
+      </if>
+    </where>
   </select>
 
   <select id="getAllUserByPage" parameterType="edu.gmxx.share.dto.UserDTO" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
-    FROM s_user where user_id != #{user.userId,jdbcType=VARCHAR} ORDER BY create_time DESC
+    FROM s_user
+    <where>
+      AND user_id != #{user.userId,jdbcType=VARCHAR}
+      <if test="user.account != null and user.account != ''">
+        AND (account LIKE '%${user.account}%' OR nickname LIKE '%${user.account}%')
+      </if>
+      <if test="user.userType != null and user.userType != ''">
+        AND user_type = #{user.userType,jdbcType=VARCHAR}
+      </if>
+      <if test="user.status != null and user.status != ''">
+        AND status = #{user.status,jdbcType=VARCHAR}
+      </if>
+    </where>
+    ORDER BY create_time DESC
     LIMIT #{page.currentCount},#{page.pageSize}
   </select>
 </mapper>

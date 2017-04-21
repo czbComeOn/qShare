@@ -27,12 +27,12 @@ public interface IShareService {
      * 根据分享信息类型获取数据
      *
      * @param type
-     * @param account
+     * @param shareTitle
+     *@param account 收藏该分享的账户
      * @param user
-     * @param page
-     * @return
+     * @param page    @return
      */
-    Map<String,Object> getShareByType(String type, String account, User user, PageModel page);
+    Map<String,Object> getShareByType(String type, String shareTitle, String account, User user, PageModel page);
 
     /**
      * 删除分享信息，将删除状态标记为1

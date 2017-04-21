@@ -69,10 +69,13 @@ public class ShareServiceImpl implements IShareService {
     }
 
     @Override
-    public Map<String, Object> getShareByType(String type, String account, User user, PageModel page) {
+    public Map<String, Object> getShareByType(String type, String shareTitle, String account, User user, PageModel page) {
         Map<String, Object> result = new HashMap<String, Object>();
 
-        Share share = new Share(type);
+        Share share = new Share();
+        share.setShareTypeId(type);
+        share.setShareTitle(shareTitle);
+
         User shareUser = userMapper.getUserByAccount(account);
         if(shareUser != null){
             share.setUserId(shareUser.getUserId());

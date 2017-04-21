@@ -91,6 +91,7 @@ public class ManageController {
 
         List<InformVo> informVos = manageService.getInformDataByStatus(auditStatus, page);
         result.put("page", page);
+        result.put("auditStatus", auditStatus);
         result.put("informVos", informVos);
         result.put("currUser", user);
         result.put("msg", "success");
