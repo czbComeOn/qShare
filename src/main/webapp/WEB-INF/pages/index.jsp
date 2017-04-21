@@ -85,7 +85,7 @@
                                 <img src="${user.portraitPath}" style="width:20px;height:20px;border-radius:50%;" />
                             </c:if>
                             <c:if test="${user.portraitPath == null}">
-                                <img src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg" style="width:20px;height:20px;border-radius:50%;" />
+                                <img src="${pageContext.request.contextPath}/resources/img/portrait.jpg" style="width:20px;height:20px;border-radius:50%;" />
                             </c:if>
                             用户
                             <b class="caret"></b>
@@ -109,12 +109,12 @@
     <div class="container qshare-main top60 bot50">
         <div class="row mym">
             <!-- left -->
-            <div class="col-md-4 myleft">
+            <div class="col-md-4 myleft" style="padding:0;">
                 <c:if test="${user == null}">
-                    <div class="myleft-n unlogin panel panel-info" style="margin-top: 10px;">
-                        <div class="panel-body">
+                    <div class="myleft-n unlogin panel panel-info" style="padding:0;margin-bottom:0;">
+                        <div class="panel-body user-portrait">
                             <a class="login-tab" href="javascript:void(0);" title="点击登录">
-                                <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
+                                <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/resources/img/portrait.jpg">
                             </a>
                             <div class="user-info fl">
                                 <h4><a class="login-tab" href="javascript:void(0);" title="点击登录">未登录</a></h4>
@@ -126,14 +126,14 @@
                     </div>
                 </c:if>
                 <c:if test="${user != null}">
-                    <div class="myleft-n mrg20" id="crop-avatar">
+                    <div class="myleft-n user-portrait" id="crop-avatar">
                         <a href="myHome.do?account=${user.account}" title="个人主页">
                             <c:choose>
                                 <c:when test="${user.portraitPath != null && acc.portraitPath != ''}">
                                     <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/${user.portraitPath}">
                                 </c:when>
                                 <c:otherwise>
-                                    <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
+                                    <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/resources/img/portrait.jpg">
                                 </c:otherwise>
                             </c:choose>
                         </a>
@@ -151,7 +151,7 @@
                     </div>
                     <div class="cf"></div>
                     <div class="myleft-n">
-                        <ul class="list-group">
+                        <ul class="list-group" style="margin-bottom:0;">
                             <%--<li class="list-group-item list-group-item-info">
                                 <span class="badge" style="background: #c4ce90">10</span>
                                 <a href="#"><i class="fa fa-envelope"></i> 私信</a>
@@ -198,7 +198,7 @@
                     <c:if test="${user.userType == 'NORMAL'}">
                         <div class="myleft-n">
                             <!-- 显示最近三条好友动态 -->
-                            <div class="panel panel-info">
+                            <div class="panel panel-info" style="margin-top:10px;">
                                 <div class="panel-heading">
                                     <i class="fa fa-heart-o"></i> 好友动态
                                 </div>
@@ -230,7 +230,7 @@
                         <div class="cf"></div>
                         <div class="myleft-n">
                             <!-- 显示最近三条关注动态 -->
-                            <div class="panel panel-info">
+                            <div class="panel panel-info" style="margin-bottom:0;">
                                 <div class="panel-heading">
                                     <i class="fa fa-link"></i> 关注动态
                                 </div>

@@ -854,14 +854,17 @@ public class UserServiceImpl implements IUserService {
             page.setPageSize(10);
         }
 
-        user.setUserType(userType);
-        user.setStatus(status);
-        user.setAccount(account);
+        User queryUser = new User();
+
+        queryUser.setUserId(user.getUserId());
+        queryUser.setUserType(userType);
+        queryUser.setStatus(status);
+        queryUser.setAccount(account);
         // 获取总记录数
-        page.setTotalRecord(userMapper.getAllUserCount(user));
+        page.setTotalRecord(userMapper.getAllUserCount(queryUser));
 
         UserDTO userDTO = new UserDTO();
-        userDTO.setUser(user);
+        userDTO.setUser(queryUser);
         userDTO.setPage(page);
 
         return userMapper.getAllUserByPage(userDTO);

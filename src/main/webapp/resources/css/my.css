@@ -171,6 +171,11 @@ em{font-style: normal;}
     box-shadow: 3px 3px 5px rgba(0,0,0,.2);
     border-radius: 3px;
 }
+.myleft .user-portrait{
+    background: url('../img/portrait-back.jpg') no-repeat;
+    padding: 20px;
+    border-radius: 5px 5px 0 0;
+}
 .friend-dynamic, .attention-dynamic{margin: 5px 0;}
 .friend-dynamic a, .attention-dynamic a{text-decoration: none;}
 /* 右侧分享信息块 */
@@ -230,9 +235,9 @@ em{font-style: normal;}
 }
 /* 左边个人信息 */
 .myleft .user-info{padding-top:10px;}
-.user-info a{text-decoration:none;}
-.user-info .nickname:hover{color: #d9edf7;}
-.addr{color:#dbe0e2;max-width:220px;overflow:hidden;}
+.user-info a{text-decoration:none;color:#cacaca;}
+.user-info .nickname:hover{color: #fff;}
+.addr{color:#92a3ca;max-width:220px;overflow:hidden;}
 
 @media screen and (max-width:767px) {
 	.qshare-main {padding: 0;margin-top: 50px;}

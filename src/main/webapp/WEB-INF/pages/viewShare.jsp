@@ -68,7 +68,7 @@
                                 <img src="${user.portraitPath}" style="width:20px;height:20px;border-radius:50%;" />
                             </c:if>
                             <c:if test="${user.portraitPath == null}">
-                                <img src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg" style="width:20px;height:20px;border-radius:50%;" />
+                                <img src="${pageContext.request.contextPath}/resources/img/portrait.jpg" style="width:20px;height:20px;border-radius:50%;" />
                             </c:if>
                             用户
                             <b class="caret"></b>

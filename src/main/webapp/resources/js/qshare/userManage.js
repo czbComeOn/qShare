@@ -130,7 +130,7 @@ define(['utils/messager', 'utils/common', 'qshare/content', 'jquery/jquery.Pagin
                     '<div class="col-sm-4">' +
                         '<div class="text-center">' +
                             '<img alt="image" class="img-circle m-t-xs img-responsive user-portrait" ' +
-                                'src="resources/img/header/portrait.jpg">' +
+                                'src="resources/img/portrait.jpg">' +
                             '<div class="m-t-xs font-bold user-acc"></div>' +
                         '</div>' +
                     '</div>' +
@@ -191,17 +191,6 @@ define(['utils/messager', 'utils/common', 'qshare/content', 'jquery/jquery.Pagin
         }
 
         return $item;
-    }
-
-    /**
-     * 渲染用户数据
-     * @param users
-     */
-    um.loadUserData = function(users){
-        var $box = $('#userDataBox');
-        for(var i in users){
-            $box.append(this.getUserItem(users[i]));
-        }
     }
 
     um.initEvent = function(){

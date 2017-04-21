@@ -118,7 +118,7 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
         var $friendItem = $('<li class="list-group-item friend-item"></li>');
         var $row = $('<div class="row"></div>').appendTo($friendItem);
 
-        var img = friendVo.user.portraitPath ? friendVo.user.portraitPath : 'resources/img/header/portrait.jpg';
+        var img = friendVo.user.portraitPath ? friendVo.user.portraitPath : 'resources/img/portrait.jpg';
         $('<div class="col-xs-1 friend-item-portrait"></div>').append($('<img/>').attr('src', img))
             .appendTo($row);
 
@@ -199,7 +199,7 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
         $groupItem.addClass(this.listStyle(n));
         $groupItem.attr({'group-num': groupVo.group.num});
         $('<span class="badge" style="background: #98b3da;"></span>').text(groupVo.friendCount).appendTo($groupItem);
-        var $tag = $('<i class="fa fa-plus group-tag fr"></i>').appendTo($groupItem);
+        var $tag = $('<i class="fa fa-plus group-tag fl"></i>').appendTo($groupItem);
         var $group = $('<a class="group-name" href="javascript:void(0);"></a>').text(groupVo.group.groupName)
             .appendTo($groupItem);
 
@@ -308,7 +308,7 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
     home.getSearchResult = function(user){
         var that = this;
         var $resultItem = $('<div class="search-user-result"></div>');
-        var src = user.portraitPath ? user.portraitPath : 'resources/img/header/portrait.jpg';
+        var src = user.portraitPath ? user.portraitPath : 'resources/img/portrait.jpg';
         $('<img class="search-user-portrait"/>').attr('src', src).appendTo($resultItem);
         $('<a href="myHome.do?account=' + user.account + '" style="margin-left:10px;"></a>').html(user.nickname + '(' + user.account + ')').appendTo($resultItem);
 
@@ -386,7 +386,7 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
         var $friendItem = $('<li class="list-group-item friend-item"></li>');
         var $row = $('<div class="row"></div>').appendTo($friendItem);
 
-        var img = friendVo.user.portraitPath ? friendVo.user.portraitPath : 'resources/img/header/portrait.jpg';
+        var img = friendVo.user.portraitPath ? friendVo.user.portraitPath : 'resources/img/portrait.jpg';
         $('<div class="col-xs-1 friend-item-portrait"></div>').append($('<img/>').attr('src', img))
             .appendTo($row);
 
@@ -988,7 +988,7 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
                 '<div class="form-group">' +
                     '<label for="region" class="col-xs-4">所在地：</label>' +
                     '<div class="col-xs-8">' +
-                        '<input class="form-control" id="region" name="region" placeholder="请填写所在地"/>' +
+                        '<input class="form-control" id="region" name="region" type="hidden" placeholder="请填写所在地"/>' +
                     '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
@@ -1240,6 +1240,110 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
             this.$eduInfo.find('option').each(function(){
                 if($(this).val() == that.userData.eduInfo){
                     $(this).attr('selected', 'selected');
+                }
+            });
+
+            var regionBox = this.$region.parent();
+            // 加载地区数据并初始化
+            $.getJSON('resources/js/region.json', function(data){
+                var i,j,k, citys, areas;
+                // 省份选择列表
+                var $province = $('<select class="form-control" id="provinceSelect"></select>')
+                    .css({'width':'100px','display':'inline-block'}).appendTo(regionBox);
+                // 城市选择列表
+                var $city = $('<select class="form-control mrg-l-10" id="citySelect"></select>')
+                    .css({'width':'100px','display':'inline-block'}).hide().appendTo(regionBox);
+                // 城区选择列表
+                var $area = $('<select class="form-control mrg-l-10" id="areaSelect"></select>')
+                    .css({'width':'100px','display':'inline-block'}).hide().appendTo(regionBox);
+
+                $province.append($('<option value="0">-----</option>'));
+                for(i in data){
+                    $('<option></option>').val(data[i].name).text(data[i].name).appendTo($province);
+                }
+
+                // 地区选择事件
+                // 选择省份
+                $province.on('change', function(){
+                    if($(this).val() != 0){
+                        that.$region.val($(this).val());
+                        // 加载城市列表
+                        for(i in data){
+                            if(data[i].name == $(this).val()){
+                                $area.hide();
+                                citys = data[i].children;
+                                if(citys && citys.length > 0){
+                                    $city.empty().append($('<option value="0">-----</option>')).show();
+                                    for(j in citys){
+                                        $('<option></option>').val(citys[j].name).text(citys[j].name).appendTo($city);
+                                    }
+                                } else{
+                                    $city.hide();
+                                }
+
+                                break;
+                            }
+                        }
+                    } else{
+                        that.$region.val('');
+                        j = k = 0;
+                        $city.hide();
+                        $area.hide();
+                    }
+                });
+                // 选择城市
+                $city.on('change', function(){
+                    if($(this).val() != 0){
+                        that.$region.val($province.val() + '-' + $(this).val());
+                        // 加载区县列表
+                        for(i in data){
+                            if(data[i].name == $province.val()){
+                                citys = data[i].children;
+                                for(j in citys){
+                                    if(citys[j].name == $(this).val()){
+                                        areas = citys[j].children;
+                                        if(areas && areas.length > 0){
+                                            $area.empty().append($('<option value="0">-----</option>')).show();
+                                            for(k in areas){
+                                                $('<option></option>').val(areas[k].name).text(areas[k].name).appendTo($area);
+                                            }
+                                        } else{
+                                            $area.hide();
+                                        }
+
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    } else{
+                        that.$region.val($province.val());
+                        $area.hide();
+                    }
+                });
+                // 选择区县
+                $area.on('change', function(){
+                    if($(this).val() != 0){
+                        that.$region.val($province.val() + '-' + $city.val() + '-' + $area.val());
+                    } else{
+                        that.$region.val($province.val() + '-' + $city.val());
+                    }
+                });
+
+                // 初始化地区数据
+                if(that.$region.val()){
+                    var regions = that.$region.val().split('-');
+                    // 初始化省份
+                    $province.val(regions[0]).trigger('change');
+                    // 初始化城市
+                    if(regions.length >= 2){
+                        $city.val(regions[1]).trigger('change');
+                    }
+                    // 初始化区县
+                    if(regions.length == 3){
+                        $area.val(regions[2]).trigger('change');
+                    }
                 }
             });
         },

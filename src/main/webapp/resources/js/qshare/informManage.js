@@ -138,14 +138,14 @@ define(['utils/messager', 'utils/common', 'qshare/footable.all.min', 'jquery/jqu
         $('<td class="audit audit-number"></td>').text(number).appendTo($item);
 
         // 被举报者
-        var auserPortrait = informVo.auser.portraitPath ? informVo.auser.portraitPath : 'resources/img/header/portrait.jpg';
+        var auserPortrait = informVo.auser.portraitPath ? informVo.auser.portraitPath : 'resources/img/portrait.jpg';
         $('<td class="audit audit-buser"></td>')
             .append($('<img class="audit-user-portrait"/>').attr({'src':auserPortrait}))
             .append($('<a href="myHome.do?account=' + informVo.buser.account + '" target="_blank"></a>')
             .text(informVo.buser.nickname)).appendTo($item);
 
         // 举报者
-        var buserPortrait = informVo.buser.portraitPath ? informVo.buser.portraitPath : 'resources/img/header/portrait.jpg';
+        var buserPortrait = informVo.buser.portraitPath ? informVo.buser.portraitPath : 'resources/img/portrait.jpg';
         $('<td class="audit audit-auser"></td>').append($('<img class="audit-user-portrait"/>').attr({'src':buserPortrait}))
             .append($('<a href="myHome.do?account=' + informVo.auser.account + '" target="_blank"></a>')
             .text(informVo.auser.nickname)).appendTo($item);

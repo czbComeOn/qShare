@@ -186,7 +186,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         // 回复内容
         var $evalSubContent = $evalSubItem.find('.eval-sub-content');
         var portraitPath = replyInfo.evalUser.portraitPath ? replyInfo.evalUser.portraitPath
-                : 'resources/img/header/portrait.jpg';
+                : 'resources/img/portrait.jpg';
         $('<img/>').attr('src',portraitPath).appendTo($evalSubPortrait);
         $('<a href="myHome.do?account=' + replyInfo.evalUser.account + '" style="text-decoration: none;"></a>')
             .text(replyInfo.evalUser.nickname).appendTo($evalSubContent);
@@ -249,7 +249,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         '</li>');
 
         var portraitPath = evalInfo.evalUser.portraitPath ? evalInfo.evalUser.portraitPath
-            : 'resources/img/header/portrait.jpg';
+            : 'resources/img/portrait.jpg';
         $('<img/>').attr({'src': portraitPath})
             .appendTo($evalItem.find('.eval-portrait'));
         var $evalContent = $evalItem.find('.eval-content');
@@ -573,7 +573,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         var $footer = $('<div class="panel-footer"></div>').appendTo($panel);
 
         // 头像
-        var src = user.portraitPath ? user.portraitPath : 'resources/img/header/portrait.jpg';
+        var src = user.portraitPath ? user.portraitPath : 'resources/img/portrait.jpg';
         var $titleLeft = $('<a href="javascript:void(0);" class="pull-left"><img src="' + src + '" alt=""></a>');
         var $titleCenter = $('<div class="title-center"></div>');
         // 标记为转发
@@ -1152,7 +1152,6 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
                         $('#loadMore .load-more').hide();
                         $('#loadMore .in-load').hide();
                         $('#loadMore .load-finish').show();
-                        $('.load-more').unbind('click');
                     } else{
                         $('#loadMore .load-more').show();
                         $('#loadMore .in-load').hide();
@@ -1198,7 +1197,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
 
         // 置顶
         $('#toTop').on('click', function(){
-            $('html,body').animate({scrollTop: 0}, 'normal', 'swing', function(){
+            $('html,body').animate({scrollTop: 0}, 300, 'swing', function(){
                 $('#toTop').hide();
             });
         });

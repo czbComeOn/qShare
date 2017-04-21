@@ -87,7 +87,7 @@
                                 <img src="${user.portraitPath}" style="width:20px;height:20px;border-radius:50%;" />
                             </c:if>
                             <c:if test="${user.portraitPath == null}">
-                                <img src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg" style="width:20px;height:20px;border-radius:50%;" />
+                                <img src="${pageContext.request.contextPath}/resources/img/portrait.jpg" style="width:20px;height:20px;border-radius:50%;" />
                             </c:if>
                             用户
                             <b class="caret"></b>
@@ -111,8 +111,8 @@
     <div class="container qshare-main top60 bot50">
         <div class="row mym">
             <!-- left -->
-            <div class="col-md-4 myleft">
-                <div class="myleft-n mrg20" id="crop-avatar">
+            <div class="col-md-4 myleft" style="padding:0;">
+                <div class="myleft-n user-portrait" id="crop-avatar">
                     <c:if test="${user != null && acc.userId == user.userId}">
                         <div class="avatar-view" title="点击更换头像" style="cursor: pointer;">
                             <c:choose>
@@ -120,7 +120,7 @@
                                     <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/${acc.portraitPath}">
                                 </c:when>
                                 <c:otherwise>
-                                    <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
+                                    <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/resources/img/portrait.jpg">
                                 </c:otherwise>
                             </c:choose>
                         </div>
@@ -164,7 +164,7 @@
                                     <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/${acc.portraitPath}">
                                 </c:when>
                                 <c:otherwise>
-                                    <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/resources/img/header/portrait.jpg">
+                                    <img class="fl imgr mrg-r-10 portrait" src="${pageContext.request.contextPath}/resources/img/portrait.jpg">
                                 </c:otherwise>
                             </c:choose>
                         </div>
@@ -183,160 +183,160 @@
                 </div>
                 <div class="cf"></div>
                 <div class="myleft-n">
-                        <div class="panel panel-info">
-                            <div class="panel-heading" style="text-align: center;">
-                                个人资料
-                            </div>
-                            <div class="panel-body user-info">
-                                <ul class="list-group">
-                                    <li class="list-group-item list-group-item-info">
-                                        <div>真实姓名：</div>
-                                        <div class="acc-name">
-                                            <c:if test="${acc.name == null || acc.name == ''}">
-                                                未知
-                                            </c:if>
-                                            <c:if test="${acc.name != null && acc.name != ''}">
-                                                ${acc.name}
-                                            </c:if>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item list-group-item-warning">
-                                        <div>个性签名：</div>
-                                        <div class="acc-signature">
-                                            <c:if test="${acc.signature == null || acc.signature == ''}">
-                                                无
-                                            </c:if>
-                                            <c:if test="${acc.signature != null && acc.signature != ''}">
-                                                ${acc.signature}
-                                            </c:if>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item list-group-item-danger">
-                                        <div>个人说明：</div>
-                                        <div class="acc-notes">
-                                            <c:if test="${acc.notes == null || acc.notes == ''}">
-                                                无
-                                            </c:if>
-                                            <c:if test="${acc.notes != null && acc.notes != ''}">
-                                                ${acc.notes}
-                                            </c:if>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item list-group-item-text">
-                                        <div>生日：</div>
-                                        <div>
-                                            <c:if test="${acc.birthday == null}">
-                                                未知
-                                            </c:if>
-                                            <c:if test="${acc.birthday != null}">
-                                                <fmt:formatDate value="${acc.birthday}" var="birthday" pattern="yyyy年 MM月 dd日" />
-                                                ${birthday}
-                                            </c:if>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item list-group-item-info">
-                                        <div>星座：</div>
-                                        <div>
-                                            <c:choose>
-                                                <c:when test="${acc.constellation == 1}">水瓶座</c:when>
-                                                <c:when test="${acc.constellation == 2}">双鱼座</c:when>
-                                                <c:when test="${acc.constellation == 3}">白羊座</c:when>
-                                                <c:when test="${acc.constellation == 4}">金牛座</c:when>
-                                                <c:when test="${acc.constellation == 5}">双子座</c:when>
-                                                <c:when test="${acc.constellation == 6}">巨蟹座</c:when>
-                                                <c:when test="${acc.constellation == 7}">狮子座</c:when>
-                                                <c:when test="${acc.constellation == 8}">处女座</c:when>
-                                                <c:when test="${acc.constellation == 9}">天秤座</c:when>
-                                                <c:when test="${acc.constellation == 10}">天蝎座</c:when>
-                                                <c:when test="${acc.constellation == 11}">射手座</c:when>
-                                                <c:when test="${acc.constellation == 12}">摩羯座</c:when>
-                                                <c:otherwise>未知</c:otherwise>
-                                            </c:choose>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item list-group-item-warning">
-                                        <div>爱好：</div>
-                                        <div>
-                                            <c:if test="${acc.hobby == null || acc.hobby == ''}">
-                                                无
-                                            </c:if>
-                                            <c:if test="${acc.hobby != null && acc.hobby != ''}">
-                                                ${acc.hobby}
-                                            </c:if>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item list-group-item-danger">
-                                        <div>学历：</div>
-                                        <div>
-                                            <c:choose>
-                                                <c:when test="${acc.eduInfo == 'A'}">小学及以下</c:when>
-                                                <c:when test="${acc.eduInfo == 'B'}">初中</c:when>
-                                                <c:when test="${acc.eduInfo == 'C'}">高中/中专</c:when>
-                                                <c:when test="${acc.eduInfo == 'D'}">大学专科</c:when>
-                                                <c:when test="${acc.eduInfo == 'E'}">大学本科</c:when>
-                                                <c:when test="${acc.eduInfo == 'F'}">研究生</c:when>
-                                                <c:when test="${acc.eduInfo == 'G'}">博士及以上</c:when>
-                                                <c:otherwise>未知</c:otherwise>
-                                            </c:choose>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item list-group-item-text">
-                                        <div>毕业院校：</div>
-                                        <div class="acc-graduate">
-                                            <c:if test="${acc.graduateInstitutions == null || acc.graduateInstitutions == ''}">
-                                                未知
-                                            </c:if>
-                                            <c:if test="${acc.graduateInstitutions != null && acc.graduateInstitutions != ''}">
-                                                ${acc.graduateInstitutions}
-                                            </c:if>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item list-group-item-info">
-                                        <div>职业：</div>
-                                        <div class="acc-occupation">
-                                            <c:if test="${acc.occupation == null || acc.occupation == ''}">
-                                                未知
-                                            </c:if>
-                                            <c:if test="${acc.occupation != null && acc.occupation != ''}">
-                                                ${acc.occupation}
-                                            </c:if>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item list-group-item-warning">
-                                        <div>电子邮箱：</div>
-                                        <div class="acc-occupation">
-                                            <c:if test="${acc.email == null || acc.email == ''}">
-                                                无
-                                            </c:if>
-                                            <c:if test="${acc.email != null && acc.email != ''}">
-                                                ${acc.email}
-                                            </c:if>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <c:if test="${user != null}">
-                                <div class="panel-footer">
-                                    <c:if test="${acc.userId != user.userId}">
-                                        <c:if test="${isAttention == true}">
-                                            <button class="btn btn-info" id="addAttention" style="width:49%;">取消关注</button>
-                                        </c:if>
-                                        <c:if test="${isAttention == false}">
-                                            <button class="btn btn-info" id="addAttention" style="width:49%;">关注TA</button>
-                                        </c:if>
-                                        <c:if test="${acc.userType == 'NORMAL'}">
-                                            <button class="btn btn-info" id="addFriend" style="width:49%;">加为好友</button>
-                                        </c:if>
-                                    </c:if>
-                                    <c:if test="${acc.userId == user.userId}">
-                                        <button class="btn btn-success" id="changeData" style="width:100%;">
-                                            <i class="fa fa-edit"></i> 修改资料
-                                        </button>
-                                    </c:if>
-                                </div>
-                            </c:if>
+                    <div class="panel panel-info" style="margin-bottom:0;">
+                        <div class="panel-heading" style="text-align: center;">
+                            个人资料
                         </div>
+                        <div class="panel-body user-info">
+                            <ul class="list-group">
+                                <li class="list-group-item list-group-item-info">
+                                    <div>真实姓名：</div>
+                                    <div class="acc-name">
+                                        <c:if test="${acc.name == null || acc.name == ''}">
+                                            未知
+                                        </c:if>
+                                        <c:if test="${acc.name != null && acc.name != ''}">
+                                            ${acc.name}
+                                        </c:if>
+                                    </div>
+                                </li>
+                                <li class="list-group-item list-group-item-warning">
+                                    <div>个性签名：</div>
+                                    <div class="acc-signature">
+                                        <c:if test="${acc.signature == null || acc.signature == ''}">
+                                            无
+                                        </c:if>
+                                        <c:if test="${acc.signature != null && acc.signature != ''}">
+                                            ${acc.signature}
+                                        </c:if>
+                                    </div>
+                                </li>
+                                <li class="list-group-item list-group-item-danger">
+                                    <div>个人说明：</div>
+                                    <div class="acc-notes">
+                                        <c:if test="${acc.notes == null || acc.notes == ''}">
+                                            无
+                                        </c:if>
+                                        <c:if test="${acc.notes != null && acc.notes != ''}">
+                                            ${acc.notes}
+                                        </c:if>
+                                    </div>
+                                </li>
+                                <li class="list-group-item list-group-item-text">
+                                    <div>生日：</div>
+                                    <div>
+                                        <c:if test="${acc.birthday == null}">
+                                            未知
+                                        </c:if>
+                                        <c:if test="${acc.birthday != null}">
+                                            <fmt:formatDate value="${acc.birthday}" var="birthday" pattern="yyyy年 MM月 dd日" />
+                                            ${birthday}
+                                        </c:if>
+                                    </div>
+                                </li>
+                                <li class="list-group-item list-group-item-info">
+                                    <div>星座：</div>
+                                    <div>
+                                        <c:choose>
+                                            <c:when test="${acc.constellation == 1}">水瓶座</c:when>
+                                            <c:when test="${acc.constellation == 2}">双鱼座</c:when>
+                                            <c:when test="${acc.constellation == 3}">白羊座</c:when>
+                                            <c:when test="${acc.constellation == 4}">金牛座</c:when>
+                                            <c:when test="${acc.constellation == 5}">双子座</c:when>
+                                            <c:when test="${acc.constellation == 6}">巨蟹座</c:when>
+                                            <c:when test="${acc.constellation == 7}">狮子座</c:when>
+                                            <c:when test="${acc.constellation == 8}">处女座</c:when>
+                                            <c:when test="${acc.constellation == 9}">天秤座</c:when>
+                                            <c:when test="${acc.constellation == 10}">天蝎座</c:when>
+                                            <c:when test="${acc.constellation == 11}">射手座</c:when>
+                                            <c:when test="${acc.constellation == 12}">摩羯座</c:when>
+                                            <c:otherwise>未知</c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </li>
+                                <li class="list-group-item list-group-item-warning">
+                                    <div>爱好：</div>
+                                    <div>
+                                        <c:if test="${acc.hobby == null || acc.hobby == ''}">
+                                            无
+                                        </c:if>
+                                        <c:if test="${acc.hobby != null && acc.hobby != ''}">
+                                            ${acc.hobby}
+                                        </c:if>
+                                    </div>
+                                </li>
+                                <li class="list-group-item list-group-item-danger">
+                                    <div>学历：</div>
+                                    <div>
+                                        <c:choose>
+                                            <c:when test="${acc.eduInfo == 'A'}">小学及以下</c:when>
+                                            <c:when test="${acc.eduInfo == 'B'}">初中</c:when>
+                                            <c:when test="${acc.eduInfo == 'C'}">高中/中专</c:when>
+                                            <c:when test="${acc.eduInfo == 'D'}">大学专科</c:when>
+                                            <c:when test="${acc.eduInfo == 'E'}">大学本科</c:when>
+                                            <c:when test="${acc.eduInfo == 'F'}">研究生</c:when>
+                                            <c:when test="${acc.eduInfo == 'G'}">博士及以上</c:when>
+                                            <c:otherwise>未知</c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </li>
+                                <li class="list-group-item list-group-item-text">
+                                    <div>毕业院校：</div>
+                                    <div class="acc-graduate">
+                                        <c:if test="${acc.graduateInstitutions == null || acc.graduateInstitutions == ''}">
+                                            未知
+                                        </c:if>
+                                        <c:if test="${acc.graduateInstitutions != null && acc.graduateInstitutions != ''}">
+                                            ${acc.graduateInstitutions}
+                                        </c:if>
+                                    </div>
+                                </li>
+                                <li class="list-group-item list-group-item-info">
+                                    <div>职业：</div>
+                                    <div class="acc-occupation">
+                                        <c:if test="${acc.occupation == null || acc.occupation == ''}">
+                                            未知
+                                        </c:if>
+                                        <c:if test="${acc.occupation != null && acc.occupation != ''}">
+                                            ${acc.occupation}
+                                        </c:if>
+                                    </div>
+                                </li>
+                                <li class="list-group-item list-group-item-warning">
+                                    <div>电子邮箱：</div>
+                                    <div class="acc-occupation">
+                                        <c:if test="${acc.email == null || acc.email == ''}">
+                                            无
+                                        </c:if>
+                                        <c:if test="${acc.email != null && acc.email != ''}">
+                                            ${acc.email}
+                                        </c:if>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <c:if test="${user != null}">
+                            <div class="panel-footer">
+                                <c:if test="${acc.userId != user.userId}">
+                                    <c:if test="${isAttention == true}">
+                                        <button class="btn btn-info" id="addAttention" style="width:49%;">取消关注</button>
+                                    </c:if>
+                                    <c:if test="${isAttention == false}">
+                                        <button class="btn btn-info" id="addAttention" style="width:49%;">关注TA</button>
+                                    </c:if>
+                                    <c:if test="${acc.userType == 'NORMAL'}">
+                                        <button class="btn btn-info" id="addFriend" style="width:49%;">加为好友</button>
+                                    </c:if>
+                                </c:if>
+                                <c:if test="${acc.userId == user.userId}">
+                                    <button class="btn btn-success" id="changeData" style="width:100%;">
+                                        <i class="fa fa-edit"></i> 修改资料
+                                    </button>
+                                </c:if>
+                            </div>
+                        </c:if>
                     </div>
+                </div>
             </div>
             <!-- end left -->
             <!-- right -->
