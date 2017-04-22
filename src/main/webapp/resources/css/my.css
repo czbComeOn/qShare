@@ -202,6 +202,7 @@ em{font-style: normal;}
         width:-webkit-calc(100% - (50px));
         width: calc(100% - (50px));
     }
+    .myleft, .user-portrait, .panel-info, #loadMore{border-radius:0;box-shadow:none;}
 }
 /* 评论内容 */
 .show-eval-box{margin: 0;list-style:none;}

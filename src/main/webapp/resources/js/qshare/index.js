@@ -997,6 +997,11 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
             $('.myright').find('.share-info').remove();
             CURRENT_SEARCH_TEXT = $(this).find('.search-text').val();
             that.loadShareInfo(CURRENT_SHARE_TYPE, null, null);
+            if(document.body.clientWidth < 768){
+                $('html, body').animate({
+                    scrollTop: $('#searchForm').offset().top - 100
+                });
+            }
         });
 
         // 选择图片
@@ -1067,6 +1072,11 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         // 选择显示的分享信息类型
         $('.show-share-type').find('.share-nav').each(function(){
             $(this).on('click', function(){
+                if(document.body.clientWidth < 768){
+                    $('html, body').animate({
+                        scrollTop: $('#searchForm').offset().top - 100
+                    });
+                }
                 CURRENT_PAGE_NUMBER = 1;
 
                 // 清除搜索
@@ -1216,6 +1226,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
 
         login.init();
         this.$sharePanel = $('#sharePanel');
+        this.$searchForm = $('#searchForm');
 
         //先选出 textarea 和 统计字数 dom 节点
         this.statInputNum($("#wordCount").find("textarea"), $("#wordCount").find(".word"));
@@ -1225,6 +1236,11 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         CURRENT_SHARE_TYPE = 'all'; // 默认全部
         setTimeout(function(){
             that.loadShareInfo(CURRENT_SHARE_TYPE);
+            if(document.body.clientWidth < 768){
+                $('html, body').animate({
+                    scrollTop: $('#searchForm').offset().top - 100
+                });
+            }
         }, 500);
     }
 
@@ -1280,7 +1296,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
                         success: function(result){
                             if(result.msg == 'success'){
                                 if(home_ent != 'home'){
-                                    that.instance.$sharePanel.after(that.instance.getSharePanel(result.userInfo, result.shareInfo, null, result.userInfo, result.transpondInfo));
+                                    that.instance.$searchForm.after(that.instance.getSharePanel(result.userInfo, result.shareInfo, null, result.userInfo, result.transpondInfo));
                                 }
                                 that.transpondCount.text(parseInt(that.transpondCount.text()) + 1);
                                 $messager.success('转发成功！');

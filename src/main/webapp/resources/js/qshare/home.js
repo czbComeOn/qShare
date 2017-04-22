@@ -417,6 +417,7 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
                             if(result.msg == 'success'){
                                 $friendItem.slideUp('normal', 'swing', function(){
                                     $friendItem.remove();
+                                    $('#meAttenWhoCount').text(parseInt($('#meAttenWhoCount').text()) - 1);
                                     $messager.success('已取消关注');
                                 });
                             } else if(result.msg == 'OFFLINE'){
@@ -723,8 +724,8 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
             dataType: 'json',
             success: function(result){
                 if(result.msg == 'success'){
-                    $body.find('#meAttention').append($('<span style="color:#eb7350;"></span>').text(' (' + result.meAttentionWhoCount + ')'));
-                    $body.find('#whoAttention').append($('<span style="color:#eb7350;"></span>').text(' (' + result.whoAttentionMeCount + ')'));
+                    $body.find('#meAttention').append($('<span style="color:#eb7350;"></span>').html(' (<em id="meAttenWhoCount">' + result.meAttentionWhoCount + '</em>)'));
+                    $body.find('#whoAttention').append($('<span style="color:#eb7350;"></span>').html(' (' + result.whoAttentionMeCount + ')'));
                 } else if(result.msg == 'OFFLINE'){
                     $messager.warning('用户未登录');
                     login.show();
@@ -827,6 +828,11 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
         // 切换nav
         $('.show-home').find('.home-tab a').on('click', function(){
             if(!$(this).parent().hasClass('active')){
+                if(document.body.clientWidth < 768){
+                    $('html, body').animate({
+                        scrollTop: 672
+                    });
+                }
                 $('.home-tab').removeClass('active');
                 $(this).parent().addClass('active');
                 if(document.body.clientWidth < 768){
@@ -927,6 +933,11 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
         login.init();
         setTimeout(function(){
             that.showShare();
+            if(document.body.clientWidth < 768){
+                $('html, body').animate({
+                    scrollTop: 672
+                });
+            }
         }, 500);
 
         share.toTop();

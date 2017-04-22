@@ -27,7 +27,7 @@ define(['utils/messager', 'utils/common', 'qshare/footable.all.min', 'jquery/jqu
                     '</div>' +
                 '</div>' +
                 '<div class="ibox-content">' +
-                    '<table class="footable table table-stripped toggle-arrow-tiny">' +
+                    '<table class="footable table table-stripped toggle-arrow-tiny" style="margin-bottom:0;">' +
                         '<thead>' +
                             '<tr>' +
                                 '<th data-toggle="true">序号</th>' +
@@ -73,7 +73,7 @@ define(['utils/messager', 'utils/common', 'qshare/footable.all.min', 'jquery/jqu
         $.jqPaginator('#pagination', {
             totalPages: parseInt(page.totalPages),
             visiblePages: 10, // 最多可以显示的页码数
-            currentPage: page.pageNumber,
+            currentPage: page.pageNumber ? page.pageNumber : 1,
             first: '<li class="first"><a href="javascript:void(0);" title="首页"><i class="fa fa-angle-double-left"></i></a></li>',
             prev: '<li class="prev"><a href="javascript:void(0);" title="上一页"><i class="fa fa-angle-left"></i></a></li>',
             next: '<li class="next"><a href="javascript:void(0);" title="下一页"><i class="fa fa-angle-right"></i></a></li>',
@@ -113,6 +113,11 @@ define(['utils/messager', 'utils/common', 'qshare/footable.all.min', 'jquery/jqu
                         box.find('tbody').append(that.getInformItem(result.informVos[i], num));
                     }
                     box.find('.footable').footable({'sort':false});
+                    if(result.page.totalPages == 0 || result.page.totalCounts == 0){
+                        result.page.totalPages = 1;
+                        result.page.totalCounts = 1;
+                        box.find('tbody').append($('<tr><td colspan="6" style="text-align: center;">没有举报信息</td></tr>'));
+                    }
                     // 加载分页
                     that.loadpage(result.page, result.auditStatus);
                 } else if(result.msg == 'OFFLINE'){
@@ -138,15 +143,15 @@ define(['utils/messager', 'utils/common', 'qshare/footable.all.min', 'jquery/jqu
         $('<td class="audit audit-number"></td>').text(number).appendTo($item);
 
         // 被举报者
-        var auserPortrait = informVo.auser.portraitPath ? informVo.auser.portraitPath : 'resources/img/portrait.jpg';
+        var buserPortrait = informVo.buser.portraitPath ? informVo.buser.portraitPath : 'resources/img/portrait.jpg';
         $('<td class="audit audit-buser"></td>')
-            .append($('<img class="audit-user-portrait"/>').attr({'src':auserPortrait}))
+            .append($('<img class="audit-user-portrait"/>').attr({'src':buserPortrait}))
             .append($('<a href="myHome.do?account=' + informVo.buser.account + '" target="_blank"></a>')
             .text(informVo.buser.nickname)).appendTo($item);
 
         // 举报者
-        var buserPortrait = informVo.buser.portraitPath ? informVo.buser.portraitPath : 'resources/img/portrait.jpg';
-        $('<td class="audit audit-auser"></td>').append($('<img class="audit-user-portrait"/>').attr({'src':buserPortrait}))
+        var auserPortrait = informVo.auser.portraitPath ? informVo.auser.portraitPath : 'resources/img/portrait.jpg';
+        $('<td class="audit audit-auser"></td>').append($('<img class="audit-user-portrait"/>').attr({'src':auserPortrait}))
             .append($('<a href="myHome.do?account=' + informVo.auser.account + '" target="_blank"></a>')
             .text(informVo.auser.nickname)).appendTo($item);
         $('<td class="audit inform-time"></td>').text(comm.getTime(informVo.inform.createTime)).appendTo($item);
