@@ -144,6 +144,7 @@ public class UserServiceImpl implements IUserService {
         // 4.添加用户
         user.setUserId(MyStringUtil.getUUID());
         user.setUserType("NORMAL");
+        user.setStatus("OFFLINE");
         int count = userMapper.insert(user);
         if(count != 1){
             result.put("msg", "用户注册失败，请刷新后重试！");

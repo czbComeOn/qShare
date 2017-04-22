@@ -1,6 +1,7 @@
 package edu.gmxx.share.controller;
 
 import edu.gmxx.share.domain.Collect;
+import edu.gmxx.share.domain.ShareType;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.service.IShareService;
 import edu.gmxx.share.service.IUserService;
@@ -53,6 +54,10 @@ public class IndexController {
 			// 获取最近关注动态
 			view.addObject("attentionShareVos", shareService.getAttentionDynamic(user));
 		}
+
+		// 加载分享信息类型存放到session
+		List<ShareType> shareTypes = shareService.getAllShareType();
+		view.addObject("shareTypes", shareTypes);
 
 		return view;
 	}

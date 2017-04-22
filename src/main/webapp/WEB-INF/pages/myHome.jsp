@@ -64,10 +64,8 @@
                 <c:if test="${user != null && acc.userId == user.userId}">
                     <li class="active home-tab"><a href="javascript:void(0);" name="share"><i class="fa fa-share-alt"></i> 我的分享</a></li>
                     <li class="home-tab"><a href="javascript:void(0);" name="collect"><i class="fa fa-star"></i> 我的收藏</a></li>
-                    <c:if test="${user.userType == 'NORMAL'}">
-                        <li class="home-tab"><a href="javascript:void(0);" name="friend"><i class="fa fa-heart"></i> 好友列表</a></li>
-                        <li class="home-tab"><a href="javascript:void(0);" name="attention"><i class="fa fa-link"></i> 关注好友</a></li>
-                    </c:if>
+                    <li class="home-tab"><a href="javascript:void(0);" name="friend"><i class="fa fa-heart"></i> 好友列表</a></li>
+                    <li class="home-tab"><a href="javascript:void(0);" name="attention"><i class="fa fa-link"></i> 关注好友</a></li>
                 </c:if>
                 <c:if test="${user == null || acc.userId != user.userId}">
                     <li class="active"><a href="javascript:void(0);" name="share">

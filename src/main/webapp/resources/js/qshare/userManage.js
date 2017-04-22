@@ -67,17 +67,19 @@ define(['utils/messager', 'utils/common', 'qshare/content', 'jquery/jquery.Pagin
      * 锁定用户
      * @param $item
      * @param user
+     * @param currUser
      */
-    um.lockUser = function($item, user, isHome){
-        new LockUserDialog(this, $item, user, isHome);
+    um.lockUser = function($item, user, currUser, isHome){
+        new LockUserDialog(this, $item, user, currUser, isHome);
     }
 
     /**
      * 解锁用户
      * @param $item
      * @param user
+     * @param currUser
      */
-    um.unlockUser = function($item, user, isHome){
+    um.unlockUser = function($item, user, currUser, isHome){
         var that = this;
         $.confirmDialog({
             title: '确定解锁用户 <b style="color:#6a8fd4;">' + user.nickname + '</b>',
@@ -94,11 +96,22 @@ define(['utils/messager', 'utils/common', 'qshare/content', 'jquery/jquery.Pagin
                                 $item.unbind(); // 解绑事件
                                 $item.find('.status').html('<i class="fa fa-futbol-o mrg-r-10"></i>离线');
                                 animationHover($item, 'pulse', function(){
+                                    if(currUser.userType == 'SUPERADMIN' && result.user.userType != 'SUPERADMIN'){
+                                        if(result.user.userType == 'NORMAL'){
+                                            $('<i class="fa fa-user-md fr set-admin-user" style="cursor:pointer;margin:5px 10px 0 0;" title="设置为管理员"></i>').on('click', function(){
+                                                that.addAdmin($item, result.user, currUser);
+                                            }).prependTo($item);
+                                        } else if(user.userType == 'ADMIN'){
+                                            $('<i class="fa fa-user-times fr set-admin-user" style="cursor:pointer;margin:5px 10px 0 0;" title="取消管理员"></i>').on('click', function(){
+                                                that.cancelAdmin($item, result.user, currUser);
+                                            }).prependTo($item);
+                                        }
+                                    }
                                     $('<i class="fa fa-lock fr lock-user" style="cursor:pointer;margin:5px 10px 0 0;" title="锁定用户"></i>').on('click', function(){
-                                        that.lockUser($item, user);
+                                        that.lockUser($item, result.user, currUser);
                                     }).prependTo($item);
                                 }, function(){
-                                    $item.find('.lock-user').remove();
+                                    $item.find('.lock-user, .set-admin-user').remove();
                                 });
                             }
                         } else if(result.msg == 'OFFLINE') {
@@ -110,6 +123,114 @@ define(['utils/messager', 'utils/common', 'qshare/content', 'jquery/jquery.Pagin
                     },
                     error: function(){
                         $messager.warning('服务器出错');
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * 设置为管理员
+     * @param $item
+     * @param user
+     * @param currUser
+     */
+    um.addAdmin = function($item, user, currUser){
+        var that = this;
+        $.confirmDialog({
+            title: '确定将用户 <b style="color:#6a8fd4;">' + user.nickname + '</b> 设置为管理员',
+            okCall: function(){
+                $.ajax({
+                    url: 'manage/addAdmin.do',
+                    type: 'post',
+                    data: {'userId':user.userId},
+                    dataType: 'json',
+                    success: function(result){
+                        if(result.msg == 'success'){
+                            $item.find('.user-nickname').text(result.user.nickname + '(管理员)');
+                            $item.unbind(); // 解绑事件
+                            animationHover($item, 'pulse', function(){
+                                if(currUser.userType == 'SUPERADMIN' && result.user.userType != 'SUPERADMIN'){
+                                    $('<i class="fa fa-user-times fr set-admin-user" style="cursor:pointer;margin:5px 10px 0 0;" title="取消管理员"></i>').on('click', function(){
+                                        that.cancelAdmin($item, result.user, currUser);
+                                    }).prependTo($item);
+                                }
+                                if(result.user.status == 'LOCK'){
+                                    $('<i class="fa fa-unlock fr lock-user" style="cursor:pointer;margin:5px 10px 0 0;" title="解锁用户"></i>').on('click', function(){
+                                        that.unlockUser($item, result.user, currUser);
+                                    }).prependTo($item);
+                                } else{
+                                    $('<i class="fa fa-lock fr lock-user" style="cursor:pointer;margin:5px 10px 0 0;" title="锁定用户"></i>').on('click', function(){
+                                        that.lockUser($item, result.user, currUser);
+                                    }).prependTo($item);
+                                }
+                            }, function(){
+                                $item.find('.lock-user, .set-admin-user').remove();
+                            });
+                            $messager.success('已设置为管理员');
+                        } else if(result.msg == 'OFFLINE') {
+                            $messager.warning('用户未登录');
+                            window.location.href = 'index.do';
+                        } else {
+                            $messager.error(result.msg);
+                        }
+                    },
+                    error: function(){
+                        $messager.warning('服务器出错')
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * 取消管理员
+     * @param $item
+     * @param user
+     * @param currUser
+     */
+    um.cancelAdmin = function($item, user, currUser){
+        var that = this;
+        $.confirmDialog({
+            title: '确定取消用户 <b style="color:#6a8fd4;">' + user.nickname + '</b> 的管理员权限',
+            okCall: function(){
+                $.ajax({
+                    url: 'manage/cancelAdmin.do',
+                    type: 'post',
+                    data: {'userId':user.userId},
+                    dataType: 'json',
+                    success: function(result){
+                        if(result.msg == 'success'){
+                            $item.find('.user-nickname').text(result.user.nickname);
+                            $item.unbind(); // 解绑事件
+                            animationHover($item, 'pulse', function(){
+                                if(currUser.userType == 'SUPERADMIN' && result.user.userType != 'SUPERADMIN'){
+                                    $('<i class="fa fa-user-md fr set-admin-user" style="cursor:pointer;margin:5px 10px 0 0;" title="设置为管理员"></i>').on('click', function(){
+                                        that.addAdmin($item, result.user, currUser);
+                                    }).prependTo($item);
+                                }
+                                if(result.user.status == 'LOCK'){
+                                    $('<i class="fa fa-unlock fr lock-user" style="cursor:pointer;margin:5px 10px 0 0;" title="解锁用户"></i>').on('click', function(){
+                                        that.unlockUser($item, result.user, currUser);
+                                    }).prependTo($item);
+                                } else{
+                                    $('<i class="fa fa-lock fr lock-user" style="cursor:pointer;margin:5px 10px 0 0;" title="锁定用户"></i>').on('click', function(){
+                                        that.lockUser($item, result.user, currUser);
+                                    }).prependTo($item);
+                                }
+                            }, function(){
+                                $item.find('.lock-user, .set-admin-user').remove();
+                            });
+                            $messager.success('已取消管理员权限');
+                        } else if(result.msg == 'OFFLINE') {
+                            $messager.warning('用户未登录');
+                            window.location.href = 'index.do';
+                        } else {
+                            $messager.error(result.msg);
+                        }
+                    },
+                    error: function(){
+                        $messager.warning('服务器出错')
                     }
                 });
             }
@@ -129,8 +250,10 @@ define(['utils/messager', 'utils/common', 'qshare/content', 'jquery/jquery.Pagin
                 '<a href="javascript:void(0);">' +
                     '<div class="col-sm-4">' +
                         '<div class="text-center">' +
-                            '<img alt="image" class="img-circle m-t-xs img-responsive user-portrait" ' +
-                                'src="resources/img/portrait.jpg">' +
+                            '<div class="user-portrait-box">' +
+                                '<img alt="image" class="img-circle m-t-xs img-responsive user-portrait" ' +
+                                    'src="resources/img/portrait.jpg">' +
+                            '</div>' +
                             '<div class="m-t-xs font-bold user-acc"></div>' +
                         '</div>' +
                     '</div>' +
@@ -174,17 +297,28 @@ define(['utils/messager', 'utils/common', 'qshare/content', 'jquery/jquery.Pagin
         if(currUser.userType == 'SUPERADMIN' || (currUser.userType == 'ADMIN' && user.userType == 'NORMAL')){
             // 事件
             animationHover($item, 'pulse', function(){
+                if(currUser.userType == 'SUPERADMIN' && user.userType != 'SUPERADMIN'){
+                    if(user.userType == 'NORMAL'){
+                        $('<i class="fa fa-user-md fr set-admin-user" style="cursor:pointer;margin:5px 10px 0 0;" title="设置为管理员"></i>').on('click', function(){
+                            that.addAdmin($item, user, currUser);
+                        }).prependTo($item);
+                    } else if(user.userType == 'ADMIN'){
+                        $('<i class="fa fa-user-times fr set-admin-user" style="cursor:pointer;margin:5px 10px 0 0;" title="取消管理员"></i>').on('click', function(){
+                            that.cancelAdmin($item, user, currUser);
+                        }).prependTo($item);
+                    }
+                }
                 if(user.status == 'LOCK'){
                     $('<i class="fa fa-unlock fr lock-user" style="cursor:pointer;margin:5px 10px 0 0;" title="解锁用户"></i>').on('click', function(){
-                        that.unlockUser($item, user);
+                        that.unlockUser($item, user, currUser);
                     }).prependTo($item);
                 } else{
                     $('<i class="fa fa-lock fr lock-user" style="cursor:pointer;margin:5px 10px 0 0;" title="锁定用户"></i>').on('click', function(){
-                        that.lockUser($item, user);
+                        that.lockUser($item, user, currUser);
                     }).prependTo($item);
                 }
             }, function(){
-                $item.find('.lock-user').remove();
+                $item.find('.lock-user,.set-admin-user').remove();
             });
         } else{
             animationHover($item, 'pulse');
@@ -224,11 +358,12 @@ define(['utils/messager', 'utils/common', 'qshare/content', 'jquery/jquery.Pagin
     }
 
     // 弹窗
-    var LockUserDialog = function(instance, item, user, isHome){
+    var LockUserDialog = function(instance, item, user, currUser, isHome){
         this.instance = instance;
         this.item = item;
         this.target = item;
         this.user = user;
+        this.currUser = currUser;
         this.isHome = isHome;
         this.init();
     }
@@ -282,11 +417,22 @@ define(['utils/messager', 'utils/common', 'qshare/content', 'jquery/jquery.Pagin
                                 that.item.unbind(); // 解绑事件
                                 that.item.find('.status').html('<i class="fa fa-futbol-o mrg-r-10"></i><span style="color:#e00;cursor:pointer;" title="' + comm.getTime(result.user.unlockTime) + ' 解锁">锁定</span>');
                                 animationHover(that.item, 'pulse', function(){
+                                    if(that.currUser.userType == 'SUPERADMIN' && result.user.userType != 'SUPERADMIN'){
+                                        if(result.user.userType == 'NORMAL'){
+                                            $('<i class="fa fa-user-md fr set-admin-user" style="cursor:pointer;margin:5px 10px 0 0;" title="设置为管理员"></i>').on('click', function(){
+                                                that.instance.addAdmin(that.item, result.user, that.currUser);
+                                            }).prependTo(that.item);
+                                        } else if(result.user.userType == 'ADMIN'){
+                                            $('<i class="fa fa-user-times fr set-admin-user" style="cursor:pointer;margin:5px 10px 0 0;" title="取消管理员"></i>').on('click', function(){
+                                                that.instance.cancelAdmin(that.item, result.user, that.currUser);
+                                            }).prependTo(that.item);
+                                        }
+                                    }
                                     $('<i class="fa fa-unlock fr lock-user" style="cursor:pointer;margin:5px 10px 0 0;" title="解锁用户"></i>').on('click', function(){
-                                        that.instance.unlockUser(that.item, result.user);
+                                        that.instance.unlockUser(that.item, result.user, that.currUser);
                                     }).prependTo(that.item);
                                 }, function(){
-                                    that.item.find('.lock-user').remove();
+                                    that.item.find('.lock-user, .set-admin-user').remove();
                                 });
                                 that.target.removeAttr('id');
                             }

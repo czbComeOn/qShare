@@ -4,9 +4,10 @@
   <resultMap id="BaseResultMap" type="edu.gmxx.share.domain.ShareType" >
     <id column="share_type_id" property="shareTypeId" jdbcType="VARCHAR" />
     <result column="share_type_name" property="shareTypeName" jdbcType="VARCHAR" />
+    <result column="type_num" property="typeNum" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    share_type_id, share_type_name
+    share_type_id, share_type_name, type_num
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -19,8 +20,8 @@
     where share_type_id = #{shareTypeId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="edu.gmxx.share.domain.ShareType" >
-    insert into s_share_type (share_type_id, share_type_name)
-    values (#{shareTypeId,jdbcType=VARCHAR}, #{shareTypeName,jdbcType=VARCHAR})
+    insert into s_share_type (share_type_id, share_type_name, type_num)
+    values (#{shareTypeId,jdbcType=VARCHAR}, #{shareTypeName,jdbcType=VARCHAR}, #{typeNum,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="edu.gmxx.share.domain.ShareType" >
     insert into s_share_type
@@ -31,6 +32,9 @@
       <if test="shareTypeName != null" >
         share_type_name,
       </if>
+      <if test="typeNum != 0">
+        type_num,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="shareTypeId != null" >
@@ -38,6 +42,9 @@
       </if>
       <if test="shareTypeName != null" >
         #{shareTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="typeNum != 0" >
+        #{typeNum,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -47,12 +54,23 @@
       <if test="shareTypeName != null" >
         share_type_name = #{shareTypeName,jdbcType=VARCHAR},
       </if>
+      <if test="typeNum != 0" >
+        type_num = #{typeNum,jdbcType=INTEGER},
+      </if>
     </set>
     where share_type_id = #{shareTypeId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="edu.gmxx.share.domain.ShareType" >
     update s_share_type
-    set share_type_name = #{shareTypeName,jdbcType=VARCHAR}
+    set share_type_name = #{shareTypeName,jdbcType=VARCHAR},
+        type_num = #{typeNum,jdbcType=INTEGER}
     where share_type_id = #{shareTypeId,jdbcType=VARCHAR}
   </update>
+
+  <select id="getAllShareType" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_share_type
+    ORDER BY type_num
+  </select>
 </mapper>

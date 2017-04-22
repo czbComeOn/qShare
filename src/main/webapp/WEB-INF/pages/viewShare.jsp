@@ -7,7 +7,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>轻.分享</title>
+    <title>轻.分享 - 详情</title>
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/img/qshare.ico">
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/toastr.min.css">
@@ -22,6 +22,7 @@
     <script>
         require(['jquery', 'qshare/view-share', 'utils/app-dialog'], function($, view){
             view.init({'shareId': '${shareVo.share.shareId}',
+                'shareContent': '${shareVo.share.shareContent}',
                 'userId': <c:choose>
                             <c:when test="${shareVo.transpondVo != null}">'${shareVo.transpondVo.transpond.userId}'</c:when>
                             <c:otherwise>'${shareVo.share.userId}'</c:otherwise>
@@ -97,7 +98,7 @@
                     <div class="panel-heading">
                         <a href="javascript:void(0);" class="pull-left">
                             <c:if test="${shareVo.user.portraitPath == null}">
-                                <img src="resources/img/header/portrait.jpg" alt="">
+                                <img src="resources/img/portrait.jpg" alt="">
                             </c:if>
                             <c:if test="${shareVo.user.portraitPath != null}">
                                 <img src="${shareVo.user.portraitPath}" alt="">
@@ -131,7 +132,6 @@
                             </div>
                         </c:if>
                         <div class="share-content-box">
-                            ${shareVo.share.shareContent}
                         </div>
                         <c:if test="${imgs != null && fn:length(imgs) > 0}">
                             <div class="share-img-box">
@@ -201,7 +201,7 @@
                                 <li class="eval-item" evalId="${evalVo.eval.evalId}">
                                     <div class="eval-portrait">
                                         <c:if test="${evalVo.evalUser.portraitPath == null}">
-                                            <img src="resources/img/header/portrait.jpg" alt="">
+                                            <img src="resources/img/portrait.jpg" alt="">
                                         </c:if>
                                         <c:if test="${evalVo.evalUser.portraitPath != null}">
                                             <img src="${evalVo.evalUser.portraitPath}" alt="">

@@ -228,11 +228,7 @@ em{font-style: normal;}
 }
 
 /* 头像设置 */
-.portrait{
-	width: 80px;
-	height: 80px;
-	border: 1px solid #adadad;
-}
+.portrait{width: 80px;height: 80px;}
 /* 左边个人信息 */
 .myleft .user-info{padding-top:10px;}
 .user-info a{text-decoration:none;color:#cacaca;}

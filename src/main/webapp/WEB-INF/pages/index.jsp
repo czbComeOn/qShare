@@ -55,26 +55,34 @@
         <div class="collapse navbar-collapse navbar-responsive-collapse">
             <ul class="nav navbar-nav show-share-type">
                 <li class="active share-nav"><a href="javascript:void(0);" name="all">全部</a></li>
-                <%--<li class="share-nav"><a href="javascript:void(0);" name="zr"><span class="glyphicon glyphicon-fire" style="color:red;"></span> 最热</a></li>--%>
-                <li class="share-nav"><a href="javascript:void(0);" name="sh">生活</a></li>
-                <li class="share-nav"><a href="javascript:void(0);" name="yl">娱乐</a></li>
-                <li class="share-nav"><a href="javascript:void(0);" name="yd">运动</a></li>
-                <li class="share-nav"><a href="javascript:void(0);" name="ly">旅游</a></li>
+                <c:if test="${fn:length(shareTypes) <= 4}">
+                    <c:forEach items="${shareTypes}" var="shareType">
+                        <li class="share-nav">
+                            <a href="javascript:void(0);" name="${shareType.id}">${shareType.name}</a>
+                        </li>
+                    </c:forEach>
+                </c:if>
+                <%--超过4个用更多隐藏--%>
+                <c:if test="${fn:length(shareTypes) > 4}">
+                    <c:forEach items="${shareTypes}" var="shareType" begin="0" end="3">
+                        <li class="share-nav">
+                            <a href="javascript:void(0);" name="${shareType.shareTypeId}">${shareType.shareTypeName}</a>
+                        </li>
+                    </c:forEach>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         更多...
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu more-type">
-                        <li class="share-nav"><a href="#" name="hw">户外</a></li>
-                        <li class="share-nav"><a href="#" name="ms">美食</a></li>
-                        <li class="share-nav"><a href="#" name="qg">情感</a></li>
-                        <li class="share-nav"><a href="#" name="dy">电影</a></li>
-                        <li class="share-nav"><a href="#" name="zy">综艺</a></li>
-                        <li class="share-nav"><a href="#" name="dm">动漫</a></li>
-                        <li class="share-nav"><a href="#" name="qt">其他</a></li>
+                        <c:forEach items="${shareTypes}" var="shareType" begin="4">
+                            <li class="share-nav">
+                                <a href="#" name="${shareType.shareTypeId}">${shareType.shareTypeName}</a>
+                            </li>
+                        </c:forEach>
                     </ul>
                 </li>
+                </c:if>
                 <c:if test="${user == null}">
                     <li><a id="login" href="javascript:void(0);" name="login">立即登录</a></li>
                 </c:if>
@@ -301,17 +309,9 @@
                                             <span class="share-type-text">其他</span>&nbsp;<span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu share-type">
-                                            <li><a href="javascript:void(0);" name="sh">生活</a></li>
-                                            <li><a href="javascript:void(0);" name="yl">娱乐</a></li>
-                                            <li><a href="javascript:void(0);" name="yd">运动</a></li>
-                                            <li><a href="javascript:void(0);" name="hw">户外</a></li>
-                                            <li><a href="javascript:void(0);" name="lv">旅游</a></li>
-                                            <li><a href="javascript:void(0);" name="ms">美食</a></li>
-                                            <li><a href="javascript:void(0);" name="qg">情感</a></li>
-                                            <li><a href="javascript:void(0);" name="dy">电影</a></li>
-                                            <li><a href="javascript:void(0);" name="zy">综艺</a></li>
-                                            <li><a href="javascript:void(0);" name="dm">动漫</a></li>
-                                            <li><a href="javascript:void(0);" name="qt">其他</a></li>
+                                            <c:forEach items="${shareTypes}" var="shareType">
+                                                <li><a href="javascript:void(0);" name="${shareType.shareTypeId}">${shareType.shareTypeName}</a></li>
+                                            </c:forEach>
                                         </ul>
                                     </div>
 

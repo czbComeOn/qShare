@@ -44,4 +44,18 @@ public interface IManageService {
      * @return
      */
     Map<String,Object> auditUser(User user, Inform inform);
+
+    /**
+     * 添加管理员
+     * @param userId
+     * @return
+     */
+    Map<String,Object> addAdmin(String userId);
+
+    /**
+     * 删除管理员
+     * @param userId
+     * @return
+     */
+    Map<String,Object> cancelAdmin(String userId);
 }

@@ -37,6 +37,8 @@ public class ShareServiceImpl implements IShareService {
     private TranspondMapper transpondMapper;
     @Autowired
     private EvalMapper evalMapper;
+    @Autowired
+    private ShareTypeMapper shareTypeMapper;
 
     @Override
     public Map<String, Object> addShare(Share share, User user) {
@@ -551,5 +553,23 @@ public class ShareServiceImpl implements IShareService {
             return new ShareVo(share, user, collects, transpondVo, transpondCount);
         }
         return null;
+    }
+
+    @Override
+    public List<ShareType> getAllShareType() {
+        return shareTypeMapper.getAllShareType();
+    }
+
+    @Override
+    public ShareType getShareTypeById(String shareTypeId) {
+        ShareType shareType = shareTypeMapper.selectByPrimaryKey(shareTypeId);
+        // 如果类别不存在默认为其他
+        if(shareType == null){
+            shareType = new ShareType();
+            shareType.setShareTypeId("qt");
+            shareType.setShareTypeName("其他");
+            shareType.setTypeNum(0);
+        }
+        return shareType;
     }
 }

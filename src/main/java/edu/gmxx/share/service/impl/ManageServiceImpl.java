@@ -72,6 +72,7 @@ public class ManageServiceImpl implements IManageService {
             logger.debug("-----> 锁定用户数据异常");
             result.put("msg", "锁定用户异常，请刷新后重试！");
         }
+        result.put("user", userMapper.selectByPrimaryKey(userId));
 
         return result;
     }
@@ -104,6 +105,7 @@ public class ManageServiceImpl implements IManageService {
             logger.debug("-----> 解锁用户数据异常");
             result.put("msg", "解锁用户异常，请刷新后重试！");
         }
+        result.put("user", userMapper.selectByPrimaryKey(userId));
 
         return result;
     }
@@ -159,5 +161,51 @@ public class ManageServiceImpl implements IManageService {
         return new InformVo(inform, userMapper.selectByPrimaryKey(inform.getAuserId()),
                 userMapper.selectByPrimaryKey(inform.getBuserId()),
                 StringUtils.isEmpty(inform.getAuditUserId()) ? null : userMapper.selectByPrimaryKey(inform.getAuditUserId()));
+    }
+
+    @Override
+    public Map<String, Object> addAdmin(String userId) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        if(StringUtils.isEmpty(userId)){
+            logger.debug("-----> 添加管理员异常");
+            result.put("msg", "管理员设置失败，请刷新后重试！");
+            return result;
+        }
+
+        User user = userMapper.selectByPrimaryKey(userId);
+        if("ADMIN".equals(user.getUserType())){
+            result.put("msg", "该用户已经是管理员");
+            return result;
+        }
+
+        user.setUserType("ADMIN");
+        userMapper.updateByPrimaryKeySelective(user);
+
+        result.put("msg", "success");
+        result.put("user", userMapper.selectByPrimaryKey(user.getUserId()));
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> cancelAdmin(String userId) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        if(StringUtils.isEmpty(userId)){
+            logger.debug("-----> 添加管理员异常");
+            result.put("msg", "管理员取消失败，请刷新后重试！");
+            return result;
+        }
+
+        User user = new User();
+        user.setUserId(userId);
+        user.setUserType("NORMAL");
+        userMapper.updateByPrimaryKeySelective(user);
+
+        result.put("msg", "success");
+        result.put("user", userMapper.selectByPrimaryKey(user.getUserId()));
+
+        return result;
     }
 }

@@ -1,9 +1,6 @@
 package edu.gmxx.share.service;
 
-import edu.gmxx.share.domain.Eval;
-import edu.gmxx.share.domain.Share;
-import edu.gmxx.share.domain.Transpond;
-import edu.gmxx.share.domain.User;
+import edu.gmxx.share.domain.*;
 import edu.gmxx.share.utils.PageModel;
 import edu.gmxx.share.vo.ShareVo;
 
@@ -145,4 +142,17 @@ public interface IShareService {
      * @return
      */
     List<ShareVo> getAttentionDynamic(User user);
+
+    /**
+     * 获取所有分享信息类型
+     * @return
+     */
+    List<ShareType> getAllShareType();
+
+    /**
+     * 根据id获取分享信息类别
+     * @param shareTypeId
+     * @return
+     */
+    ShareType getShareTypeById(String shareTypeId);
 }

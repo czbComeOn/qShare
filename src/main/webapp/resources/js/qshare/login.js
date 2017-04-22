@@ -369,7 +369,7 @@ define(['utils/messager', 'bootstrap', 'bootstrapValidator', 'utils/app-dialog']
                         '<div class="form-group">' +
                             '<label for="regPhone" class="col-xs-12 col-sm-3 control-label">手机：</label>' +
                             '<div class="col-xs-7 col-sm-5">' +
-                                '<input class="form-control" id="regPhone" name="regPhone" type="number" placeholder="手机号码">' +
+                                '<input class="form-control" id="regPhone" name="regPhone" placeholder="手机号码">' +
                             '</div>' +
                             '<div class="col-xs-5 col-sm-4">' +
                                 '<button class="btn btn-primary" id="sendCode" disabled type="submit" title="点击向手机发送验证码">发送验证码</button>' +
@@ -460,6 +460,9 @@ define(['utils/messager', 'bootstrap', 'bootstrapValidator', 'utils/app-dialog']
                 if(!that.info.phone){
                     that.$submitRegisterBtn.removeAttr('disabled');
                     $messager.warning('手机号码不能为空！');
+                } if(!/^1[3|5|7|8][0-9]{9}$/.test(that.info.phone)){
+                    that.$submitRegisterBtn.removeAttr('disabled');
+                    $messager.warning('手机号码格式不正确');
                 } else if(!that.$code.val()){
                     that.$submitRegisterBtn.removeAttr('disabled');
                     $messager.warning('请输入验证码！');

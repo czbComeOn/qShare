@@ -1,7 +1,7 @@
 /**
  * Created by BIN on 2017/4/9.
  */
-define(['qshare/login', 'qshare/index', 'utils/messager', 'bootstrap', 'bootstrapValidator'],
+define(['qshare/login', 'qshare/index', 'utils/messager', 'jquery/jquery.sinaEmotion', 'bootstrap', 'bootstrapValidator'],
     function(login, share, $messager){
     var CURR_SHARE; // 当前分享信息
     var CURR_USER; // 当前用户信息
@@ -64,12 +64,16 @@ define(['qshare/login', 'qshare/index', 'utils/messager', 'bootstrap', 'bootstra
     }
 
     view.init = function(share, user){
+        var that = this;
         CURR_SHARE = share;
         CURR_USER = user;
         this.initEvent();
         login.init();
 
-        this.initShareInfo();
+        that.initShareInfo();
+        setTimeout(function(){
+            $('.share-content-box').html(AnalyticEmotion(share.shareContent));
+        }, 500);
     }
 
     return view;

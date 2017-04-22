@@ -501,11 +501,17 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
                                 $collectBtn.find('.collect-text').text('收藏');
                                 $collectBtn.find('.collect-count').text(parseInt($collectBtn.find('.collect-count').text()) - 1);
                                 $messager.success('已取消收藏');
+                                if($('#collectCount')){
+                                    $('#collectCount').text(parseInt($('#collectCount').text()) - 1);
+                                }
                             } else{
                                 $collectBtn.find('i').removeClass('fa-star-o').addClass('fa-star');
                                 $collectBtn.find('.collect-text').text('取消收藏');
                                 $collectBtn.find('.collect-count').text(parseInt($collectBtn.find('.collect-count').text()) + 1);
                                 $messager.success('已收藏');
+                                if($('#collectCount')){
+                                    $('#collectCount').text(parseInt($('#collectCount').text()) + 1);
+                                }
                             }
                         } else if(result.msg == 'OFFLINE'){
                             $messager.warning('用户未登录');
@@ -622,20 +628,15 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
 
         // 分享信息类型
         var $shareType = $tool.find('.share-info-type');
-        switch(share.shareTypeId){
-            case 'dm': $shareType.text('动漫'); break;
-            case 'dy': $shareType.text('电影'); break;
-            case 'ly': $shareType.text('旅游'); break;
-            case 'hy': $shareType.text('户外'); break;
-            case 'ms': $shareType.text('美食'); break;
-            case 'qg': $shareType.text('情感'); break;
-            case 'sh': $shareType.text('生活'); break;
-            case 'yd': $shareType.text('运动'); break;
-            case 'yl': $shareType.text('娱乐'); break;
-            case 'zy': $shareType.text('综艺'); break;
-            case 'qt': $shareType.text('其他'); break;
-            default: $shareType.text('其他'); break;
-        }
+        $.ajax({
+            url: 'share/getShareTypeById.do',
+            data: {'shareTypeId': share.shareTypeId},
+            type: 'post',
+            dataType: 'json',
+            success: function(shareType){
+                $shareType.text(shareType.shareTypeName);
+            }
+        });
 
         // 初始化点赞
         var $thumbBtn = $tool.find('.thumb-up');

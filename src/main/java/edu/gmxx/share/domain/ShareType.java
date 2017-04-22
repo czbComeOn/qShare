@@ -12,6 +12,11 @@ public class ShareType {
     private String shareTypeName;
 
     /**
+     * 类别顺序编号
+     */
+    private int typeNum;
+
+    /**
      * 类别ID
      * @return share_type_id 类别ID
      */
@@ -41,5 +46,13 @@ public class ShareType {
      */
     public void setShareTypeName(String shareTypeName) {
         this.shareTypeName = shareTypeName == null ? null : shareTypeName.trim();
+    }
+
+    public int getTypeNum() {
+        return typeNum;
+    }
+
+    public void setTypeNum(int typeNum) {
+        this.typeNum = typeNum;
     }
 }

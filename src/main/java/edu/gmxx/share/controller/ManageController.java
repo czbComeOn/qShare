@@ -112,4 +112,32 @@ public class ManageController {
 
         return manageService.auditUser(user, inform);
     }
+
+    @RequestMapping(value="addAdmin.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> addAdmin(String userId, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return manageService.addAdmin(userId);
+    }
+
+    @RequestMapping(value="cancelAdmin.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> cancelAdmin(String userId, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return manageService.cancelAdmin(userId);
+    }
 }

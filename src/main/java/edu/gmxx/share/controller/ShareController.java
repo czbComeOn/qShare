@@ -1,9 +1,6 @@
 package edu.gmxx.share.controller;
 
-import edu.gmxx.share.domain.Eval;
-import edu.gmxx.share.domain.Share;
-import edu.gmxx.share.domain.Transpond;
-import edu.gmxx.share.domain.User;
+import edu.gmxx.share.domain.*;
 import edu.gmxx.share.service.IShareService;
 import edu.gmxx.share.utils.PageModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -261,5 +258,16 @@ public class ShareController {
     @ResponseBody
     public Map<String, Object> getReplyEval(String evalId){
         return shareService.getReply(evalId);
+    }
+
+    /**
+     * 获取分享信息类别
+     * @param shareTypeId
+     * @return
+     */
+    @RequestMapping(value="getShareTypeById.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ShareType getShareTypeById(String shareTypeId){
+        return shareService.getShareTypeById(shareTypeId);
     }
 }
