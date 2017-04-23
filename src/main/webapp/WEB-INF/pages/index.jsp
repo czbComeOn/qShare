@@ -313,7 +313,7 @@
                                         </ul>
                                     </div>
 
-                                    <div class="btn-group" style="display:none;" id="visibility">
+                                    <div class="btn-group" id="visibility">
                                         <button class="btn btn-info dropdown-toggle visibility-type-btn" name="all" data-toggle="dropdown">
                                             <span class="visibility-type-text">公开</span>&nbsp;<span class="caret"></span>
                                         </button>

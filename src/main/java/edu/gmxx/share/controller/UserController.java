@@ -7,6 +7,7 @@ import edu.gmxx.share.domain.User;
 import edu.gmxx.share.service.IUserService;
 import edu.gmxx.share.utils.MyStringUtil;
 import edu.gmxx.share.utils.PageModel;
+import edu.gmxx.share.vo.FriendVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -150,14 +151,14 @@ public class UserController {
     }
 
     /**
-     * 添加好友
+     * 申请添加好友
      * @param account
      * @param session
      * @return
      */
     @RequestMapping(value="addFriend.do", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> addFriend(String account, HttpSession session){
+    public Map<String, Object> addFriend(String account, String remark, HttpSession session){
         Map<String, Object> result = new HashMap<String, Object>();
 
         User user = (User) session.getAttribute("user");
@@ -166,7 +167,7 @@ public class UserController {
             return result;
         }
 
-        return userService.addFriend(user, account);
+        return userService.addFriend(user, account, remark);
     }
 
     /**
@@ -217,7 +218,7 @@ public class UserController {
      */
     @RequestMapping(value="deleteFriend.do", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> deleteFriend(String friendId, HttpSession session){
+    public Map<String, Object> deleteFriend(String auserId, String buserId, HttpSession session){
         Map<String, Object> result = new HashMap<String, Object>();
 
         User user = (User) session.getAttribute("user");
@@ -226,7 +227,7 @@ public class UserController {
             return result;
         }
 
-        return userService.deleteFriendById(friendId);
+        return userService.deleteFriend(auserId, buserId);
     }
 
     /**
@@ -544,5 +545,80 @@ public class UserController {
         result.put("currUser", user);
 
         return result;
+    }
+
+    /**
+     * 判断双方是否为好友关系
+     * @param auserId
+     * @param buserId
+     * @return
+     */
+    @RequestMapping(value = "isFriend.do", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean isFriend(String auserId, String buserId){
+        return userService.abUserIsFriend(auserId, buserId);
+    }
+
+    /**
+     * 获取好友请求信息
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "getRequireFriend.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> getRequireFriend(HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+        User user = (User) session.getAttribute("user");
+
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        List<FriendVo> firendVos = userService.getRequireFriend(user);
+        result.put("friendVos", firendVos);
+        result.put("msg", "success");
+
+        return result;
+    }
+
+    /**
+     * 同意添加好友请求
+     * @param friendId
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "okAddFriend.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> okAddFriend(String friendId, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+        User user = (User) session.getAttribute("user");
+
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return userService.okAddFriend(friendId);
+    }
+
+    /**
+     * 拒绝添加好友请求
+     * @param friendId
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "refuseAddFriend.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> refuseAddFriend(String friendId, HttpSession session){
+        Map<String, Object> result = new HashMap<String, Object>();
+        User user = (User) session.getAttribute("user");
+
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return userService.refuseAddFriend(friendId);
     }
 }

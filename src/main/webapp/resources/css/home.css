@@ -6,7 +6,7 @@
 .friend-group-item{
     padding: 5px;
 }
-.friend-cog, .add-friend, .refresh-friend{cursor: pointer;}
+.friend-cog, .add-friend, .refresh-friend, .require-list{cursor: pointer;}
 .group-name{
     display: block;
     cursor: pointer;

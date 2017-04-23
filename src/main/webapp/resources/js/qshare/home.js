@@ -82,7 +82,7 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
             okCall: function(){
                 $.ajax({
                     url: 'user/deleteFriend.do',
-                    data: {'friendId': friendVo.friend.friendId},
+                    data: {'auserId': friendVo.friend.auserId, 'buserId':friendVo.friend.buserId},
                     type: 'post',
                     dataType: 'json',
                     success: function(result){
@@ -168,7 +168,7 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
             .append(friendVo.user.region ? friendVo.user.region : '未知').appendTo($friendBox);
 
         $row.hover(function(){
-            var $opt = $('<div class="fr friend-opt" style="position:absolute;right:0;"></div>');
+            var $opt = $('<div class="fr friend-opt mrg-r-10" style="position:absolute;right:0;"></div>');
             // 修改分组
             $('<i class="fa fa-exchange change-group mrg-l-10" id="changeGroup" style="cursor:pointer;" title="修改分组"></i>')
                 .on('click', function(){
@@ -313,17 +313,10 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
         $('<a href="myHome.do?account=' + user.account + '" style="margin-left:10px;"></a>').html(user.nickname + '(' + user.account + ')').appendTo($resultItem);
 
         $resultItem.hover(function(){
-            $('<i class="fa fa-plus fr add-user" title="加为好友"></i>').on('click', function(){
+            $('<i class="fa fa-plus fr add-user" id="addSearchFriend" title="加为好友"></i>').on('click', function(){
                 // 添加好友
-                var friendVo = that.doAddFriend(user.account);
                 var $groupItem = $('.friend-group-item[group-num="0"]');
-                $groupItem.find('.badge').text(parseInt($groupItem.find('.badge').text()) + 1);
-                if($groupItem.find('ul').attr('isinit') == 1){
-                    $groupItem.find('ul').append(that.getFriendItem(friendVo));
-                }
-                $resultItem.slideUp('normal', 'swing', function(){
-                    $resultItem.remove();
-                });
+                that.doAddFriend($(this), user.account);
             }).appendTo($resultItem);
         }, function(){
             $resultItem.find('.add-user').remove();
@@ -555,6 +548,132 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
     }
 
     /**
+     * 同意添加好友请求
+     * @param friendId
+     * @param $item
+     */
+    home.okAddFriend = function(friendId, $item){
+        var that = this;
+        $.ajax({
+            url: 'user/okAddFriend.do',
+            data: {'friendId':friendId},
+            type: 'post',
+            dataType: 'json',
+            success: function(result){
+                if(result.msg == 'success'){
+                    $messager.success('已同意好友请求');
+                    var $groupItem = $('.friend-group-item[group-num="0"]');
+                    $groupItem.find('.badge').text(parseInt($groupItem.find('.badge').text()) + 1);
+                    if($groupItem.find('ul').attr('isinit') == 1){
+                        $groupItem.find('ul').append(that.getFriendItem(result.friendVo));
+                    }
+                    var box = $item.parent();
+                    $item.slideUp('normal', 'swing', function(){
+                        $item.remove();
+                        if(box.children().size() == 0){
+                            $('<li class="list-group-item"><div style="text-align: center;">暂无好友请求</div></li>')
+                                .appendTo(box);
+                        }
+                    });
+                } else if(result.msg == 'OFFLINE'){
+                    $messager.warning('用户未登录');
+                    login.show();
+                } else{
+                    $messager.error(result.msg);
+                }
+            },
+            error: function(){
+                $messager.warning('服务器出错');
+            }
+        });
+    }
+
+    /**
+     * 拒绝添加好友请求
+     * @param friendId
+     * @param $item
+     */
+    home.refuseAddFriend = function(friendId, $item){
+        $.ajax({
+            url: 'user/refuseAddFriend.do',
+            data: {'friendId':friendId},
+            type: 'post',
+            dataType: 'json',
+            success: function(result){
+                if(result.msg == 'success'){
+                    $messager.success('已拒绝好友请求');
+                    var box = $item.parent();
+                    $item.slideUp('normal', 'swing', function(){
+                        $item.remove();
+                        if(box.children().size() == 0){
+                            $('<li class="list-group-item"><div style="text-align: center;">暂无好友请求</div></li>')
+                                .appendTo(box);
+                        }
+                    });
+                } else if(result.msg == 'OFFLINE'){
+                    $messager.warning('用户未登录');
+                    login.show();
+                } else{
+                    $messager.error(result.msg);
+                }
+            },
+            error: function(){
+                $messager.warning('服务器出错');
+            }
+        });
+    }
+
+    home.getFriendRequire = function(){
+        var $requireFriend = $('<div class="panel panel-info myright-n friend-panel"></div>');
+        $('<div class="panel-heading">好友申请列表</div>')
+            .append($('<i class="fa fa-remove fr" style="cursor:pointer;" title="关闭"></i>').on('click', function(){
+                $requireFriend.slideUp();
+            })).appendTo($requireFriend);
+        var $requireBody = $('<div class="panel-body"></div>').appendTo($requireFriend);
+        var $requestList = $('<ul class="list-group" style="margin-bottom:0;"></ul>').appendTo($requireBody);
+        $.ajax({
+            url: 'user/getRequireFriend.do',
+            type: 'post',
+            dataType: 'json',
+            success: function(result){
+                if(result.msg == 'success'){
+                    if(result.friendVos && result.friendVos.length > 0){
+                        for(var i in result.friendVos){
+                            var $item = $('<li class="list-group-item"></li>').appendTo($requestList);
+                            var $box = $('<div></div>').html('<b>' + result.friendVos[i].user.nickname + '</b> '
+                                + '请求加你为好友<br><b>备注：</b>' + result.friendVos[i].friend.remark)
+                                .appendTo($item);
+                            $box.hover(function(){
+                                var opr = $('<div class="fr opr"></div>').appendTo($box);
+                                $('<a class="mrg-r-10" style="text-decoration:none;cursor:pointer;">同意</a>').on('click', function(){
+                                    that.okAddFriend(result.friendVos[i].friend.friendId, $item);
+                                }).appendTo(opr);
+                                $('<a class="mrg-r-10" style="text-decoration:none;cursor:pointer;">拒绝</a>').on('click', function(){
+                                    that.refuseAddFriend(result.friendVos[i].friend.friendId, $item);
+                                }).appendTo(opr);
+                            }, function(){
+                                $box.find('.opr').remove();
+                            });
+                        }
+                    } else{
+                        $('<li class="list-group-item"><div style="text-align: center;">暂无好友请求</div></li>').appendTo($requestList);
+                    }
+                } else if(result.msg == 'OFFLINE'){
+                    $messager.warning('用户未登录');
+                    login.show();
+                } else{
+                    $messager.error(result.msg);
+                }
+            },
+            error: function(){
+                $messager.warning('服务器出错');
+            }
+        });
+
+        return $requireFriend;
+    }
+
+    /**
      * 显示好友列表
      */
     home.showFriend = function(){
@@ -562,12 +681,17 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
         $('.myright').find('.share-info, .attention-panel, .friend-panel').remove();
         $('#loadMore').hide();
 
+        // 好友申请列表
+        var $requireFriend = this.getFriendRequire();
+        $('.myright').append($requireFriend.hide());
+
         // 创建好友信息面板
         var $friendPanel = $('<div class="panel panel-info myright-n friend-panel"></div>').appendTo($('.myright'));
         var $heading = $('<div class="panel-heading">' +
             '我的好友' +
             '<div class="fr">' +
                 '<i class="fa fa-refresh refresh-friend mrg-r-10" title="刷新"></i>' +
+                '<i class="fa fa-street-view require-list mrg-r-10" title="好友申请列表"></i>' +
                 '<i class="fa fa-user-plus add-friend" title="添加好友"></i>' +
             '</div>' +
         '</div>').appendTo($friendPanel);
@@ -579,6 +703,9 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
         // 刷新
         $heading.find('.refresh-friend').on('click', function(){
             that.showFriend();
+        });
+        $heading.find('.require-list').on('click', function(){
+            $requireFriend.slideToggle();
         });
         // --添加好友--
         $heading.find('.add-friend').on('click', function(){
@@ -784,34 +911,11 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
 
     /**
      * 添加好友
+     * @param target 目标按钮
      * @param account
      */
-    home.doAddFriend = function(account){
-        var friendVo;
-        $.ajax({
-            url: 'user/addFriend.do',
-            data: {'account': account},
-            type: 'post',
-            dataType: 'json',
-            async: false,
-            success: function(result){
-                if(result.msg == 'success'){
-                    friendVo = result.friendVo;
-                    $messager.success('添加成功');
-                } else if(result.msg == 'AlreadyFriend'){
-                    $messager.success('对方已经是您的好友！');
-                } else if(result.msg == 'OFFLINE'){
-                    $messager.warning('用户未登录');
-                    login.show();
-                } else{
-                    $messager.error(result.msg);
-                }
-            },
-            error: function(){
-                $messager.warning('服务器出错');
-            }
-        });
-        return friendVo;
+    home.doAddFriend = function(target, account){
+        new AddFriendDialog(this, target, account);
     }
 
     /**
@@ -895,7 +999,7 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
 
         // 添加好友
         $('#addFriend').on('click', function(){
-            that.doAddFriend(home_acc.account);
+            that.doAddFriend($(this), home_acc.account);
         });
 
         if(document.body.clientWidth >= 768){
@@ -941,6 +1045,82 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
         }, 500);
 
         share.toTop();
+    }
+
+    /**
+     * 申请添加好友
+     * @param instance
+     * @param target
+     * @param account
+     * @constructor
+     */
+    var AddFriendDialog = function(instance, target, account){
+        this.instance = instance;
+        this.target = target;
+        this.account = account;
+        this.init();
+    }
+
+    AddFriendDialog.prototype = {
+        init: function(){
+            var that = this;
+            var option = {
+                title: '添加好友申请',
+                saveBtn: false,
+                closeBtn: false,
+                width: 300,
+                mode: that.paintComponent()
+            };
+            this.target.openModalDialog(option);
+        },
+        paintComponent: function(){
+            var that = this;
+            var $html = $('<div>' +
+                '<div class="row">' +
+                    '<div class="col-xs-12">' +
+                        '<textarea class="form-control" id="remark" placeholder="请输入备注" style="resize:none;"></textarea>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="row" style="margin-top:10px;">' +
+                    '<button class="col-xs-offset-1 col-xs-3 btn btn-primary" id="okBtn">确定</button>' +
+                    '<button class="col-xs-offset-4 col-xs-3 btn btn-primary" id="cancelBtn">取消</button>' +
+                '</div>' +
+            '</div>');
+
+            this.$remark = $html.find('#remark');
+            this.$okBtn = $html.find('#okBtn');
+            this.$okBtn.on('click', function(){
+                $.ajax({
+                    url: 'user/addFriend.do',
+                    data: {'account': that.account, 'remark': that.$remark.val()},
+                    type: 'post',
+                    dataType: 'json',
+                    async: false,
+                    success: function(result){
+                        if(result.msg == 'success'){
+                            $messager.success('好友请求已发送');
+                            that.target.closeDialog();
+                        } else if(result.msg == 'OFFLINE'){
+                            $messager.warning('用户未登录');
+                            that.target.closeDialog();
+                            login.show();
+                        } else{
+                            $messager.error(result.msg);
+                            that.target.closeDialog();
+                        }
+                    },
+                    error: function(){
+                        $messager.warning('服务器出错');
+                    }
+                });
+            });
+
+            $html.find('#cancelBtn').on('click', function(){
+                that.target.closeDialog();
+            });
+
+            return $html;
+        }
     }
 
     /**

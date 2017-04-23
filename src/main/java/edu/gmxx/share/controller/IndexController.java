@@ -152,7 +152,7 @@ public class IndexController {
 
         if(user != null){
             view.addObject("isAttention", userService.isAttention(user.getUserId(), acc.getUserId()));
-            view.addObject("isFriend", userService.isFriend(user.getUserId(), acc.getUserId()));
+            view.addObject("isFriend", userService.abUserIsFriend(user.getUserId(), acc.getUserId()));
         }
 
 		return view;

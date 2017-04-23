@@ -1189,8 +1189,27 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
      * @param shares
      */
     share.showShareInfo = function(shares, currUser){
+        var sharePanel;
         for(var i in shares){
-            $('#loadMore').before(this.getSharePanel(shares[i].user, shares[i].share, shares[i].collects, currUser, shares[i].transpondVo, shares[i].transpondCount));
+            sharePanel = this.getSharePanel(shares[i].user, shares[i].share, shares[i].collects, currUser, shares[i].transpondVo, shares[i].transpondCount);
+            if(shares[i].share.visible == 'all' || (currUser && shares[i].share.userId == currUser.userId)
+                || (currUser && shares[i].share.visible == 'self' && shares[i].share.userId == currUser.userId)){
+                $('#loadMore').before(sharePanel);
+            } else if(currUser && shares[i].share.visible == 'friend'){
+                // 仅好友可见
+                $.ajax({
+                    url: 'user/isFriend.do',
+                    data: {'auserId':currUser.userId, 'buserId':shares[i].share.userId},
+                    type: 'post',
+                    async: false,
+                    dataType: 'json',
+                    success: function(result){
+                        if(result){
+                            $('#loadMore').before(sharePanel);
+                        }
+                    }
+                });
+            }
         }
         // 加载完毕
         $('#startLoad').hide();

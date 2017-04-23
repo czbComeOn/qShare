@@ -39,6 +39,11 @@ public class Friend {
     private Date createTime;
 
     /**
+     * 备注
+     */
+    private String remark;
+
+    /**
      * 好友关系ID
      * @return friend_id 好友关系ID
      */
@@ -140,5 +145,13 @@ public class Friend {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

@@ -5,6 +5,7 @@ import edu.gmxx.share.domain.FriendGroup;
 import edu.gmxx.share.domain.Inform;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.utils.PageModel;
+import edu.gmxx.share.vo.FriendVo;
 
 import java.util.List;
 import java.util.Map;
@@ -72,7 +73,7 @@ public interface IUserService {
     Map<String,Object> getFriend(User user, FriendGroup group);
 
     /**
-     * 删除好友信息
+     * 双向删除好友信息
      * @param auserId
      * @param buserId
      * @return
@@ -83,9 +84,10 @@ public interface IUserService {
      * 单方向添加新好友
      * @param user
      * @param account
+     * @param remark
      * @return
      */
-    Map<String,Object> addFriend(User user, String account);
+    Map<String,Object> addFriend(User user, String account, String remark);
 
     /**
      * 单方向删除好友
@@ -96,7 +98,6 @@ public interface IUserService {
 
     /**
      * 创建新分组
-     * @param user
      * @param group
      * @return
      */
@@ -139,12 +140,12 @@ public interface IUserService {
     boolean isAttention(String auserId, String buserId);
 
     /**
-     * 是否为好友
+     * 双方是否为好友
      * @param auserId
      * @param buserId
      * @return
      */
-    boolean isFriend(String auserId, String buserId);
+    boolean abUserIsFriend(String auserId, String buserId);
 
     /**
      * 添加关注
@@ -252,4 +253,25 @@ public interface IUserService {
      * @return
      */
     int getShareCountByUser(String userId);
+
+    /**
+     * 获取请求好友信息
+     * @param user
+     * @return
+     */
+    List<FriendVo> getRequireFriend(User user);
+
+    /**
+     * 同意添加好友请求
+     * @param friendId
+     * @return
+     */
+    Map<String,Object> okAddFriend(String friendId);
+
+    /**
+     * 拒绝添加好友请求
+     * @param friendId
+     * @return
+     */
+    Map<String,Object> refuseAddFriend(String friendId);
 }

@@ -9,9 +9,10 @@
     <result column="is_friend" property="isFriend" jdbcType="TINYINT" />
     <result column="is_attention" property="isAttention" jdbcType="TINYINT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    friend_id, auser_id, buser_id, group_id, is_friend, is_attention, create_time
+    friend_id, auser_id, buser_id, group_id, is_friend, is_attention, create_time, remark
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -25,11 +26,11 @@
   </delete>
   <insert id="insert" parameterType="edu.gmxx.share.domain.Friend" >
     insert into s_friend (friend_id, auser_id, buser_id, 
-      group_id, is_friend, is_attention, create_time
+      group_id, is_friend, is_attention, create_time, remark
       )
     values (#{friendId,jdbcType=VARCHAR}, #{auserId,jdbcType=VARCHAR}, #{buserId,jdbcType=VARCHAR}, 
       #{groupId,jdbcType=VARCHAR}, #{isFriend,jdbcType=TINYINT}, #{isAttention,jdbcType=TINYINT},
-      #{createTime,jdbcType=TIMESTAMP})
+      #{createTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="edu.gmxx.share.domain.Friend" >
     insert into s_friend
@@ -55,6 +56,9 @@
       <if test="createTime != null">
         create_time,
       </if>
+      <if test="remark != null">
+        remark,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="friendId != null" >
@@ -77,6 +81,9 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -101,6 +108,9 @@
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
     </set>
     where friend_id = #{friendId,jdbcType=VARCHAR}
   </update>
@@ -111,7 +121,8 @@
       group_id = #{groupId,jdbcType=VARCHAR},
       is_friend = #{isFriend,jdbcType=TINYINT},
       is_attention = #{isAttention,jdbcType=TINYINT},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR},
     where friend_id = #{friendId,jdbcType=VARCHAR}
   </update>
 
@@ -134,16 +145,17 @@
   <delete id="deleteFriend" parameterType="edu.gmxx.share.domain.Friend">
     DELETE FROM s_friend
     WHERE
+    is_friend = 1 and(
       (auser_id = #{auserId,jdbcType=VARCHAR} AND buser_id = #{buserId,jdbcType=VARCHAR})
     OR
-      (buser_id = #{buserId,jdbcType=VARCHAR} AND auser_id = #{auserId,jdbcType=VARCHAR})
+      (buser_id = #{auserId,jdbcType=VARCHAR} AND auser_id = #{buserId,jdbcType=VARCHAR}))
   </delete>
 
-  <select id="getFriendByUser" parameterType="edu.gmxx.share.domain.Friend" resultType="int">
+  <select id="getFriendByUser" parameterType="edu.gmxx.share.domain.Friend" resultMap="BaseResultMap">
     SELECT
-     count(friend_id)
+    <include refid="Base_Column_List"/>
     FROM s_friend
-    WHERE auser_id = #{auserId,jdbcType=VARCHAR} AND buser_id = #{buserId,jdbcType=VARCHAR} AND is_friend = 1
+    WHERE auser_id = #{auserId,jdbcType=VARCHAR} AND buser_id = #{buserId,jdbcType=VARCHAR} AND is_friend = 0 AND is_attention = 0
   </select>
 
   <select id="getFriendCountByUser" parameterType="java.lang.String" resultType="int">
@@ -155,7 +167,7 @@
     SELECT
     <include refid="Base_Column_List"/>
     FROM s_friend
-    WHERE is_attention = 1
+    WHERE is_attention = 1 AND is_friend = 0
     AND auser_id = #{auserId,jdbcType=VARCHAR}
     AND buser_id = #{buserId,jdbcType=VARCHAR}
   </select>
@@ -195,5 +207,23 @@
     WHERE is_attention = 1 AND buser_id = #{user.userId,jdbcType=VARCHAR}
     ORDER BY create_time
     LIMIT #{page.currentCount},#{page.pageSize}
+  </select>
+
+  <select id="abUserIsFriend" parameterType="edu.gmxx.share.domain.Friend" resultType="int">
+    SELECT COUNT(friend_id)
+    FROM s_friend
+    WHERE is_friend = 1
+    AND (
+      (auser_id = #{auserId,jdbcType=VARCHAR} AND buser_id = #{buserId,jdbcType=VARCHAR})
+      OR (auser_id = #{buserId,jdbcType=VARCHAR} AND buser_id = #{auserId,jdbcType=VARCHAR})
+    )
+  </select>
+
+  <select id="getRequireFriend" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_friend
+    WHERE is_friend = 0 AND is_attention = 0
+    AND buser_id = #{userId,jdbcType=VARCHAR}
   </select>
 </mapper>

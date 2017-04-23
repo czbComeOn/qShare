@@ -362,7 +362,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Map<String, Object> addFriend(User user, String account) {
+    public Map<String, Object> addFriend(User user, String account, String remark) {
         Map<String, Object> result = new HashMap<String, Object>();
 
         if(StringUtils.isEmpty(account)){
@@ -382,11 +382,18 @@ public class UserServiceImpl implements IUserService {
         Friend f = new Friend();
         f.setAuserId(user.getUserId());
         f.setBuserId(acc.getUserId());
-        int count = friendMapper.getFriendByUser(f);
-        if(count == 1){
-            result.put("msg", "AlreadyFriend");
+        Friend friendByUser = friendMapper.getFriendByUser(f);
+        if(friendByUser != null){
+            result.put("msg", "已发送过好友请求");
             return result;
         }
+
+        int count = friendMapper.abUserIsFriend(f);
+        if(count == 2){
+            result.put("msg", "该用户已经是您的好友");
+            return result;
+        }
+        count = 0;
 
         // 2.获取用户默认分组
         FriendGroup group = friendGroupMapper.getDefaultGroup(user.getUserId());
@@ -397,18 +404,18 @@ public class UserServiceImpl implements IUserService {
         friend.setAuserId(user.getUserId());
         friend.setBuserId(acc.getUserId());
         friend.setGroupId(group.getGroupId());
-        friend.setIsFriend((byte)1);
+        friend.setIsFriend((byte)0);
+        friend.setIsAttention((byte)0);
         friend.setFriendId(friendId);
+        friend.setRemark(remark);
 
-        // 4.保存好友信息，单向添加
+        // 4.添加好友请求记录
         count = friendMapper.insertSelective(friend);
         if(count == 1){
-            result.put("friendVo", new FriendVo(friend, acc
-                    , shareMapper.getShareCountByUser(acc.getUserId())
-                    , friendMapper.getWhoAttentionMeCount(acc.getUserId())));
             result.put("msg", "success");
         } else{
-            result.put("msg", "好友添加失败！");
+            logger.debug("-----> 好友请求发送失败");
+            result.put("msg", "好友请求发送失败，请刷新后重试！");
             friendMapper.deleteByPrimaryKey(friendId);
         }
 
@@ -547,11 +554,11 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public boolean isFriend(String auserId, String buserId) {
+    public boolean abUserIsFriend(String auserId, String buserId) {
         Friend friend = new Friend();
         friend.setAuserId(auserId);
         friend.setBuserId(buserId);
-        return friendMapper.getFriendByABUser(friend) != null;
+        return friendMapper.abUserIsFriend(friend) == 2;
     }
 
     @Override
@@ -874,5 +881,71 @@ public class UserServiceImpl implements IUserService {
     @Override
     public int getShareCountByUser(String userId) {
         return StringUtils.isEmpty(userId) ? 0 : shareMapper.getShareCountByUser(userId);
+    }
+
+    @Override
+    public List<FriendVo> getRequireFriend(User user) {
+        List<Friend> friends = friendMapper.getRequireFriend(user.getUserId());
+        List<FriendVo> friendVos = new ArrayList<FriendVo>();
+
+        for(Friend friend : friends){
+            friendVos.add(new FriendVo(friend, userMapper.selectByPrimaryKey(friend.getAuserId())));
+        }
+
+        return friendVos;
+    }
+
+    @Override
+    public Map<String, Object> okAddFriend(String friendId) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        if(StringUtils.isEmpty(friendId)){
+            logger.debug("-----> 同意好友请求数据异常");
+            result.put("msg", "好友信息不存在，请刷新后重试！");
+            return result;
+        }
+
+        // 获取好友记录信息
+        Friend bfriend = friendMapper.selectByPrimaryKey(friendId);
+        Date date = new Date();
+        bfriend.setIsFriend((byte)1);
+        bfriend.setCreateTime(date);
+        friendMapper.updateByPrimaryKeySelective(bfriend);
+
+        // 包装我的好友记录信息
+        Friend afriend = new Friend();
+        afriend.setFriendId(MyStringUtil.getUUID());
+        afriend.setCreateTime(date);
+        afriend.setIsFriend((byte)1);
+        afriend.setAuserId(bfriend.getBuserId());
+        afriend.setBuserId(bfriend.getAuserId());
+        afriend.setGroupId(friendGroupMapper.getDefaultGroup(bfriend.getBuserId()).getGroupId());
+        friendMapper.insertSelective(afriend);
+
+        FriendVo friendVo = new FriendVo();
+        friendVo.setFriend(afriend);
+        friendVo.setAttentionCount(friendMapper.getWhoAttentionMeCount(afriend.getBuserId()));
+        friendVo.setShareCount(shareMapper.getShareCountByUser(afriend.getBuserId()));
+        friendVo.setUser(userMapper.selectByPrimaryKey(afriend.getBuserId()));
+
+        result.put("friendVo", friendVo);
+        result.put("msg", "success");
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> refuseAddFriend(String friendId) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        if(StringUtils.isEmpty(friendId)){
+            logger.debug("-----> 同意好友请求数据异常");
+            result.put("msg", "好友信息不存在，请刷新后重试！");
+            return result;
+        }
+
+        friendMapper.deleteByPrimaryKey(friendId);
+
+        result.put("msg", "success");
+
+        return result;
     }
 }

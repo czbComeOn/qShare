@@ -43,7 +43,7 @@ public interface FriendMapper {
      * @param friend
      * @return
      */
-    int getFriendByUser(Friend friend);
+    Friend getFriendByUser(Friend friend);
 
     /**
      * 获取好友个数
@@ -60,7 +60,7 @@ public interface FriendMapper {
     Friend getAttentionByABUser(Friend friend);
 
     /**
-     * 根据a、b两用户判断是否为好友关系
+     * 根据a、b两用户判断是否为好友关系 --->待改
      * @param friend
      * @return
      */
@@ -93,4 +93,18 @@ public interface FriendMapper {
      * @return
      */
     List<Friend> getWhoAttentionMe(UserDTO userDTO);
+
+    /**
+     * 判断双方是否互为好友关系
+     * @param friend
+     * @return
+     */
+    int abUserIsFriend(Friend friend);
+
+    /**
+     * 获取好友请求列表
+     * @param userId
+     * @return
+     */
+    List<Friend> getRequireFriend(String userId);
 }

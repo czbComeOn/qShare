@@ -248,6 +248,7 @@
     where user_id in (
       SELECT buser_id user_id FROM s_friend
       WHERE is_friend = 1  AND auser_id = #{share.userId,jdbcType=VARCHAR})
+    AND (visible = 'all' OR visible = 'friend')
     order by create_time desc
     limit 0,${page.pageSize}
   </select>
@@ -257,6 +258,7 @@
     where user_id in (
       SELECT buser_id user_id FROM s_friend
       WHERE is_attention = 1  AND auser_id = #{share.userId,jdbcType=VARCHAR})
+    AND visible = 'all'
     order by create_time desc
     limit 0,${page.pageSize}
   </select>
