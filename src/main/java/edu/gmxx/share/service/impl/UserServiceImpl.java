@@ -395,6 +395,11 @@ public class UserServiceImpl implements IUserService {
         }
         count = 0;
 
+        if(!StringUtils.isEmpty(remark) && remark.length() > 50){
+            result.put("msg", "备注不能超过50个字");
+            return result;
+        }
+
         // 2.获取用户默认分组
         FriendGroup group = friendGroupMapper.getDefaultGroup(user.getUserId());
 

@@ -1090,29 +1090,33 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
             this.$remark = $html.find('#remark');
             this.$okBtn = $html.find('#okBtn');
             this.$okBtn.on('click', function(){
-                $.ajax({
-                    url: 'user/addFriend.do',
-                    data: {'account': that.account, 'remark': that.$remark.val()},
-                    type: 'post',
-                    dataType: 'json',
-                    async: false,
-                    success: function(result){
-                        if(result.msg == 'success'){
-                            $messager.success('好友请求已发送');
-                            that.target.closeDialog();
-                        } else if(result.msg == 'OFFLINE'){
-                            $messager.warning('用户未登录');
-                            that.target.closeDialog();
-                            login.show();
-                        } else{
-                            $messager.error(result.msg);
-                            that.target.closeDialog();
+                if(that.$remark.val() && that.$remark.val().length < 50){
+                    $.ajax({
+                        url: 'user/addFriend.do',
+                        data: {'account': that.account, 'remark': that.$remark.val()},
+                        type: 'post',
+                        dataType: 'json',
+                        async: false,
+                        success: function(result){
+                            if(result.msg == 'success'){
+                                $messager.success('好友请求已发送');
+                                that.target.closeDialog();
+                            } else if(result.msg == 'OFFLINE'){
+                                $messager.warning('用户未登录');
+                                that.target.closeDialog();
+                                login.show();
+                            } else{
+                                $messager.error(result.msg);
+                                that.target.closeDialog();
+                            }
+                        },
+                        error: function(){
+                            $messager.warning('服务器出错');
                         }
-                    },
-                    error: function(){
-                        $messager.warning('服务器出错');
-                    }
-                });
+                    });
+                } else{
+                    $messager.warning('备注信息不能超过50个字');
+                }
             });
 
             $html.find('#cancelBtn').on('click', function(){
