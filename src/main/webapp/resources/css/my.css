@@ -18,13 +18,17 @@ body{
 .fr{float: right;}
 .imgr{border-radius: 50%;}
 .mrg20{margin: 20px;}
-.mrg-t-10{margi-top:10px;}
-.mrg-t-20{margi-top:20px;}
-.mrg-r-20{margin-right:20px;}
-.mrg-l-20{margin-left:20px;}
+.mrg-t-5{margin-top:5px;}
+.mrg-l-5{margin-left:5px;}
+.mrg-r-5{margin-right:5px;}
+.mrg-b-5{margin-bottom:5px;}
+.mrg-t-10{margin-top:10px;}
 .mrg-r-10{margin-right:10px;}
 .mrg-l-10{margin-left:10px;}
 .mrg-b-10{margin-bottom:10px;}
+.mrg-t-20{margin-top:20px;}
+.mrg-r-20{margin-right:20px;}
+.mrg-l-20{margin-left:20px;}
 .mrg-b-20{margin-bottom:20px;}
 .cf{clear: left;}
 em{font-style: normal;}

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 轻分享 - 登录控制层
+ * 轻分享 - 页面入口
  *
  * @author 3138907243 陈志斌
  */
@@ -270,6 +270,24 @@ public class IndexController {
 	@RequestMapping(value="informManage.do")
 	public ModelAndView informManage(HttpSession session){
 		ModelAndView view = new ModelAndView("manage/informManage");
+
+		User user = (User) session.getAttribute("user");
+		if(user == null){
+			view.setViewName("redirect:index.do");
+			return view;
+		}
+
+		return view;
+	}
+
+	/**
+	 * 分享类别管理
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(value="shareTypeManage.do")
+	public ModelAndView shareTypeManage(HttpSession session){
+		ModelAndView view = new ModelAndView("manage/shareTypeManage");
 
 		User user = (User) session.getAttribute("user");
 		if(user == null){

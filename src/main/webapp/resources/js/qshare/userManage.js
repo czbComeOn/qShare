@@ -15,9 +15,9 @@ define(['utils/messager', 'utils/common', 'qshare/content', 'jquery/jquery.Pagin
     um.loadpage = function(page) {
         var that = this;
         $.jqPaginator('#pagination', {
-            totalPages: parseInt(page.totalPages),
+            totalPages: parseInt(page.totalPages ? page.totalPages : 1),
             visiblePages: 10, // 最多可以显示的页码数
-            currentPage: page.pageNumber,
+            currentPage: page.pageNumber ? page.pageNumber : 1,
             first: '<li class="first"><a href="javascript:void(0);" title="首页"><i class="fa fa-angle-double-left"></i></a></li>',
             prev: '<li class="prev"><a href="javascript:void(0);" title="上一页"><i class="fa fa-angle-left"></i></a></li>',
             next: '<li class="next"><a href="javascript:void(0);" title="下一页"><i class="fa fa-angle-right"></i></a></li>',
@@ -291,7 +291,7 @@ define(['utils/messager', 'utils/common', 'qshare/content', 'jquery/jquery.Pagin
                 : '<span style="color:#e00;cursor:pointer;" title="' + comm.getTime(user.unlockTime) + ' 解锁">锁定</span>'))));
         $item.find('address').append($('<div title="真实姓名"></div>').html('<i class="fa fa-user mrg-r-10"></i>' + (user.name ? user.name : '未知')));
         $item.find('address').append($('<div title="电子邮箱"></div>').html('<i class="fa fa-envelope mrg-r-10"></i>' + (user.email ? user.email : '未知')));
-        $item.find('address').append($('<div title="联系方式"></div>').html('<i class="fa fa-phone mrg-r-10"></i>' + user.phone));
+        $item.find('address').append($('<div title="联系方式"></div>').html('<i class="fa fa-phone mrg-r-10"></i>' + (user.phone ? user.phone : '未知')));
         $item.find('address').append($('<div title="最近登录时间"></div>').html('<i class="fa fa-clock-o mrg-r-10"></i>' + comm.getTime(user.lastTime)));
 
         if(currUser.userType == 'SUPERADMIN' || (currUser.userType == 'ADMIN' && user.userType == 'NORMAL')){

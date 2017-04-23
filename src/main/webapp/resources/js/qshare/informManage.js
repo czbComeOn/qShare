@@ -71,7 +71,7 @@ define(['utils/messager', 'utils/common', 'qshare/footable.all.min', 'jquery/jqu
         var that = this;
         $('#informTable').footable();
         $.jqPaginator('#pagination', {
-            totalPages: parseInt(page.totalPages),
+            totalPages: parseInt(page.totalPages ? page.totalPages : 1),
             visiblePages: 10, // 最多可以显示的页码数
             currentPage: page.pageNumber ? page.pageNumber : 1,
             first: '<li class="first"><a href="javascript:void(0);" title="首页"><i class="fa fa-angle-double-left"></i></a></li>',

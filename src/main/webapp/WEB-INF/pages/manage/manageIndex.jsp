@@ -73,6 +73,12 @@
                             <span class="nav-label">举报管理</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="J_menuItem" href="shareTypeManage.do" title="举报管理">
+                            <i class="fa fa-cog"></i>
+                            <span class="nav-label">类别管理</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -86,6 +92,24 @@
                             <i class="fa fa-bars"></i>
                         </a>
                     </div>
+                    <ul class="nav navbar-top-links navbar-right">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                                <c:if test="${user.portraitPath != null}">
+                                    <img src="${user.portraitPath}" style="width:20px;height:20px;border-radius:50%;" />
+                                </c:if>
+                                <c:if test="${user.portraitPath == null}">
+                                    <img src="${pageContext.request.contextPath}/resources/img/portrait.jpg" style="width:20px;height:20px;border-radius:50%;" />
+                                </c:if>
+                                ${user.nickname}
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a id="changePwd" href="javascript:void(0);"><i class="fa fa-edit">&nbsp;</i>修改密码</a></li>
+                                <li><a id="logout" href="javascript:void(0);"><i class="fa fa-sign-out">&nbsp;</i>退出登录</a></li>
+                            </ul>
+                        </li>
+                    </ul>
                 </nav>
             </div>
             <div class="row J_mainContent" id="content-main">

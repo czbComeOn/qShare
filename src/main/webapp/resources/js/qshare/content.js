@@ -63,7 +63,8 @@ function animationHover(element, animation, inCall, outCall) {
             window.setTimeout(function () {
                 element.removeClass('animated ' + animation);
             }, 2000);
-        });
+        }
+    );
 }
 
 // //拖动面板

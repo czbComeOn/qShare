@@ -87,7 +87,7 @@
                             <c:if test="${user.portraitPath == null}">
                                 <img src="${pageContext.request.contextPath}/resources/img/portrait.jpg" style="width:20px;height:20px;border-radius:50%;" />
                             </c:if>
-                            用户
+                            ${user.nickname}
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
