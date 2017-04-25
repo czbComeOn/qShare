@@ -268,8 +268,8 @@ public class ShareController {
      */
     @RequestMapping(value="getShareTypeById.do", method = RequestMethod.POST)
     @ResponseBody
-    public ShareType getShareTypeById(String shareTypeId){
-        return shareService.getShareTypeById(shareTypeId);
+    public ShareType getShareTypeById(String shareId, String shareTypeId){
+        return shareService.getShareTypeById(shareId, shareTypeId);
     }
 
     /**

@@ -630,7 +630,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         var $shareType = $tool.find('.share-info-type');
         $.ajax({
             url: 'share/getShareTypeById.do',
-            data: {'shareTypeId': share.shareTypeId},
+            data: {'shareId':share.shareId, 'shareTypeId': share.shareTypeId},
             type: 'post',
             dataType: 'json',
             success: function(shareType){
@@ -1195,7 +1195,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
             if(shares[i].share.visible == 'all' || (currUser && shares[i].share.userId == currUser.userId)
                 || (currUser && shares[i].share.visible == 'self' && shares[i].share.userId == currUser.userId)){
                 $('#loadMore').before(sharePanel);
-            } else if(currUser && shares[i].share.visible == 'friend'){
+            } else if(currUser && currUser.userType == 'NORMAL' && shares[i].share.visible == 'friend'){
                 // 仅好友可见
                 $.ajax({
                     url: 'user/isFriend.do',
@@ -1209,6 +1209,9 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
                         }
                     }
                 });
+            } else if(currUser && currUser.userType != 'NORMAL'){
+                // 管理员全部分享可见
+                $('#loadMore').before(sharePanel);
             }
         }
         // 加载完毕

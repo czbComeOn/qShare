@@ -151,8 +151,10 @@ public interface IShareService {
 
     /**
      * 根据id获取分享信息类别
+     *
+     * @param shareId
      * @param shareTypeId
      * @return
      */
-    ShareType getShareTypeById(String shareTypeId);
+    ShareType getShareTypeById(String shareId, String shareTypeId);
 }

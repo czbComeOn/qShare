@@ -1,6 +1,7 @@
 package edu.gmxx.share.service;
 
 import edu.gmxx.share.domain.Inform;
+import edu.gmxx.share.domain.ShareType;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.utils.PageModel;
 import edu.gmxx.share.vo.InformVo;
@@ -58,4 +59,25 @@ public interface IManageService {
      * @return
      */
     Map<String,Object> cancelAdmin(String userId);
+
+    /**
+     * 添加分享信息类别
+     * @param shareType
+     * @return
+     */
+    Map<String, Object> addShareType(ShareType shareType);
+
+    /**
+     * 删除分享信息类别
+     * @param shareTypeId
+     * @return
+     */
+    Map<String,Object> deleteShareType(String shareTypeId);
+
+    /**
+     * 修改分享信息类别
+     * @param shareType
+     * @return
+     */
+    Map<String,Object> updateShareType(ShareType shareType);
 }

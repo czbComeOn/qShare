@@ -1,8 +1,10 @@
 package edu.gmxx.share.service.impl;
 
 import edu.gmxx.share.dao.InformMapper;
+import edu.gmxx.share.dao.ShareTypeMapper;
 import edu.gmxx.share.dao.UserMapper;
 import edu.gmxx.share.domain.Inform;
+import edu.gmxx.share.domain.ShareType;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.dto.InformDTO;
 import edu.gmxx.share.listener.LoginListener;
@@ -28,6 +30,8 @@ public class ManageServiceImpl implements IManageService {
     private UserMapper userMapper;
     @Autowired
     private InformMapper informMapper;
+    @Autowired
+    private ShareTypeMapper shareTypeMapper;
 
     @Override
     public Map<String, Object> lockUser(String userId, long time) {
@@ -205,6 +209,111 @@ public class ManageServiceImpl implements IManageService {
 
         result.put("msg", "success");
         result.put("user", userMapper.selectByPrimaryKey(user.getUserId()));
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> addShareType(ShareType shareType) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        if(StringUtils.isEmpty(shareType.getShareTypeId())){
+            result.put("msg", "分享信息类别编码不能为空！");
+            return result;
+        }
+
+        if(StringUtils.isEmpty(shareType.getShareTypeName())){
+            result.put("msg", "分享信息类别名称不能为空！");
+            return result;
+        }
+
+        if(shareType.getTypeNum() <= 0){
+            result.put("msg", "请输入大于0的类别编号");
+            return result;
+        }
+
+        if(shareType.getTypeNum() >= 100){
+            result.put("msg", "类别编码必须在1-99之间");
+            return result;
+        }
+
+        // 判断编码是否已存在
+        ShareType st = shareTypeMapper.selectByPrimaryKey(shareType.getShareTypeId());
+        if(st != null){
+            result.put("msg", "分享信息类别编码已存在！");
+            return result;
+        }
+
+        st = shareTypeMapper.getShareTypeByName(StringUtils.trimWhitespace(shareType.getShareTypeName()));
+        if(st != null){
+            result.put("msg", "分享信息类别名称已存在！");
+            return result;
+        }
+
+        int count = shareTypeMapper.getShareTypeAllCount();
+        shareTypeMapper.insert(shareType);
+
+        result.put("msg", "success");
+        result.put("shareType", shareType);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> deleteShareType(String shareTypeId) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        if (StringUtils.isEmpty(shareTypeId)) {
+            logger.debug("-----> 删除分享信息类别不存在");
+            result.put("msg", "分享信息类别不存在，请刷新后重试！");
+            return result;
+        }
+
+        int count = shareTypeMapper.deleteByPrimaryKey(shareTypeId);
+
+        if (count == 1) {
+            result.put("msg", "success");
+        } else {
+            logger.debug("-----> 分享信息类别删除异常");
+            result.put("msg", "分享信息类别删除失败，请刷新后重试");
+        }
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> updateShareType(ShareType shareType) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        if(StringUtils.isEmpty(shareType.getShareTypeId())){
+            result.put("msg", "分享信息类别编码不能为空！");
+            return result;
+        }
+
+        if(StringUtils.isEmpty(shareType.getShareTypeName())){
+            result.put("msg", "分享信息类别名称不能为空！");
+            return result;
+        }
+
+        if(shareType.getTypeNum() <= 0){
+            result.put("msg", "请输入大于0的类别编号");
+            return result;
+        }
+
+        if(shareType.getTypeNum() >= 100){
+            result.put("msg", "类别编码必须在1-99之间");
+            return result;
+        }
+
+        ShareType st = shareTypeMapper.getShareTypeByName(StringUtils.trimWhitespace(shareType.getShareTypeName()));
+        if(st != null && !shareType.getShareTypeId().equals(st.getShareTypeId())){
+            result.put("msg", "分享信息类别名称已存在！");
+            return result;
+        }
+
+        shareTypeMapper.updateByPrimaryKeySelective(shareType);
+        result.put("msg", "success");
+        result.put("shareType", shareType);
 
         return result;
     }

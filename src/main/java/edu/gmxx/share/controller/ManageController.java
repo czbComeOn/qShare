@@ -1,6 +1,7 @@
 package edu.gmxx.share.controller;
 
 import edu.gmxx.share.domain.Inform;
+import edu.gmxx.share.domain.ShareType;
 import edu.gmxx.share.domain.User;
 import edu.gmxx.share.service.IManageService;
 import edu.gmxx.share.utils.PageModel;
@@ -99,6 +100,12 @@ public class ManageController {
         return result;
     }
 
+    /**
+     * 对用户进行审核
+     * @param inform
+     * @param session
+     * @return
+     */
     @RequestMapping(value="auditUser.do", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> auditUser(Inform inform, HttpSession session){
@@ -113,6 +120,12 @@ public class ManageController {
         return manageService.auditUser(user, inform);
     }
 
+    /**
+     * 将用户升级为管理员
+     * @param userId
+     * @param session
+     * @return
+     */
     @RequestMapping(value="addAdmin.do", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> addAdmin(String userId, HttpSession session){
@@ -127,6 +140,12 @@ public class ManageController {
         return manageService.addAdmin(userId);
     }
 
+    /**
+     * 取消管理员
+     * @param userId
+     * @param session
+     * @return
+     */
     @RequestMapping(value="cancelAdmin.do", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> cancelAdmin(String userId, HttpSession session){
@@ -139,5 +158,59 @@ public class ManageController {
         }
 
         return manageService.cancelAdmin(userId);
+    }
+
+    @RequestMapping(value="addShareType.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> addShareType(ShareType shareType, HttpSession session) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return manageService.addShareType(shareType);
+    }
+
+    /**
+     * 删除分享用户类型
+     * @param shareTypeId
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="deleteShareType.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> deleteShareType(String shareTypeId, HttpSession session) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return manageService.deleteShareType(shareTypeId);
+    }
+
+    /**
+     * 修改分享信息类别
+     * @param shareType
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="updateShareType.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> updateShareType(ShareType shareType, HttpSession session) {
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            result.put("msg", "OFFLINE");
+            return result;
+        }
+
+        return manageService.updateShareType(shareType);
     }
 }

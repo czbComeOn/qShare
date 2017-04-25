@@ -34,9 +34,45 @@
 </head>
 <body class="gray-bg">
 <div class="wrapper wrapper-content animated fadeInRight">
-    <h4 style="margin-top:0;width:150px;display: inline-block;">分享类别管理</h4>
-    <span class="fr" id="addShareType" style="cursor:pointer;" title="新增分享类别"><i class="fa fa-plus"></i> 新增类别</span>
-    <div id="shareTypeData" style="padding-top:20px;">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>分享类别管理</h5>
+                    <a class="fr" id="addShareType" href="#" style="text-decoration:none;">
+                        <i class="fa fa-plus"></i> 新增类别
+                    </a>
+                </div>
+                <div class="ibox-content">
+                    <table class="footable table table-stripped toggle-arrow-tiny default breakpoint
+                        no-paging footable-loaded" id="shareTypeTable" style="margin-bottom:0;">
+                        <thead>
+                            <tr>
+                                <th class="footable-visible">类别编码</th>
+                                <th class="footable-visible">类别名称</th>
+                                <th class="footable-visible">类别编号</th>
+                                <th class="footable-visible">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach items="${shareTypes}" var="shareType">
+                                <tr>
+                                    <td class="share-type-id">${shareType.shareTypeId}</td>
+                                    <td class="share-type-name">${shareType.shareTypeName}</td>
+                                    <td class="type-num">${shareType.typeNum}</td>
+                                    <td>
+                                        <c:if test="${shareType != null && shareType.shareTypeId != 'qt'}">
+                                            <a class="update-share-type mrg-r-10" href="#" title="修改"><i class="fa fa-edit"></i></a>
+                                            <a class="delete-share-type" href="#" title="删除"><i class="fa fa-trash"></i></a>
+                                        </c:if>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </body>

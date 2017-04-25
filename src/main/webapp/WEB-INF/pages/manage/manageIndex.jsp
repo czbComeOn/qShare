@@ -7,7 +7,6 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -16,12 +15,13 @@
     <title>轻.分享 - 后台管理</title>
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/img/qshare.ico">
 
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/animate.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/toastr.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/bootstrap/css/bootstrap.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/font-awesome.min.css">
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/animate.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/manage.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/my-dialog.css">
     <script data-main="${pageContext.request.contextPath}/resources/js/main"
             src="${pageContext.request.contextPath}/resources/js/require.min.js"></script>
@@ -73,12 +73,14 @@
                             <span class="nav-label">举报管理</span>
                         </a>
                     </li>
-                    <li>
-                        <a class="J_menuItem" href="shareTypeManage.do" title="举报管理">
-                            <i class="fa fa-cog"></i>
-                            <span class="nav-label">类别管理</span>
-                        </a>
-                    </li>
+                    <c:if test="${user != null && user.userType == 'SUPERADMIN'}">
+                        <li>
+                            <a class="J_menuItem" href="shareTypeManage.do" title="举报管理">
+                                <i class="fa fa-cog"></i>
+                                <span class="nav-label">分享类别管理</span>
+                            </a>
+                        </li>
+                    </c:if>
                 </ul>
             </div>
         </nav>
@@ -96,15 +98,18 @@
                         <li class="dropdown">
                             <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
                                 <c:if test="${user.portraitPath != null}">
-                                    <img src="${user.portraitPath}" style="width:20px;height:20px;border-radius:50%;" />
+                                    <img class="nav-user-portrait" src="${user.portraitPath}"/>
                                 </c:if>
                                 <c:if test="${user.portraitPath == null}">
-                                    <img src="${pageContext.request.contextPath}/resources/img/portrait.jpg" style="width:20px;height:20px;border-radius:50%;" />
+                                    <img class="nav-user-portrait" src="${pageContext.request.contextPath}/resources/img/portrait.jpg"/>
                                 </c:if>
-                                ${user.nickname}
+                                <div class="nav-user-nickname">
+                                    ${user.nickname}
+                                </div>
                                 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
+                                <li><a href="index.do"><i class="fa fa-sign-in">&nbsp;</i>返回主页</a></li>
                                 <li><a id="changePwd" href="javascript:void(0);"><i class="fa fa-edit">&nbsp;</i>修改密码</a></li>
                                 <li><a id="logout" href="javascript:void(0);"><i class="fa fa-sign-out">&nbsp;</i>退出登录</a></li>
                             </ul>

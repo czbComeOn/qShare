@@ -90,12 +90,14 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <c:if test="${user.portraitPath != null}">
-                                <img src="${user.portraitPath}" style="width:20px;height:20px;border-radius:50%;" />
+                                <img class="nav-user-portrait" src="${user.portraitPath}"/>
                             </c:if>
                             <c:if test="${user.portraitPath == null}">
-                                <img src="${pageContext.request.contextPath}/resources/img/portrait.jpg" style="width:20px;height:20px;border-radius:50%;" />
+                                <img class="nav-user-portrait" src="${pageContext.request.contextPath}/resources/img/portrait.jpg"/>
                             </c:if>
-                            ${user.nickname}
+                            <div class="nav-user-nickname">
+                                ${user.nickname}
+                            </div>
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">

@@ -561,7 +561,7 @@ public class ShareServiceImpl implements IShareService {
     }
 
     @Override
-    public ShareType getShareTypeById(String shareTypeId) {
+    public ShareType getShareTypeById(String shareId, String shareTypeId) {
         ShareType shareType = shareTypeMapper.selectByPrimaryKey(shareTypeId);
         // 如果类别不存在默认为其他
         if(shareType == null){
@@ -569,6 +569,12 @@ public class ShareServiceImpl implements IShareService {
             shareType.setShareTypeId("qt");
             shareType.setShareTypeName("其他");
             shareType.setTypeNum(0);
+
+            // 将分享类别改为其他
+            Share share = new Share();
+            share.setShareId(shareId);
+            share.setShareTypeId("qt");
+            shareMapper.updateByPrimaryKeySelective(share);
         }
         return shareType;
     }

@@ -146,6 +146,20 @@ em{font-style: normal;}
 /* 头部logo样式 */
 .qshare-logo{width: 120px;height: 50px;}
 .qshare-logo img{width: auto;height: 50px;}
+.nav-user-portrait{
+    float:left;
+    margin-right:5px;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+}
+.nav-user-nickname{
+    float: left;
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 /* 头部导航 */
 .navbar-nav{float: right;}
 .navbar-nav > li > a{color: #d67979 !important;}

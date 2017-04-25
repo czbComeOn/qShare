@@ -73,4 +73,15 @@
     FROM s_share_type
     ORDER BY type_num
   </select>
+
+  <select id="getShareTypeByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM s_share_type
+    WHERE share_type_name = #{shareTypeName,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getShareTypeAllCount" resultType="int">
+    SELECT COUNT(share_type_id) FROM s_share_type
+  </select>
 </mapper>

@@ -295,6 +295,9 @@ public class IndexController {
 			return view;
 		}
 
-		return view;
+        List<ShareType> shareTypes = shareService.getAllShareType();
+        view.addObject("shareTypes", shareTypes);
+
+        return view;
 	}
 }

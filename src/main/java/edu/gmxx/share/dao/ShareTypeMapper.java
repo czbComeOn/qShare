@@ -22,4 +22,17 @@ public interface ShareTypeMapper {
      * @return
      */
     List<ShareType> getAllShareType();
+
+    /**
+     * 根据分享类名称别获取分享类别
+     * @param s
+     * @return
+     */
+    ShareType getShareTypeByName(String shareTypeName);
+
+    /**
+     * 获取分享信息类别总个数
+     * @return
+     */
+    int getShareTypeAllCount();
 }
