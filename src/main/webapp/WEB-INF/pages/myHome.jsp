@@ -21,6 +21,9 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/my.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/home.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/my-dialog.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/blueimp-gallery.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/blueimp-gallery-indicator.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/blueimp-gallery-video.css">
     <script data-main="${pageContext.request.contextPath}/resources/js/main"
             src="${pageContext.request.contextPath}/resources/js/require.min.js"></script>
     <script>
@@ -350,6 +353,16 @@
                 </div>
             </div>
             <!-- end right -->
+
+            <div id="blueimp-gallery" class="blueimp-gallery">
+                <div class="slides"></div>
+                <h3 class="title"></h3>
+                <a class="prev">‹</a>
+                <a class="next">›</a>
+                <a class="close">×</a>
+                <a class="play-pause"></a>
+                <ol class="indicator"></ol>
+            </div>
         </div>
     </div>
 

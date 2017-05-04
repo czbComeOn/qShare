@@ -17,6 +17,9 @@
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/my.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/my-dialog.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/blueimp-gallery.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/blueimp-gallery-indicator.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/blueimp-gallery-video.css">
     <script data-main="${pageContext.request.contextPath}/resources/js/main"
             src="${pageContext.request.contextPath}/resources/js/require.min.js"></script>
     <script>
@@ -103,7 +106,7 @@
                                 <img src="resources/img/portrait.jpg" alt="">
                             </c:if>
                             <c:if test="${shareVo.user.portraitPath != null}">
-                                <img src="${shareVo.user.portraitPath}" alt="">
+                               <img src="${shareVo.user.portraitPath}" alt="">
                             </c:if>
                         </a>
                         <div class="title-center">
@@ -138,7 +141,7 @@
                         <c:if test="${imgs != null && fn:length(imgs) > 0}">
                             <div class="share-img-box">
                                 <c:forEach items="${imgs}" var="img">
-                                    <img class="share-img-info" src="${img}"/>
+                                    <a href="${img}" data-gallery=""><img class="share-img-info" src="${img}"/></a>
                                 </c:forEach>
                             </div>
                         </c:if>
@@ -251,6 +254,16 @@
                 </div>
             </div>
             <!-- end right -->
+
+            <div id="blueimp-gallery" class="blueimp-gallery">
+                <div class="slides"></div>
+                <h3 class="title"></h3>
+                <a class="prev">‹</a>
+                <a class="next">›</a>
+                <a class="close">×</a>
+                <a class="play-pause"></a>
+                <ol class="indicator"></ol>
+            </div>
         </div>
     </div>
 

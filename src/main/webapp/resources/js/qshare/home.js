@@ -1,7 +1,8 @@
 /**
  * Created by BIN on 2017/4/3.
  */
-define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', 'utils/common', 'bootstrap', 'bootstrapValidator'],
+define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', 'utils/common', 'bootstrap',
+        'jquery/jquery.blueimp-gallery', 'bootstrapValidator'],
     function(login, share, um, $messager, comm){
     var ME_ATTENTION_NUM = 1; // 我关注谁页码
     var WHO_ATTENTION_NUM = 1; // 谁关注我页码
