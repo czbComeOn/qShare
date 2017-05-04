@@ -107,4 +107,6 @@ public interface FriendMapper {
      * @return
      */
     List<Friend> getRequireFriend(String userId);
+
+    int deleteInfoByABUser(Friend friend);
 }

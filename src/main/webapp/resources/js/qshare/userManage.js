@@ -329,9 +329,13 @@ define(['utils/messager', 'utils/common', 'qshare/content', 'jquery/jquery.Pagin
 
     um.initEvent = function(){
         var that = this;
-        // 提交搜索表单
-        $('#searchUserForm').submit(function(){
-            um.SEARCH_TEXT = $(this).find('.user-search-text').val();
+        // 搜索用户
+        $('#searchUserBox .user-search-text').keydown(function(){
+            um.SEARCH_TEXT = $('#searchUserBox').find('.user-search-text').val();
+            that.loadData(1);
+        });
+        $('#searchBtn').on('click', function(){
+            um.SEARCH_TEXT = $('#searchUserBox').find('.user-search-text').val();
             that.loadData(1);
         });
 

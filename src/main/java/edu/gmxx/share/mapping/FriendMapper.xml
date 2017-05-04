@@ -172,6 +172,16 @@
     AND buser_id = #{buserId,jdbcType=VARCHAR}
   </select>
 
+  <delete id="deleteInfoByABUser" parameterType="edu.gmxx.share.domain.Friend">
+    DELETE FROM s_friend
+    WHERE is_friend = 0
+    AND is_attention = 0
+    AND (
+    (auser_id = #{auserId,jdbcType=VARCHAR} AND buser_id = #{buserId,jdbcType=VARCHAR})
+      OR (auser_id = #{buserId,jdbcType=VARCHAR} AND buser_id = #{auserId,jdbcType=VARCHAR})
+    )
+  </delete>
+
   <select id="getFriendByABUser" parameterType="edu.gmxx.share.domain.Friend" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>

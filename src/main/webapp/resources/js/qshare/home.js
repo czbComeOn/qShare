@@ -624,6 +624,7 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
     }
 
     home.getFriendRequire = function(){
+        var that = this;
         var $requireFriend = $('<div class="panel panel-info myright-n friend-panel"></div>');
         $('<div class="panel-heading">好友申请列表</div>')
             .append($('<i class="fa fa-remove fr" style="cursor:pointer;" title="关闭"></i>').on('click', function(){
@@ -640,7 +641,8 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
                     if(result.friendVos && result.friendVos.length > 0){
                         for(var i in result.friendVos){
                             var $item = $('<li class="list-group-item"></li>').appendTo($requestList);
-                            var $box = $('<div></div>').html('<b>' + result.friendVos[i].user.nickname + '</b> '
+                            var $box = $('<div></div>').html('<a class="friend-info" href="myHome.do?account=' + result.friendVos[i].user.account + '">'
+                                + '<b>' + result.friendVos[i].user.nickname + '</b></a> '
                                 + '请求加你为好友<br><b>备注：</b>' + result.friendVos[i].friend.remark)
                                 .appendTo($item);
                             $box.hover(function(){

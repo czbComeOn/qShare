@@ -926,6 +926,9 @@ public class UserServiceImpl implements IUserService {
         afriend.setGroupId(friendGroupMapper.getDefaultGroup(bfriend.getBuserId()).getGroupId());
         friendMapper.insertSelective(afriend);
 
+        // 清除多余的请求
+        friendMapper.deleteInfoByABUser(afriend);
+
         FriendVo friendVo = new FriendVo();
         friendVo.setFriend(afriend);
         friendVo.setAttentionCount(friendMapper.getWhoAttentionMeCount(afriend.getBuserId()));

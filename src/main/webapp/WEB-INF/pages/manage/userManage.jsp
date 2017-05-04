@@ -34,7 +34,7 @@
 </head>
 <body class="gray-bg">
     <div class="wrapper wrapper-content animated fadeInRight">
-        <form class="form-horizontal" id="searchUserForm" action="#">
+        <div class="form-horizontal" id="searchUserBox">
             <div class="row mrg-b-10" id="searchBox">
                 <div class="col-sm-3 mrg-b-10">
                     <label for="userType">用户类型：</label>
@@ -59,10 +59,10 @@
                 </div>
                 <div class="col-sm-4 col-sm-offset-1 mrg-b-10">
                     <input class="form-control user-search-text" type="text" placeholder="账号/昵称" />
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+                    <button id="searchBtn" class="btn btn-primary"><i class="fa fa-search"></i></button>
                 </div>
             </div>
-        </form>
+        </div>
         <div class="row" id="userDataBox">
         </div>
         <div class="row" style="text-align:center;">

@@ -77,7 +77,7 @@
                         <li>
                             <a class="J_menuItem" href="shareTypeManage.do" title="举报管理">
                                 <i class="fa fa-cog"></i>
-                                <span class="nav-label">分享类别管理</span>
+                                <span class="nav-label">类别管理</span>
                             </a>
                         </li>
                     </c:if>

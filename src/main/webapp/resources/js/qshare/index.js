@@ -929,7 +929,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
             success: function(result){
                 if(result.msg == 'success'){
                     // 发布成功
-                    $('#searchForm').after(that.getSharePanel(result.userInfo, result.shareInfo, null, result.userInfo));
+                    $('#searchBox').after(that.getSharePanel(result.userInfo, result.shareInfo, null, result.userInfo));
 
                     $('#shareForm')[0].reset();
                     $('#shareTheme').parent('.form-group').removeClass('has-success has-feedback');
@@ -985,6 +985,18 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         login.show();
     }
 
+    share.searchShare = function(){
+        CURRENT_PAGE_NUMBER = 1;
+        $('.myright').find('.share-info').remove();
+        CURRENT_SEARCH_TEXT = $('#searchBox').find('.search-text').val();
+        this.loadShareInfo(CURRENT_SHARE_TYPE, null, null);
+        if(document.body.clientWidth < 768){
+            $('html, body').animate({
+                scrollTop: $('#searchBox').offset().top - 100
+            });
+        }
+    }
+
     share.initEvent = function () {
         var that = this;
         $('#changePwd').on('click', login.changePwd);
@@ -992,16 +1004,11 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         $('#login').on('click', login.show);
 
         // 搜索分享信息
-        $('#searchForm').submit(function(){
-            CURRENT_PAGE_NUMBER = 1;
-            $('.myright').find('.share-info').remove();
-            CURRENT_SEARCH_TEXT = $(this).find('.search-text').val();
-            that.loadShareInfo(CURRENT_SHARE_TYPE, null, null);
-            if(document.body.clientWidth < 768){
-                $('html, body').animate({
-                    scrollTop: $('#searchForm').offset().top - 100
-                });
-            }
+        $('#searchBtn').on('click', this.searchShare);
+        $('#searchBox .search-text').keydown(function(event){
+             if(event && event.keyCode == 13){
+                 that.searchShare();
+             }
         });
 
         // 选择图片
@@ -1074,13 +1081,13 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
             $(this).on('click', function(){
                 if(document.body.clientWidth < 768){
                     $('html, body').animate({
-                        scrollTop: $('#searchForm').offset().top - 100
+                        scrollTop: $('#searchBox').offset().top - 100
                     });
                 }
                 CURRENT_PAGE_NUMBER = 1;
 
                 // 清除搜索
-                $('#searchForm .search-text').val('');
+                $('#searchBox .search-text').val('');
                 CURRENT_SEARCH_TEXT = '';
                 $('.myright').find('.share-info').remove();
                 CURRENT_SHARE_TYPE = $(this).children('a').attr('name');
@@ -1248,7 +1255,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
 
         login.init();
         this.$sharePanel = $('#sharePanel');
-        this.$searchForm = $('#searchForm');
+        this.$searchBox = $('#searchBox');
 
         //先选出 textarea 和 统计字数 dom 节点
         this.statInputNum($("#wordCount").find("textarea"), $("#wordCount").find(".word"));
@@ -1260,7 +1267,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
             that.loadShareInfo(CURRENT_SHARE_TYPE);
             if(document.body.clientWidth < 768){
                 $('html, body').animate({
-                    scrollTop: $('#searchForm').offset().top - 100
+                    scrollTop: $('#searchBox').offset().top - 100
                 });
             }
         }, 500);
@@ -1318,7 +1325,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
                         success: function(result){
                             if(result.msg == 'success'){
                                 if(home_ent != 'home'){
-                                    that.instance.$searchForm.after(that.instance.getSharePanel(result.userInfo, result.shareInfo, null, result.userInfo, result.transpondInfo));
+                                    that.instance.$searchBox.after(that.instance.getSharePanel(result.userInfo, result.shareInfo, null, result.userInfo, result.transpondInfo));
                                 }
                                 that.transpondCount.text(parseInt(that.transpondCount.text()) + 1);
                                 $messager.success('转发成功！');
