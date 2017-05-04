@@ -20,6 +20,9 @@
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/my.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/my-dialog.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/blueimp-gallery.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/blueimp-gallery-indicator.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/blueimp-gallery-video.css">
     <script data-main="${pageContext.request.contextPath}/resources/js/main"
             src="${pageContext.request.contextPath}/resources/js/require.min.js"></script>
     <script>
@@ -308,7 +311,7 @@
                                         <button class="btn btn-info dropdown-toggle share-type-btn" name="qt" data-toggle="dropdown">
                                             <span class="share-type-text">其他</span>&nbsp;<span class="caret"></span>
                                         </button>
-                                        <ul class="dropdown-menu share-type">
+                                        <ul class="dropdown-menu share-type" style="background:#fff;">
                                             <c:forEach items="${shareTypes}" var="shareType">
                                                 <li><a href="javascript:void(0);" name="${shareType.shareTypeId}">${shareType.shareTypeName}</a></li>
                                             </c:forEach>
@@ -319,7 +322,7 @@
                                         <button class="btn btn-info dropdown-toggle visibility-type-btn" name="all" data-toggle="dropdown">
                                             <span class="visibility-type-text">公开</span>&nbsp;<span class="caret"></span>
                                         </button>
-                                        <ul class="dropdown-menu visibility-type">
+                                        <ul class="dropdown-menu visibility-type" style="background:#fff;">
                                             <li><a name="all" href="javascript:void(0);"><i class="fa fa-globe"></i> 公开</a></li>
                                             <li><a name="friend" href="javascript:void(0);"><i class="fa fa-heart"></i> 好友可见</a></li>
                                             <li><a name="self" href="javascript:void(0);"><i class="fa fa-lock"></i> 仅自己可见</a></li>
@@ -355,6 +358,16 @@
                         <div class="in-load" style="text-align: center;">正在加载数据 <img style="width:20px; height:20px;" src="${pageContext.request.contextPath}/resources/img/loading.gif" alt=""></div>
                         <div class="load-finish" style="display: none;text-align: center;">没有更多了</div>
                     </div>
+                </div>
+
+                <div id="blueimp-gallery" class="blueimp-gallery">
+                    <div class="slides"></div>
+                    <h3 class="title"></h3>
+                    <a class="prev">‹</a>
+                    <a class="next">›</a>
+                    <a class="close">×</a>
+                    <a class="play-pause"></a>
+                    <ol class="indicator"></ol>
                 </div>
             </div>
             <!-- end right -->

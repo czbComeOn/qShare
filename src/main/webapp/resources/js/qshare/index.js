@@ -1,5 +1,5 @@
 define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmotion', 'bootstrap',
-        'bootstrapValidator', 'utils/upload-progress'],
+        'jquery/jquery.blueimp-gallery', 'bootstrapValidator', 'utils/upload-progress'],
     function ($messager, comm, login) {
     var CURRENT_PAGE_NUMBER = 1;
     var CURRENT_SHARE_TYPE = 'all'; // 当前页面的分享信息类型
@@ -563,10 +563,11 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         $('<div class="share-content-box"></div>').html(AnalyticEmotion(share.shareContent)).appendTo($body);
         // 分享图片
         if(share.imgInfo){
-            var $shareImg = $('<div class="share-img-box"></div>').appendTo($body);
+            var $shareImgBox = $('<div class="share-img-box"></div>').appendTo($body);
             var imgInfos = share.imgInfo.split(',');
             for(i in imgInfos){
-                $('<img class="share-img-info" />').attr({'src': imgInfos[i]}).appendTo($shareImg);
+                $('<a href="' + imgInfos[i] + '" data-gallery=""></a>')
+                    .append($('<img class="share-img-info" />').attr({'src': imgInfos[i]})).appendTo($shareImgBox);
             }
         }
         // 分享视频
