@@ -35,7 +35,7 @@ define(['utils/messager', 'utils/common', 'qshare/footable.all.min', 'jquery/jqu
                                 '<th>举报用户</th>' +
                                 '<th>举报时间</th>' +
                                 '<th>状态</th>' +
-                                '<th data-hide="all">举报内容</th>' +
+                                '<th data-hide="all">举报原因</th>' +
                                 '<th data-hide="all">审核人</th>' +
                                 '<th data-hide="all">审核时间</th>' +
                                 '<th data-hide="all">审核备注</th>' +

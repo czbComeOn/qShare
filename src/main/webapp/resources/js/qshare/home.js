@@ -882,7 +882,7 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
      * 显示收藏信息
      */
     home.showCollect = function(){
-        $('.myright').find('.friend-panel, .share-info').remove();
+        $('.myright').find('.friend-panel, .attention-panel, .share-info').remove();
         share.initNum();
         share.homeEnt();
         share.loadShareInfo('all', home_acc.account, 'collect');
