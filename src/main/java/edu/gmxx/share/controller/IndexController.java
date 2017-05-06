@@ -141,7 +141,7 @@ public class IndexController {
 	 * @return
 	 */
 	@RequestMapping(value="myHome.do")
-	public ModelAndView myHome(String account, HttpSession session){
+	public ModelAndView myHome(String account, String type, HttpSession session){
 		ModelAndView view = new ModelAndView("myHome");
 
 		User user = (User) session.getAttribute("user");
@@ -151,6 +151,9 @@ public class IndexController {
 		view.addObject("shareCount", userService.getShareCountByUser(acc.getUserId()));
 
         if(user != null){
+			if(user.getAccount().equals(account)){
+				view.addObject("type", type);
+			}
             view.addObject("isAttention", userService.isAttention(user.getUserId(), acc.getUserId()));
             view.addObject("isFriend", userService.abUserIsFriend(user.getUserId(), acc.getUserId()));
         }

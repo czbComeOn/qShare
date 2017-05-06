@@ -33,7 +33,7 @@
                 'userId': '${acc.userId}',
                 'account': '${acc.account}',
                 'nickname': '${acc.nickname}'
-            });
+            }, '${type}');
         });
     </script>
 </head>
@@ -65,13 +65,13 @@
             <ul class="nav navbar-nav show-home">
                 <li><a href="index.do" name="index"><i class="fa fa-home"></i> 主页</a></li>
                 <c:if test="${user != null && acc.userId == user.userId}">
-                    <li class="active home-tab"><a href="javascript:void(0);" name="share"><i class="fa fa-share-alt"></i> 我的分享</a></li>
+                    <li class="home-tab"><a href="javascript:void(0);" name="share"><i class="fa fa-share-alt"></i> 我的分享</a></li>
                     <li class="home-tab"><a href="javascript:void(0);" name="collect"><i class="fa fa-star"></i> 我的收藏</a></li>
                     <li class="home-tab"><a href="javascript:void(0);" name="friend"><i class="fa fa-heart"></i> 好友列表</a></li>
                     <li class="home-tab"><a href="javascript:void(0);" name="attention"><i class="fa fa-link"></i> 关注好友</a></li>
                 </c:if>
                 <c:if test="${user == null || acc.userId != user.userId}">
-                    <li class="active"><a href="javascript:void(0);" name="share">
+                    <li class="active home-tab"><a href="javascript:void(0);" name="share">
                         <i class="fa fa-share-alt"></i>&nbsp;TA的分享&nbsp;(${shareCount})</a>
                     </li>
                 </c:if>
@@ -332,7 +332,7 @@
                                     </c:if>
                                 </c:if>
                                 <c:if test="${acc.userId == user.userId}">
-                                    <button class="btn btn-success" id="changeData" style="width:100%;">
+                                    <button class="btn btn-primary" id="changeData" style="width:100%;">
                                         <i class="fa fa-edit"></i> 修改资料
                                     </button>
                                 </c:if>

@@ -1033,19 +1033,32 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
         });
     }
 
-    home.init = function(acc){
+    home.init = function(acc, type){
         var that = this;
         home_acc = acc;
         this.initEvent();
         login.init();
-        setTimeout(function(){
-            that.showShare();
-            if(document.body.clientWidth < 768){
-                $('html, body').animate({
-                    scrollTop: 672
-                });
+
+        if(!type){
+            type = 'share';
+        }
+        $('.show-home .home-tab').removeClass('active');
+        $('.show-home .home-tab a').each(function(){
+            var tab = $(this);
+            if(tab.attr('name') == type){
+                tab.parent().addClass('active');
+                if(type == 'attention'){
+                    that.showAttention();
+                } else if(type == 'collect'){
+                    that.showCollect();
+                } else if(type == 'friend'){
+                    that.showFriend();
+                } else{
+                    that.showShare();
+                }
+                return false;
             }
-        }, 500);
+        });
 
         share.toTop();
     }
@@ -1274,8 +1287,8 @@ define(['qshare/login', 'qshare/index', 'qshare/userManage', 'utils/messager', '
                     '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
-                    '<button class="col-xs-offset-1 col-xs-4 btn btn-success" type="submit" id="saveData">保存</button>' +
-                    '<button class="col-xs-offset-2 col-xs-4 btn btn-success" id="cancelData">取消</button>' +
+                    '<button class="col-xs-offset-1 col-xs-4 btn btn-primary" type="submit" id="saveData">保存</button>' +
+                    '<button class="col-xs-offset-2 col-xs-4 btn btn-primary" id="cancelData">取消</button>' +
                 '</div>' +
             '</form></div>');
 
