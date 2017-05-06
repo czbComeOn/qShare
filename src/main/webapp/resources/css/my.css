@@ -190,7 +190,7 @@ em{font-style: normal;}
     border-radius: 3px;
 }
 .myleft .user-portrait{
-    background: url('../img/portrait-back.jpg') no-repeat;
+    background: url('../img/portrait-back.jpg') repeat;
     padding: 20px;
     border-radius: 5px 5px 0 0;
 }
@@ -250,6 +250,7 @@ em{font-style: normal;}
 .portrait{width: 80px;height: 80px;}
 /* 左边个人信息 */
 .myleft .user-info{padding-top:10px;}
+.myleft .user-info .list-group-item{padding: 5px 10px;}
 .user-info a{text-decoration:none;color:#cacaca;}
 .user-info .nickname:hover{color: #fff;}
 .addr{color:#92a3ca;max-width:220px;overflow:hidden;}

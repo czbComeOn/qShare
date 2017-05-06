@@ -1234,6 +1234,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         // 窗体滚动事件
         $(window).scroll(function(){
             if($(window).scrollTop() > 600){$('#toTop').show();} else{$('#toTop').hide();}
+            if(document.body.clientWidth > 767){$('.myleft').css({'top': $(window).scrollTop()});}
         });
 
         // 置顶

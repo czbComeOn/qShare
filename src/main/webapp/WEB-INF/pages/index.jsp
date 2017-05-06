@@ -214,7 +214,7 @@
                             <div class="panel-heading">
                                 <i class="fa fa-heart"></i> 好友动态
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body" style="padding:0 15px 5px 15px;">
                                 <c:choose>
                                     <c:when test="${friendShareVos != null && fn:length(friendShareVos) > 0}">
                                         <c:forEach items="${friendShareVos}" var="friendShareVo">
@@ -246,7 +246,7 @@
                             <div class="panel-heading">
                                 <i class="fa fa-link"></i> 关注动态
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body" style="padding:0 15px 5px 15px;">
                                 <c:choose>
                                     <c:when test="${attentionShareVos != null && fn:length(attentionShareVos) > 0}">
                                         <c:forEach items="${attentionShareVos}" var="attentionShareVo">
