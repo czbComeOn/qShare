@@ -1495,8 +1495,11 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
     ShareInfoDialog.prototype = {
         init: function(){
             var that = this;
+            var baseUrl = window.location.href;
+            baseUrl = baseUrl.substr(0, baseUrl.lastIndexOf('/')) + '/';
             var option = {
-                title: '<b>分享到...</b>',
+                title: '<b>分享到...</b><a class="fr" href="http://qr.liantu.com/api.php?text=' + baseUrl + 'viewShare.do?shareId='
+                    + that.share.shareId + '" title="二维码分享" target="_blank"><i class="fa fa-qrcode"></i></a>',
                 saveBtn: false,
                 closeBtn: false,
                 mode: that.paintComponent()
@@ -1526,9 +1529,9 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
             baseUrl = baseUrl.substr(0, baseUrl.lastIndexOf('/')) + '/';
 
             var url = baseUrl + 'viewShare.do?shareId=' + that.share.shareId;
-            url = url.replace('=', '%3D').replace(/\\|[/]/g, '%2F').replace(/:/g, '%3A').replace(/\./g, '%2E');
+            url = url.replace('=', '%3D').replace(/\\|[/]/g, '%2F').replace(/:/g, '%3A').replace(/\./g, '%2E').replace(/\?/g, '%3F');
             var picUrl = baseUrl + (that.share.imgInfo ? that.share.imgInfo.split(',')[0] : '');
-            picUrl = picUrl.replace(/\\|[/]]/g, '%2F').replace(/:/g, '%3A').replace(/\./g, '%2E');
+            picUrl = picUrl.replace(/\\|[/]]/g, '%2F').replace(/:/g, '%3A').replace(/\./g, '%2E').replace(/-/g, '%2D');
             $html.find('.share-tqq').on('click', function(){
                 window.open('http://v.t.qq.com/share/share.php?url=' + url
                     + '&title=' + that.share.shareTitle + '&content=' + that.share.shareContent + '&pic=' + picUrl);
