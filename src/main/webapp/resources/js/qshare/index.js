@@ -581,7 +581,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
 
         // 头像
         var src = user.portraitPath ? user.portraitPath : 'resources/img/portrait.jpg';
-        var $titleLeft = $('<a href="javascript:void(0);" class="pull-left"><img src="' + src + '" alt=""></a>');
+        var $titleLeft = $('<a href="myHome.do?account=' + user.account + '" class="pull-left"><img src="' + src + '" alt=""></a>');
         var $titleCenter = $('<div class="title-center"></div>');
         // 标记为转发
         if(transpondInfo){
@@ -595,8 +595,8 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         var $titleRight = $('<div class="title-right fr"></div>').css('font-size', '16px');
         var $deleteShare = $('<a class="delete-share"></a>').attr({'id':share.shareId, 'href':'javascript:void(0);', 'title':'删除'})
             .append($('<i class="fa fa-trash"></i>'));
-        var $closeShare = $('<a class="close-share"></a>').attr({'href':'javascript:void(0);', 'title':'关闭'}).css({'margin-left': '10px'})
-            .append($('<i class="fa fa-remove">'));
+        var $closeShare = $('<a class="close-share"></a>').attr({'href':'javascript:void(0);', 'title':'分享'}).css({'margin-left': '10px'})
+            .append($('<i class="fa fa-chevron-down">'));
         if(currUser && (currUser.userId == share.userId || currUser.userType != 'NORMAL')){
             $titleRight.append($deleteShare);
         }
@@ -723,9 +723,7 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
 
         // 关闭不看该动态
         $closeShare.on('click', function () {
-            $panel.slideUp('normal', 'swing', function(){
-                $panel.remove();
-            });
+            new ShareInfoDialog(that, $closeShare, share);
         });
         // 删除分享
         $deleteShare.on('click', function(){
@@ -1276,6 +1274,14 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
     }
 
     // -----------------弹窗-----------------
+    /**
+     * 转发
+     * @param instance
+     * @param target
+     * @param share
+     * @param transpondCount
+     * @constructor
+     */
     var TranspondDialog = function(instance, target, share, transpondCount){
         this.instance = instance;
         this.target = target;
@@ -1353,6 +1359,12 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
         }
     }
 
+    /**
+     * 插入图片
+     * @param instance
+     * @param target
+     * @constructor
+     */
     var InsertImgDialog = function(instance, target){
         this.instance = instance;
         this.target = target;
@@ -1464,6 +1476,77 @@ define(['utils/messager', 'utils/common', 'qshare/login', 'jquery/jquery.sinaEmo
             } else{
                 $('.add-img-btn').hide();
             }
+        }
+    }
+
+        /**
+         * 分享信息
+         * @param instance
+         * @param target
+         * @constructor
+         */
+    var ShareInfoDialog = function(instance, target, share){
+        this.instance = instance;
+        this.target = target;
+        this.share = share;
+        this.init();
+    }
+
+    ShareInfoDialog.prototype = {
+        init: function(){
+            var that = this;
+            var option = {
+                title: '<b>分享到...</b>',
+                saveBtn: false,
+                closeBtn: false,
+                mode: that.paintComponent()
+            };
+            this.target.openModalDialog(option);
+        },
+        paintComponent: function(){
+            var that = this;
+            var $html = $('<div>' +
+                '<div class="row">' +
+                    '<ul class="share-to col-sm-8 col-xs-12">' +
+                        '<li> <a title="分享到腾讯微博" href="javascript:void(0);" class="share-tqq"></a>腾讯微博 </li>' +
+                        '<li> <a title="分享到QQ好友" href="javascript:void(0);" class="share-sqq"></a>QQ好友 </li>' +
+                        '<li> <a title="分享到QQ空间" href="javascript:void(0);" class="share-qzone"></a>QQ空间 </li>' +
+                        '<li> <a title="分享到新浪微博" href="javascript:void(0);" class="share-weibo"></a>新浪微博 </li>' +
+                    '</ul>' +
+                '</div>' +
+                '<div style="text-align: right;">' +
+                    '<button class="btn btn-info" id="cancelBtn">取消</button>' +
+                '</div>' +
+            '</div>');
+
+            $html.find('#cancelBtn').on('click', function(){
+                that.target.closeDialog();
+            });
+            var baseUrl = window.location.href;
+            baseUrl = baseUrl.substr(0, baseUrl.lastIndexOf('/')) + '/';
+
+            var url = baseUrl + 'viewShare.do?shareId=' + that.share.shareId;
+            url = url.replace('=', '%3D').replace(/\\|[/]/g, '%2F').replace(/:/g, '%3A').replace(/\./g, '%2E');
+            var picUrl = baseUrl + (that.share.imgInfo ? that.share.imgInfo.split(',')[0] : '');
+            picUrl = picUrl.replace(/\\|[/]]/g, '%2F').replace(/:/g, '%3A').replace(/\./g, '%2E');
+            $html.find('.share-tqq').on('click', function(){
+                window.open('http://v.t.qq.com/share/share.php?url=' + url
+                    + '&title=' + that.share.shareTitle + '&content=' + that.share.shareContent + '&pic=' + picUrl);
+            });
+            $html.find('.share-weibo').on('click', function(){
+                window.open('http://v.t.sina.com.cn/share/share.php?url=' + url
+                    + '&title=' + that.share.shareTitle + '&content=' + that.share.shareContent + '&pic=' + picUrl);
+            });
+            $html.find('.share-qzone').on('click', function(){
+                window.open('https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' + url
+                    + '&title=' + that.share.shareTitle + '&desc=' + that.share.shareContent + '&pics=' + picUrl);
+            });
+            $html.find('.share-sqq').on('click', function(){
+                window.open('http://connect.qq.com/widget/shareqq/index.html?url=' + url
+                    + '&title=' + that.share.shareTitle + '&pic=' + picUrl);
+            });
+
+            return $html;
         }
     }
 

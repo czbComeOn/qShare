@@ -21,8 +21,6 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/my.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/my-dialog.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/blueimp-gallery.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/blueimp-gallery-indicator.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/blueimp-gallery-video.css">
     <script data-main="${pageContext.request.contextPath}/resources/js/main"
             src="${pageContext.request.contextPath}/resources/js/require.min.js"></script>
     <script>
@@ -176,34 +174,34 @@
                                     </c:if>
                                     <c:if test="${friendCount == null}">0</c:if>
                                 </span>
-                                <a href="myHome.do?account=${user.account}&type=friend"><i class="fa fa-heart"></i> 好友</a>
+                                <a href="myHome.do?account=${user.account}&type=friend" style="color:#ef5c5c"><i class="fa fa-heart"></i> 我的好友</a>
                             </li>
                             <li class="list-group-item list-group-item-info">
-                                <span class="badge" style="background:#ced834;">
+                                <span class="badge" style="background:#3e8f3e;">
                                     <c:if test="${attentionCount != null}">
                                         ${attentionCount}
                                     </c:if>
                                     <c:if test="${attentionCount == null}">0</c:if>
                                 </span>
-                                <a href="myHome.do?account=${user.account}&type=attention"><i class="fa fa-link"></i> 关注</a>
+                                <a href="myHome.do?account=${user.account}&type=attention" style="color:#3e8f3e"><i class="fa fa-link"></i> 我的关注</a>
                             </li>
                             <li class="list-group-item list-group-item-primary">
-                                <span class="badge" id="collectCount" style="background:#3e97c1;">
+                                <span class="badge" id="collectCount" style="background:#4fd219;">
                                     <c:if test="${collectCount != null}">
                                         ${collectCount}
                                     </c:if>
                                     <c:if test="${collectCount == null}">0</c:if>
                                 </span>
-                                <a href="myHome.do?account=${user.account}&type=collect"><i class="fa fa-star"></i> 我的收藏</a>
+                                <a href="myHome.do?account=${user.account}&type=collect" style="color:#4fd219"><i class="fa fa-star"></i> 我的收藏</a>
                             </li>
                             <li class="list-group-item list-group-item-info">
-                                <span class="badge" id="shareCount" style="background:#b994a5;">
+                                <span class="badge" id="shareCount" style="background:#3e97c1;">
                                     <c:if test="${shareCount != null}">
                                         ${shareCount}
                                     </c:if>
                                     <c:if test="${shareCount == null}">0</c:if>
                                 </span>
-                                <a href="myHome.do?account=${user.account}&type=share"><i class="fa fa-share-alt"></i> 我的分享</a>
+                                <a href="myHome.do?account=${user.account}&type=share" style="color:#3e97c1;"><i class="fa fa-share-alt"></i> 我的分享</a>
                             </li>
                         </ul>
                     </div>

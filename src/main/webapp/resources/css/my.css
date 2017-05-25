@@ -42,18 +42,13 @@ em{font-style: normal;}
     z-index: 99;
     width:48px;
     height:48px;
-    opacity: .5;
+    opacity: .6;
     border-radius: 5px;
     background: #f1e5e5;
 }
-.to-top img{width: 100%;height: 100%;}
 .to-top:hover{
     cursor: pointer;
     opacity: 1;
-    background: rgba(216,193,193);
-}
-@media screen and (max-width: 767px){
-    .to-top{width: 30px;height: 30px;}
 }
 /*-------登录---------*/
 .login-container{
@@ -501,3 +496,20 @@ em{font-style: normal;}
         margin: 100px auto 0 auto;
     }
 }
+/* ------ 信息分享 -----*/
+
+.share-to{
+    list-style: none;
+}
+.share-to li{
+    text-align: center;
+    float: left;
+    width: 25%;
+    padding-bottom: 15px;
+}
+.share-to li > a{width:60px; height: 60px; display:block; margin:auto; color:#fff;}
+.share-to li > a:hover{opacity: .6;}
+.share-to li .share-tqq{background: url('../img/tqq.png') no-repeat center center/60px 60px; }
+.share-to li .share-sqq{background: url('../img/qq.png') no-repeat center center/60px 60px; }
+.share-to li .share-qzone{background: url('../img/qzone.png') no-repeat center center/60px 60px; }
+.share-to li .share-weibo{background: url('../img/weibo.png') no-repeat center center/60px 60px; }
